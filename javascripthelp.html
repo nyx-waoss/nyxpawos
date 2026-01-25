@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            align-items: center;
+            justify-content: center;
+            font-family: sans-serif;
+        }
+
+        #verify {
+            color: red;
+        }
+
+        #textdiv {
+            border: 2px solid gray;
+            padding: 10px;
+        }
+
+        img {
+            width: 400px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Como activar Javascript</h1>
+    <p>Verifica que Javascript este activado, mira el siguiente texto:</p>
+    <div id="textdiv">
+        <p id="verify">Javascript no esta funcionando!</p>
+    </div>
+    <p>Si dice "Javascript no esta funcionando!" entonces activalo de la siguiente forma:</p>
+    <p>1. Haz clic en el candado o el icono de informacion (i) en la barra de direcciones</p>
+    <img src="assets/tut/1.png">
+    <p>2. Haz clic en 'site settings' o 'configuracion del sitio'</p>
+    <p>3. Busca la opcion 'Javascript' y establecela en 'allow' o 'permitir'</p>
+    <img src="assets/tut/2.png">
+
+    <h2>Si el texto dice "Javascript si esta funcionando" en verde, entonces intenta lo siguiente:</h2>
+    <ul>
+        <li>Asegurate de tener la ultima version</li>
+        <li>Investiga si eres la unica persona con el problema</li>
+        <li>Reinstala el sistema</li>
+    </ul>
+    
+    <script>
+        const text = document.getElementById('verify');
+        text.textContent = 'Javascript si esta funcionando';
+        text.style.color = 'green';
+    </script>
+</body>
+</html>

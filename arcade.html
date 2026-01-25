@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NyxPaw Arcade</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: black;
+            font-family: 'Outfit', sans-serif;
+            text-align: center;
+        }
+
+        #menu {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #title {
+            color: white;
+        }
+
+        #allgames {
+            display: flex;
+            flex-direction: row;
+            gap: 2px;
+        }
+
+        #game-name {
+            color: white;
+        }
+
+        #game {
+            background-color: rgb(75, 75, 75);
+            padding: 10px;
+            margin: 4px;
+            border-radius: 8px;
+            height: 160px;
+            width: 115px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #game:hover {
+            background-color: rgb(98, 98, 98);
+        }
+
+        #game-img {
+            height: 110px;
+            width: 110px;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        #game-img img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        #gameiframe {
+            position: fixed;
+            top: 45px;
+            left: 0;
+            width: 100vw;
+            height: calc(100vh - 45px);
+            border: 0;
+        }
+
+        #topbar {
+            width: 100%;
+            height: 40px;
+        }
+
+        #topbar button {
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        @keyframes popFade {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .pop-clone {
+            position: fixed;
+            pointer-events: none;
+            animation: popFade 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div id="topbar" class="hidden">
+        <button onclick="quitGame()">&lt;</button>
+    </div>
+    <div id="menu">
+        <h1 id="title">NyxPaw Arcade</h1>
+        <div id="allgames">
+            <div id="game" onclick="launchGame('https://www.onlinegames.io/games/2023/unity2/gta-simulator/index.html', this)">
+                <div id="game-img">
+                    <img src="https://www.onlinegames.io/media/posts/416/responsive/GTA-Simulator-lg.jpg" onerror="this.onerror=null; this.src='assets/arcade/game.png';" alt="Game Image">
+                </div>
+                <p id="game-name">GTA Simulator</p>
+            </div>
+            <div id="game" onclick="launchGame('https://www.onlinegames.io/games/2024/unity/drift-king/index.html', this)">
+                <div id="game-img">
+                    <img src="https://www.onlinegames.io/media/posts/729/responsive/Drift-King-lg.jpg" onerror="this.onerror=null; this.src='assets/arcade/game.png';" alt="Game Image">
+                </div>
+                <p id="game-name">Drift King</p>
+            </div>
+            <div id="game" onclick="launchGame('https://www.onlinegames.io/games/2023/construct/211/highway-cars/index.html', this)">
+                <div id="game-img">
+                    <img src="https://www.onlinegames.io/media/posts/598/responsive/Highway-Cars-lg.jpg" onerror="this.onerror=null; this.src='assets/arcade/game.png';" alt="Game Image">
+                </div>
+                <p id="game-name">Highway Cars</p>
+            </div>
+            <div id="game" onclick="launchGame('https://www.onlinegames.io/games/2021/unity/stack-fire-ball/index.html', this)">
+                <div id="game-img">
+                    <img src="https://www.onlinegames.io/media/posts/184/responsive/Stack-Fire-Ball-Game-lg.jpg" onerror="this.onerror=null; this.src='assets/arcade/game.png';" alt="Game Image">
+                </div>
+                <p id="game-name">Stack Fire Ball</p>
+            </div>
+            <div id="game" onclick="launchGame('https://www.onlinegames.io/games/2022/unity/airplane-racer/index.html', this)">
+                <div id="game-img">
+                    <img src="https://www.onlinegames.io/media/posts/268/responsive/Airplane-Racer-lg.jpg" onerror="this.onerror=null; this.src='assets/arcade/game.png';" alt="Game Image">
+                </div>
+                <p id="game-name">Airplane Racer</p>
+            </div>
+            <div id="game" onclick="launchGame('https://cloud.onlinegames.io/games/2025/unity/find-it/index-og.html', this)">
+                <div id="game-img">
+                    <img src="https://www.onlinegames.io/media/posts/940/responsive/Find-It-lg.jpg" onerror="this.onerror=null; this.src='assets/arcade/game.png';" alt="Game Image">
+                </div>
+                <p id="game-name">Find It</p>
+            </div>
+
+        </div>
+        <p style="color: rgb(144, 144, 144); margin-top: 100px;">
+            Warning! NyxPaw Arcade is powered by services provided by onlinegames.io.
+            However, NyxPaw Arcade is not affiliated with, endorsed by, or officially associated with onlinegames.io in any way.
+            All trademarks and services belong to their respective owners.
+        </p>
+
+        <p style="color: rgb(144, 144, 144); margin-top: 10px;">
+            Advertencia! NyxPaw arcade utiliza los servicios de onlinegames.io.
+            Sin embargo, NyxPaw arcade no esta afiliado, patrocinado, ni asociado oficialmente con onlinegames.io de ninguna manera.
+            Todas las marcas y servicios pertenecen a sus respecitvos propietarios.
+        </p>
+    </div>
+    <!--Juegos:-->
+    <iframe id="gameiframe" class="hidden" src="connecting.html"></iframe>
+
+    <script>
+        const topbar = document.getElementById('topbar');
+        const gameIframe = document.getElementById('gameiframe');
+        const mainMenu = document.getElementById('menu');
+
+        function quitGame() {
+            gameIframe.src = 'connecting.html';
+            mainMenu.classList.remove('hidden');
+            gameIframe.classList.add('hidden');
+            topbar.classList.add('hidden');
+        }
+
+        function launchGame(embedurl, elin) {
+            popFX(elin)
+            setTimeout(() => {
+                gameIframe.src = 'connecting.html';
+                mainMenu.classList.add('hidden');
+                gameIframe.classList.remove('hidden');
+                topbar.classList.remove('hidden');
+                gameIframe.src = embedurl;
+
+                //launch game here
+            }, 850);
+        }
+
+        function popFX(el) {
+            const clone = el.cloneNode(true);
+            const rect = el.getBoundingClientRect();
+
+            clone.classList.add('pop-clone');
+            clone.style.left = rect.left + 'px';
+            clone.style.top = rect.top + 'px';
+            clone.style.width = rect.width + 'px';
+            clone.style.height = rect.height + 'px';
+
+            document.body.appendChild(clone);
+        
+            clone.addEventListener('animationend', () => clone.remove());
+        }
+    </script>
+</body>
+</html>

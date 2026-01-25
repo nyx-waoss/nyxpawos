@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NyxPawOS</title>
+    <link rel="stylesheet" href="launcher.css">
+</head>
+<body>
+    <div class="panels_div">
+        <div class="main_div">
+            <div class="info_div" id="info_div">
+                <img src="assets/therianb.png">
+                <h1>Bienvenido a NyxPawOS</h1>
+                <h2>Therian Edition ✨</h2>
+                <div class="divider"></div>
+                <p>Bienvenido a NyxPawOS Therian Edition, el sistema operativo para therians!</p>
+                <p>Si estas viendo esta pantalla, es porque NyxPawOS Therian Edition se ha instalado correctamente! Ahora solo debes iniciarlo y configurarlo :3</p>
+                <div class="divider"></div>
+                <h2>Solucion de problemas:</h2>
+                <h4>Si el boton de inicio no funciona:</h4>
+                <ul>
+                    <li>Asegurate de activar Javascript: <a href="javascripthelp.html" target="_blank">Como activar Javascript</a></li>
+                    <li>Asegurate de permitir los PopUp en la configuracion del sitio</li>
+                </ul>
+                <h4>Si aparece una pantalla en negro con un texto y no hay ninguna barra de progreso:</h4>
+                <ul>
+                    <li>Asegurate de activar Javascript: <a href="javascripthelp.html" target="_blank">Como activar Javascript</a></li>
+                    <li>Verifica que tengas la ultima version del sistema</li>
+                    <li>Investiga si alguien mas tiene el mismo problema</li>
+                    <li>Reinstala el sistema operativo y no modifiques los archivos si no sabes lo que haces</li>
+                </ul>
+                <h4>Si el sistema de archivos no funciona:</h4>
+                <ul>
+                    <li>Asegurate de activar Javascript: <a href="javascripthelp.html" target="_blank">Como activar Javascript</a></li>
+                    <li>Asegurate que nada este bloqueando el acceso a local storage</li>
+                </ul>
+                <div class="divider"></div>
+                <h2>Disfruta del OS!</h2>
+                <p>Este sistema operativo esta basado en html y Javascript! No es un OS real!! - Creado por nyx_waoss</p>
+            </div>
+            <div class="hidden" id="settings_div">
+                <button onclick="hidesettings()">Volver</button>
+                <div style="display: flex; flex-direction: row; gap: 10px;">
+                    <p>Consola de desarrollador</p>
+                    <input type="checkbox">
+                </div>
+                <div class="divider"></div>
+                <p>NyxPawOS Launcher ✨ v1.0 2026</p>
+                
+            </div>
+        </div>
+        <div class="version_manager">
+            <p style="font-size: 20px; margin-top: 0;">Administrador de versiones</p>
+
+            <div class="version_div" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 20px; border: 2px solid rgb(0, 0, 0); border-radius: 8px;">
+                <img src="assets/therianb.png" style="width: 80px; height: 80px; margin: 0;">
+                <div style="display: flex; flex-direction: column; margin: 0;">
+                    <p style="color: black; font-size: 20px; margin-left: auto; margin-bottom: 0;">1.0.0 Private Beta</p>
+                    <p style="color: rgb(62, 62, 62); font-size: 16px; margin-left: auto;">Seleccionada</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="bottom_tools">
+        <button onclick="launchsys()" id="button">Iniciar!</button>
+        <button onclick="opensettings()" id="settingsbtn">Configuracion</button>
+    </div>
+
+    <script>
+        const launchBtn = document.getElementById('button');
+        function launchsys() {
+            launchBtn.textContent = 'Cargando...'
+            setTimeout(() => {
+                window.open("index.html", "nyxpaw_os", "width=1280,height=720")
+                launchBtn.textContent = 'Iniciar!'
+            }, 300);
+        }
+
+        const infoDiv = document.getElementById('info_div');
+        const settingsDiv = document.getElementById('settings_div');
+
+        function opensettings() {
+            infoDiv.classList.add('hidden');
+            settingsDiv.classList.remove('hidden');
+        }
+
+        function hidesettings() {
+            infoDiv.classList.remove('hidden');
+            settingsDiv.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

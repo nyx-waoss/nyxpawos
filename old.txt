@@ -1,0 +1,27 @@
+    <!-- Unused code:
+    System
+    <script src="system/sys.js"></script>
+
+    Core
+    <script src="system/FS.js"></script>
+    <script src="system/usermanager.js"></script>
+    <script src="system/winmanager.js"></script>
+
+    Programs
+    <script src="system/apps/settings.js"></script>
+    <script src="system/apps/notes.js"></script>
+    <script src="system/apps/calc.js"></script>
+    <script src="system/apps/browser.js"></script>
+    <script src="system/apps/files.js"></script>
+    <script src="system/apps/calendar.js"></script>
+    <script src="system/apps/terminal.js"></script>
+    <script src="system/apps/toybox.js"></script>
+    <script src="system/apps/videoplayer.js"></script>
+    <script src="system/apps/imgviewer.js"></script>
+    <script src="system/apps/nyxpawstore.js"></script>
+    <script src="system/apps/ytclient.js"></script>
+    <script src="system/apps/weather.js"></script>
+    <script src="system/apps/arcade.js"></script>
+
+    Initialize
+    <script src="system/init.js"></script>-->

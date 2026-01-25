@@ -1,0 +1,2544 @@
+/*
+COLORS
+Idle: rgba(75, 75, 75, 0.5);
+Hover: rgba(101, 101, 101, 0.66);
+Active: rgba(45, 45, 45, 0.5);*/
+
+:root {
+    --blur-multiplier: 1;
+}
+
+/* Scroll bar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.45) rgba(0,0,0,0.2);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.25);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.4);
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.6);
+}
+
+
+body {
+    background-image: url(assets/wallpaper.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+    padding-top: 48px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6, span, label, p, a, img {
+    cursor: default;
+    user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+
+.textShowEvents,
+.textShowEvents p,
+.textShowEvents h1,
+.textShowEvents h2,
+.textShowEvents h3,
+.textShowEvents h4,
+.textShowEvents h5,
+.textShowEvents h6,
+.textShowEvents label,
+.textShowEvents i,
+.textShowEvents a,
+.textShowEvents span,
+.textShowEvents img {
+    cursor: text !important;
+    user-select: text !important;
+    -ms-user-select: text !important;
+    -webkit-user-select: text !important;
+}
+
+#bsod {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9010;
+    background-color: rgb(0, 0, 0);
+    align-items: left;
+    justify-content: center;
+    padding-left: 40px;
+    cursor: none;
+}
+
+#bsod p, #bsod h1{
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+#sysdivider {
+    height: 1px;
+    width: 90%;
+    background-color: white;
+}
+
+#startupscr {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9000;
+    background-color: black;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+}
+
+.startupscr_loadingcontainer {
+    width: 420px;
+    height: 10px;
+    background-color: #000000;
+    border: 1px solid white;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.startupscr_loadingbar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ffffff, #f0f0f0);
+    border-radius: 10px;
+    animation: width 0.1s ease;
+}
+
+.startupscr_loadingtext {
+    text-align: center;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    color: #b2b2b2;
+}
+
+/*SEM - System Emergency Menu*/
+#sys-emg-menu {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    height: 100%;
+    z-index: 9009;
+    top: 0;
+    left: 0;
+    background-color: black;
+}
+
+#sys-emg-menu p {
+    color: white;
+    margin-bottom: 80px;
+}
+
+#sys-emg-menu button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: white;
+}
+
+#sys-emg-menu button:hover {
+    color: rgb(155, 155, 155);
+}
+
+/*msgbox*/
+#msg-box-bgoverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.445);
+    backdrop-filter: blur(calc(8px * var(--blur-multiplier)));
+    z-index: 9002;
+}
+
+#msg-box {
+    background-color: #0000007c;
+    font-family: 'Outfit', sans-serif;
+    /*border: 1px solid #ccc;*/
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    width: 400px;
+    height: fit-content;
+    padding: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 9004;
+    position: fixed;
+    color: white;
+}
+
+#msg-box-input {
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background: #ffffff3b;
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+}
+
+#msg-box-input:hover {
+    background: #ffffff6b;
+}
+
+#msg-box-okbtn {
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background: #ffffff22;
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+}
+
+#msg-box-okbtn:hover {
+    background: #275bb5;
+    color: rgb(255, 255, 255);
+}
+
+#msg-box-cancelbtn {
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background: #ffffff22;
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+}
+
+#msg-box-cancelbtn:hover {
+    background: #ffffff51;
+    color: rgb(255, 255, 255);
+}
+
+/*msg box como ventana*/
+#msg-box-win {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.74);
+    backdrop-filter: blur(calc(20px * var(--blur-multiplier)));
+    font-family: 'Outfit', sans-serif;
+    /*border: 1px solid #ccc;*/
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    min-width: 350px;
+    width: auto;
+    height: fit-content;
+    padding: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: left;
+    z-index: 9004;
+    position: fixed;
+    color: white;
+}
+
+#msg-box-win-iconncont {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    text-align: left;
+}
+
+#msg-box-win-icon {
+    font-size: 62px;
+}
+
+#msg-box-win-titlentext {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+}
+
+#msg-box-win-title {
+    margin-bottom: 0;
+    font-size: 28px;
+    text-align: left;
+}
+/*
+
+#askForImageFile-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#askForImageFile-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#askForImageFile-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#askForImageFile-btn_save {
+    background-color: rgb(0, 145, 255);
+}
+#askForImageFile-btn_save:hover {
+    background-color: rgb(54, 168, 255);
+}
+#askForImageFile-btn_save:active {
+    background-color: rgb(0, 126, 222);
+}
+
+*/
+
+#msg-box-win-input {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background: #ffffff3b;
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+    margin-bottom: 5px;
+    margin-top: 14px;
+}
+
+#msg-box-win-input:hover {
+    background: #ffffff6b;
+}
+
+#msg-box-win-btnsdiv {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+#msg-box-win-okbtn {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background-color: rgb(0, 145, 255);
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+}
+
+#msg-box-win-okbtn:hover {
+    background-color: rgb(54, 168, 255);
+    color: rgb(255, 255, 255);
+}
+
+#msg-box-win-okbtn:active {
+    background-color: rgb(0, 126, 222);
+    color: rgb(255, 255, 255);
+}
+
+#msg-box-win-cancelbtn {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+}
+
+#msg-box-win-cancelbtn:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+    color: rgb(255, 255, 255);
+}
+
+#msg-box-win-cancelbtn:active {
+    background-color: rgba(45, 45, 45, 0.5);
+    color: rgb(255, 255, 255);
+}
+
+
+
+
+
+#loginscr {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.445);
+    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
+    z-index: 9003;
+}
+
+.loginscr_account {
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background-color: rgb(46, 46, 46);
+    height: 50px;
+    width: 220px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    color: white;
+    font-family: 'Outfit', sans-serif;
+}
+
+.loginscr_account:hover {
+    background-color: rgb(62, 62, 62);
+}
+
+.loginscr_texts {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.loginscr_account i {
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+}
+
+.loginscr_texts p:not(.loginscr_logintext) {
+    font-size: 18px;
+    margin: 0;
+}
+
+.loginscr_logintext {
+    font-size: 14px;
+    color: #b1b1b1;
+    margin: 0;
+}
+
+#loginscr-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#loginscr-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#loginscr-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#loginscr-btn_login {
+    background-color: rgb(0, 145, 255);
+}
+#loginscr-btn_login:hover {
+    background-color: rgb(54, 168, 255);
+}
+#loginscr-btn_login:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#loginscr-btnsdiv {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+#loginscr_passwordinput {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#loginscr_passwordinput:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+.content_askforuserspassword {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+/*Sistema de usuarios*/
+
+.content_sysaskfornewuserdata {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+#sysaskfornewuserdata-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#sysaskfornewuserdata-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#sysaskfornewuserdata-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#sysaskfornewuserdata-btn_login {
+    background-color: rgb(0, 145, 255);
+}
+#sysaskfornewuserdata-btn_login:hover {
+    background-color: rgb(54, 168, 255);
+}
+#sysaskfornewuserdata-btn_login:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#sysaskfornewuserdata-btnsdiv {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+#settings_newuser_usernameinput {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#settings_newuser_usernameinput:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#settings_newuser_displaynameinput {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#settings_newuser_displaynameinput:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#settings_newuser_passwordinput {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#settings_newuser_passwordinput:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+
+
+
+
+/*topbar y todo lo demas*/
+
+#top_bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    background-color: rgba(0, 0, 0, 0.288);
+    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
+    z-index: 8000;
+    /*transision*/
+    transition: transform 0.5s ease;
+
+    box-sizing: border-box;
+}
+
+#top_bar .center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+}
+
+#top_bar .left {
+    margin-right: auto;
+}
+
+#top_bar .right {
+    margin-left: auto;
+}
+
+#timetext {
+    color: white;
+    font-family: 'Outfit', sans-serif;
+}
+
+#topbar_button {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 23px;
+    height: 23px;
+}
+
+#topbar_nekiri {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 23px;
+    height: 23px;
+}
+
+#topbar_button:hover {
+    filter: brightness(0.60);
+}
+
+#topbar_nekiri:hover {
+    filter: brightness(0.60);
+}
+
+#topbar_button img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#topbar_nekiri img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.dropdown-menu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    background: #0000007b;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    z-index: 8035;
+    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
+    align-items: center;
+    
+}
+
+.dropdown-menu button {
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 6px;
+    margin: 0;
+    width: 100%;
+}
+
+.dropdown-menu button:hover {
+    background-color: #0000007b;
+}
+
+.dropdown-menu button:active {
+    background-color: rgba(255, 255, 255, 0.445);
+}
+
+#nekiri-dropdown {
+    width: 350px;
+    background: #181818ea;
+}
+
+#nekiri_div_topbtns {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin: 5px;
+    height: auto;
+    width: 100%;
+    height: 35px;
+}
+
+#nekiri_input {
+    border: 2px solid rgba(49, 49, 49, 0.849);
+    background-color: rgb(21, 21, 21);
+    border-radius: 8px;
+    color: white;
+    width: 100%;
+}
+
+#nekiri_send {
+    border: 2px solid rgba(49, 49, 49, 0.849);
+    background-color: rgb(21, 21, 21);
+    border-radius: 8px;
+    color: white;
+    width: 30px;
+}
+
+#nekiri_response {
+    color: white;
+    font-family: 'Outfit', sans-serif;
+}
+
+#appbar {
+    position: fixed;
+
+    top: calc(30px + 10px);
+    bottom: 10px;
+
+    left: 10px;
+
+    width: 65px;
+
+    padding: 15px;
+    box-sizing: border-box;
+
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.288);
+    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
+    z-index: 8002;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 8px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    transition: transform 0.5s ease;
+}
+
+.appbar-app {
+    border: none;
+    background: none;
+
+    transition: transform 0.2s ease, filter 0.15s ease;
+    transform-origin: center;
+}
+
+.appbar-app:hover {
+    transform: scale(1.20);
+}
+
+.appbar-app:active {
+    filter: brightness(0.70);
+}
+
+.app-img {
+    height: 50px;
+    width: 50px;
+}
+
+#app-labels {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    color: white;
+    background-color: rgba(0, 0, 0, 0.434);
+    width: auto;
+    padding: 2px 12px;
+    height: 30px;
+    border-radius: 8px;
+    backdrop-filter: blur(calc(5px * var(--blur-multiplier)));
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+    justify-content: center;
+
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 8003;
+}
+/*Ventanas*/
+.window.win-max {
+    left: 85px !important;
+    top: 4px !important;
+    right: 4px !important;
+    bottom: 4px !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.window.win-max .resize-handle {
+    display: none;   /* no tiene sentido redimensionar si está maximizada jajajaja */
+}
+
+.window {
+    position: fixed;
+    top: 100px;
+    left: 100px;
+
+    width: 300px;
+    height: 200px;
+
+    background: rgba(0, 0, 0, 0.656);
+    backdrop-filter: blur(calc(20px * var(--blur-multiplier)));
+    color: white;
+    border-radius: 8px;
+
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.4);
+
+    z-index: 8020;
+    overflow: hidden;
+
+    font-family: 'Outfit', sans-serif;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.grab {
+    height: 38px;
+    background: rgba(0, 0, 0, 0.288);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+
+    user-select: none;
+}
+
+/*.grab:active {
+    cursor: grabbing;
+}*/
+
+.grab-title {
+    pointer-events: none;
+}
+
+.grab-btn {
+    background-color: rgba(0, 0, 0, 0.372);
+    border: none;
+    color: white;
+    font-size: 14px;
+    padding: 3px;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+}
+
+.grab-btn:hover {
+    background-color: rgba(107, 107, 107, 0.425);
+}
+
+.win_content {
+    padding: 10px;
+    height: calc(100% - 38px);
+    /*overflow: auto;*/
+    overflow: hidden;
+    /*test*/
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    width: 14px;
+    height: 14px;
+
+    cursor: nwse-resize;
+    background: transparent;
+}
+
+.window.no-resize .resize-handle {
+    display: none;
+}
+
+/*Config*/
+.content_settings {
+    display: flex;
+    flex-direction: row;
+    /*height: 100%;*/
+    gap: 10px;
+
+    /*test*/
+    flex: 1;
+    min-height: 0;
+}
+
+.settings-sidebar {
+    width: 160px;
+    background: rgba(0, 0, 0, 0.288);
+    padding: 6px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.settings-sidebar .tab {
+    width: 100%;
+    margin-bottom: 4px;
+    padding: 8px;
+
+    background: none;
+    border: none;
+    color: white;
+    text-align: left;
+
+    border-radius: 6px;
+}
+
+.settings-sidebar .tab:hover {
+    background-color: rgba(0, 0, 0, 0.372);
+}
+
+.settings-sidebar .tab:active {
+    background-color: rgba(0, 0, 0, 0.504);
+}
+
+.settings-content {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    min-height: 0;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.sidebar-divider {
+    height: 1px;
+    margin: 8px 6px;
+    background: rgba(255, 255, 255, 0.212);
+}
+
+.uisetting {
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background-color: rgb(46, 46, 46);
+}
+
+.uisetting:hover {
+    background-color: rgb(62, 62, 62);
+}
+
+.checkbox {
+    display: flex;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.checkbox input {
+    accent-color: #4da3ff;
+}
+
+.switch-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.switch {
+    position: relative;
+    width: 40px;
+    height: 20px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #555;
+    border-radius: 20px;
+    transition: 0.2s;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 2px;
+    top: 2px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.switch input:checked + .slider {
+    background: #359326;
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(20px);
+}
+
+input[type="range"] {
+    width: 100%;
+}
+
+.text-input {
+    width: 100%;
+    padding: 6px;
+    margin-top: 4px;
+    border-radius: 6px;
+    border: none;
+    background: #565656;
+    color: rgb(255, 255, 255);
+}
+
+.select {
+    width: 100%;
+    padding: 6px;
+    border-radius: 6px;
+    background: #565656;
+    color: white;
+    border: none;
+}
+
+.btn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    background: #797979;
+    color: white;
+    cursor: pointer;
+}
+
+.btn.primary {
+    background: #4da3ff;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+#screendiv {
+    padding: 4px;
+    border-radius: 5px;
+    color: rgb(0, 0, 0);
+    box-shadow: 0px 2px 5px rgb(0, 0, 0);
+    width: 160px;
+    height: 110px;
+    text-align: center;
+    align-items: center;
+    background-color: white;
+    font-size: 24px;
+}
+
+.settings_usercard {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings_usercard i {
+    font-size: 28px;
+}
+
+
+
+/*Notas*/
+.content_notes {
+    display: flex;
+}
+
+.content_notes textarea {
+    resize: none;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+    border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    top: 6px;
+}
+
+.content_notes button {
+    border-radius: 8px;
+    border: none;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.272);
+    padding: 2px;
+    width: 76px;
+    height: 30px;
+}
+
+.content_notes button:hover {
+    background-color: rgba(0, 0, 0, 0.393);
+}
+
+.program_topbar {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    padding: 2px;
+    gap: 6px;
+}
+
+
+.content_savenote {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+#notes-savefilename {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white; 
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#notes-savefilename:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#notes-btnsdiv {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+.files-btnstyled {
+    width: 100%;
+    height: 25px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+}
+
+#notes-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#notes-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#notes-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#notes-btn_save {
+    background-color: rgb(0, 145, 255);
+}
+#notes-btn_save:hover {
+    background-color: rgb(54, 168, 255);
+}
+#notes-btn_save:active {
+    background-color: rgb(0, 126, 222);
+}
+
+
+/*
+            <div id="notes-btnsdiv">
+                <button id="notes-btn_save" class="files-btnstyled">Guardar</button>
+                <button id="notes-btn_cancel" class="files-btnstyled">Cancelar</button>
+            </div>
+
+#files-btnsdiv {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+.files-btnstyled {
+    width: 100%;
+    height: 25px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+}
+
+#files-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#files-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#files-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#files-btn_newfile {
+    background-color: rgb(0, 145, 255);
+}
+#files-btn_newfile:hover {
+    background-color: rgb(54, 168, 255);
+}
+#files-btn_newfile:active {
+    background-color: rgb(0, 126, 222);
+}
+
+    <div class="window hidden no-resize" id="win_savenote">
+        <div class="grab">
+            <span class="grab-title">Guardar Nota</span>
+            <button class="grab-btn" id="btn_savenote">X</button>
+        </div>
+
+        <div class="win_content content_savenote">
+            <p>Nombre del archivo:</p>
+            <input type="text" id="notes-savefilename" placeholder="mi-nota.txt">
+            <div id="notes-btnsdiv">
+                <button id="notes-btn_save" class="files-btnstyled">Guardar</button>
+                <button id="notes-btn_cancel" class="files-btnstyled">Cancelar</button>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+*/
+
+
+/*Calc*/
+.content_calc {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+#calcdisplay {
+    flex: 1;
+    width: 100%;
+    height: 30px;
+    margin-bottom: 10px;
+    background-color: rgb(46, 46, 46);
+    border-radius: 8px;
+    border: none;
+    color: white;
+    text-align: right;
+    font-size: 34px;
+}
+
+#calcbuttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 8px;
+    width: 100%;
+    flex: 3;
+}
+
+.calcbutton {
+    background-color: rgba(75, 75, 75, 0.5);
+    border-radius: 8px;
+    border: none;
+    color: white;
+    font-size: medium;
+}
+
+.calcbutton:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+.calcbutton:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+/*Navegador*/
+.content_browser {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+#browseriframe {
+    flex: 1;
+    border: none;
+    border-radius: 8px;
+    
+}
+
+#navbar {
+    display: flex;
+    height: 29px;
+    align-items: center;
+    gap: 6px;
+    padding: 6px;
+}
+
+#navbar input {
+    flex: 1;
+    min-width: 0;
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+}
+
+#navbar input:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#navbar input:active {
+    border: 2px solid white;
+}
+
+#navbar button {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+}
+
+#navbar button:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#navbar button:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+/*Files*/
+.content_files {
+    overflow: auto;
+}
+
+.file-btn {
+    width: auto;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+}
+
+.file-btn:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+.file-btn:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+.file-btn.selected {
+    background-color: rgba(101, 101, 101, 0.66);
+    border: 1px solid gray;
+}
+
+.file-btn-up {
+    width: auto;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+}
+
+.file-btn-up:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+.file-btn-up:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#toolbar {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    margin-bottom: 10px
+}
+
+#toolbar button {
+    width: auto;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+}
+
+#toolbar button:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#toolbar button:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+#verticaldivisor {
+    width: 2px;
+    height: 24px;
+    margin: 0px 6px;
+    background-color: rgba(75, 75, 75, 0.5);
+}
+
+.filesaltmenu {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: #0000007b;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 8022;
+    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
+    min-width: 150px;
+}
+.filesaltmenu button {
+    width: 100%;
+    background: none;
+    color: white;
+    border-radius: 8px;
+    text-align: left;
+    border: none;
+    padding: 4px 10px;
+}
+
+.filesaltmenu button:hover {
+    background: rgba(101, 101, 101, 0.66);
+}
+
+.content_askforfilecreation {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+#files-newfilename {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#files-newfilename:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#files-newfiletype {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#files-newfiletype:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#files-btnsdiv {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+.files-btnstyled {
+    width: 100%;
+    height: 25px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+}
+
+#files-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#files-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#files-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#files-btn_newfile {
+    background-color: rgb(0, 145, 255);
+}
+#files-btn_newfile:hover {
+    background-color: rgb(54, 168, 255);
+}
+#files-btn_newfile:active {
+    background-color: rgb(0, 126, 222);
+}
+
+/*Calendar*/
+.content_calendar {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.calendar_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar_header h2 {
+    color: white;
+    font-size: 24px;
+    margin: 0;
+}
+
+.calendar_nav-btn {
+    background-color: rgb(0, 145, 255);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+}
+
+.calendar_nav-btn:hover {
+    background-color: rgb(54, 168, 255);
+}
+
+.calendar_allweekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.calendar_weekday {
+    text-align: center;
+    font-weight: bold;
+    color: rgb(0, 145, 255);
+    padding: 10px 0;
+}
+
+.calendar_days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.calendar_day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    transition: all 0.3s;
+    position: relative;
+    background-color: rgba(75, 75, 75, 0.5);
+}
+
+.calendar_day:hover {
+    border-color: rgb(54, 168, 255);
+    transform: scale(1.05);
+}
+
+.calendar_day.empty {
+    border: none;
+}
+
+.calendar_day.empty:hover {
+    transform: none;
+}
+
+.calendar_day.today {
+    background-color: rgb(0, 145, 255);
+    color: white;
+    border-color: rgb(0, 145, 255);
+}
+
+.calendar_day-number {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.calendar_star {
+    font-size: 20px;
+    margin-top: 2px;
+}
+
+/*Terminal*/
+.content_terminal {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    overflow-y: scroll;
+    line-height: 1.2;
+}
+
+.content_terminal p {
+    margin: 0;
+}
+
+#terminalin {
+    outline: none;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    color: white;
+    width: 100%;
+}
+
+#terminalinDiv {
+    display: flex;
+    flex-direction: row;
+    gap: 1px;
+}
+
+/*Toybox*/
+.content_toybox {
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 10px;
+}
+
+#toyboxBtnsDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    overflow-y: scroll;
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.288);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+#toyboxBtnsDiv button {
+    width: 230px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    color: white;
+}
+
+#toyboxBtnsDiv button:hover {
+    background-color: rgba(0, 0, 0, 0.372);
+}
+
+#toyboxBtnsDiv button:active {
+    background-color: rgba(0, 0, 0, 0.504);
+}
+
+
+#toyboxBtnsDiv button img{
+    width: 220px;
+    height: 160px;
+    margin-top: 4px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+}
+
+.toyboxTab {
+    flex: 1;
+    min-width: 0;
+}
+
+/*Nyx video player*/
+#askForVideoFile-btnsdiv {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+#askForVideoFile-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#askForVideoFile-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#askForVideoFile-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#askForVideoFile-btn_save {
+    background-color: rgb(0, 145, 255);
+}
+#askForVideoFile-btn_save:hover {
+    background-color: rgb(54, 168, 255);
+}
+#askForVideoFile-btn_save:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#nyxvideoplayer_openFilePrompt {
+    background-color: rgba(75, 75, 75, 0.5);
+    margin-bottom: 10px;
+}
+
+#nyxvideoplayer_openFilePrompt:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#nyxvideoplayer_openFilePrompt:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#nyxvideoplayer_selectVid {
+    background-color: rgba(75, 75, 75, 0.5);
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    height: 25px;
+}
+
+#nyxvideoplayer_selectVid:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#nyxvideoplayer_selectVid:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+/*Nyx img player*/
+.content_nyximageviewer {
+    overflow-y: scroll;
+}
+
+#askForImageFile-btnsdiv {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+#askForImageFile-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#askForImageFile-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#askForImageFile-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#askForImageFile-btn_save {
+    background-color: rgb(0, 145, 255);
+}
+#askForImageFile-btn_save:hover {
+    background-color: rgb(54, 168, 255);
+}
+#askForImageFile-btn_save:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#nyximageviewer_openFilePrompt {
+    background-color: rgba(75, 75, 75, 0.5);
+    margin-bottom: 10px;
+}
+
+#nyximageviewer_openFilePrompt:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#nyximageviewer_openFilePrompt:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#nyximageviewer_selectVid {
+    background-color: rgba(75, 75, 75, 0.5);
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    height: 25px;
+}
+
+#nyximageviewer_selectVid:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#nyximageviewer_selectVid:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+/*nyxclient*/
+.content_nytclient {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+#nytclientiframe {
+    flex: 1;
+    border: none;
+    border-radius: 8px;
+    
+}
+
+#nytclientnavbar {
+    display: flex;
+    height: 29px;
+    align-items: center;
+    gap: 6px;
+    padding: 6px;
+}
+
+#nytclientnavbar input {
+    flex: 1;
+    min-width: 0;
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+}
+
+#nytclientnavbar input:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#nytclientnavbar input:active {
+    border: 2px solid white;
+}
+
+#nytclientnavbar button {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+}
+
+#nytclientnavbar button:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#nytclientnavbar button:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+/*ARCADE*/
+#arcadeiframe {
+    position: static;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/*Nyxpawstore*/
+.content_nyxpawstore {
+    width: 100%;
+    height: 100%;
+}
+
+#nyxpawstore_mainmenu {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 270px);
+    gap: 10px;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.nyxpawstore_app {
+    width: 270px;
+    height: 150px;
+    background-color: rgba(75, 75, 75, 0.5);
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nyxpawstore_imgtextrow {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.nyxpawstore_imgtextrow img {
+    width: 60px;
+    height: 60px;
+}
+
+.nyxpawstore_imgtextrow p {
+    font-size: 18px;
+    margin-left: auto;
+    padding-right: 16px;
+}
+
+.nyxpawstore_app button {
+    /*margin-top: auto;*/
+    width: 100%;
+    height: 40px;
+    background-color: transparent;
+    border: none;
+    color: white;
+    padding: 2px;
+    border-radius: 8px;
+}
+
+.nyxpawstore_app button:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+.horizontal_divider  {
+    height: 1px;
+    width: 90%;
+    background-color: gray;
+    margin: auto auto 0 auto;
+}
+
+
+#nyxpawstore_appicon {
+    width: 100px;
+    height: 100px;
+}
+
+#nyxpawstore_apptab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#nyxpawstore_apptabappntitle {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+#nyxpawstore_apptabtitlenbtn {
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#nyxpawstore_apptabtitlenbtn button {
+    width: 120px;
+    height: 25px;
+    background-color: rgba(75, 75, 75, 0.5);
+    border: none;
+    border-radius: 8px;
+    color: white;
+}
+
+#nyxpawstore_apptabtitlenbtn button:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#nyxpawstore_apptabtitlenbtn button:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#nyxpawstore_backbutton {
+    width: 100%;
+    height: 25px;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    margin-bottom: 30px;
+}
+
+#nyxpawstore_backbutton:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#nyxpawstore_backbutton:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+/*TASK MANAGER*/
+.content_taskmanager {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+}
+
+#taskmanager_topbar {
+    width: 100%;
+    height: 45px;
+    background-color: #00000086;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#taskmanager_topbar button {
+    margin-left: 10px;
+    background-color: #ffffff2c;
+    border-radius: 8px;
+    border: none;
+    height: 25px;
+    color: white;
+}
+
+#taskmanager_topbar button:hover {
+    background-color: #ffffff6d;
+}
+
+#taskmanager_topbar button:active {
+    background-color: #ffffff14;
+}
+
+.taskmanager_task {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    background-color: #00000086;
+    border-radius: 8px;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.taskmanager_task img {
+    width: 28px;
+    height: 28px;
+}
+
+/*venge*/
+#iframevenge {
+    position: static;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/*eventviewer*/
+.content_eventviewer {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+#eventviewer_leftsidebar {
+    width: 200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff18;
+    border-radius: 8px;
+    padding: 12px;
+    margin-right: auto;
+}
+
+#eventviewer_centerdiv {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+#eventviewer_rightsidebar {
+    width: 200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff18;
+    border-radius: 8px;
+    padding: 12px;
+    margin-left: auto;
+}
+
+.eventviewer_btn {
+    height: 28px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.13);
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
+
+.eventviewer_btn:hover {
+    background-color: rgba(255, 255, 255, 0.205);
+}
+
+.eventviewer_btn:active {
+    background-color: rgba(255, 255, 255, 0.324);
+}
+
+.eventviewer_event {
+    background-color: rgba(255, 255, 255, 0.265);
+    box-sizing: border-box;
+    width: 100%;
+    border-radius: 8px;
+    height: 28px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    padding-left: 10px;
+}
+
+.eventviewer_event:hover {
+    background-color: rgba(255, 255, 255, 0.205);
+}
+
+.eventviewer_text {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/*regedit*/
+.content_regedit {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+#regedit_leftsidebar {
+    width: 200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff18;
+    border-radius: 8px;
+    padding: 12px;
+    margin-right: auto;
+}
+
+.regedit_list {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.regedit_btn {
+    height: 28px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.13);
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
+
+.regedit_btn:hover {
+    background-color: rgba(255, 255, 255, 0.205);
+}
+
+.regedit_btn:active {
+    background-color: rgba(255, 255, 255, 0.324);
+}
+
+.regedit_el {
+    background-color: rgba(255, 255, 255, 0.265);
+    box-sizing: border-box;
+    width: 100%;
+    border-radius: 8px;
+    height: 28px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    padding-left: 10px;
+}
+
+.regedit_el:hover {
+    background-color: rgba(255, 255, 255, 0.205);
+}
+
+.regedit_el button {
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.226);
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
+
+.regedit_el button:active {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+COLORS
+Idle: rgba(75, 75, 75, 0.5);
+Hover: rgba(101, 101, 101, 0.66);
+Active: rgba(45, 45, 45, 0.5);
+
+Otros:*/
+#win_appcenter {
+    position: fixed;
+    z-index: 8028;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    background: rgba(0, 0, 0, 0.656);
+    backdrop-filter: blur(calc(20px * var(--blur-multiplier)));
+    color: white;
+    border-radius: 8px;
+
+    width: 700px !important;
+    height: 500px !important; /*Le pongo !important xq no debe seguir las reglas de las ventanas dinamicas xD*/
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+#appcentertopbtns {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    width: 90%;
+}
+
+#appcentertopbtns input {
+    border: none;
+    height: 40px;
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding: 0 16px;
+    border-radius: 9999px;
+
+    background-color: rgba(255, 255, 255, 0.196);
+    color: white;
+    font-size: 14px;
+}
+
+#appcenterclose {
+    border: none;
+    height: 40px;
+    width: 40px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding: 0 16px;
+    border-radius: 50%;
+
+    background-color: rgba(255, 255, 255, 0.196);
+    color: white;
+    font-size: 14px;
+}
+
+#appcenterclose:hover {
+    background-color: rgba(255, 255, 255, 0.336);
+}
+
+#appcenterapps {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    width: 90%;
+    overflow-y: scroll;
+}
+
+.appcenter_appdiv {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+
+    background-color: transparent;
+    border-radius: 8px;
+
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+}
+
+.appcenter_appdiv:hover {
+    background-color: rgba(0, 0, 0, 0.203);
+}
+
+.appcenter-appbtn {
+    border: none;
+    background: transparent;
+}
+
+/*.appcenter-appbtn:hover {
+    cursor: pointer;
+}*/
+
+.appcenter-img {
+    height: 60px;
+    width: 60px;
+}
+
+
+/*SISTEMA:*/
+.window.win-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    z-index: 8040 !important;
+}
+
+.window.win-fullscreen .grab {
+    display: none !important;
+}
+
+.window.win-fullscreen .resize-handle {
+    display: none !important;
+}
+
+/*Setup*/
+.content_syssetup {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background-image: url(system/systemApps/assets/background.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+    color: #000000;
+}
+
+.syssetup_screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    transition: transform 0.4s ease-in-out;
+    transform: translateX(100%);
+}
+
+.syssetup_screen.active {
+    transform: translateX(0);
+}
+
+.syssetup_screen.exit-left {
+    transform: translateX(-100%);
+}
+
+.syssetup_container {
+    background: rgba(255, 255, 255, 0.747);
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0px 0px 5px rgb(84, 84, 84);
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    text-align: center;
+}
+
+.syssetup_container div:not(.syssetup_divider) {
+    margin-top: 20px;
+}
+
+.syssetup_btn {
+    border-radius: 8px;
+    border: none;
+    background-color: rgb(0, 145, 255);
+    color: white;
+    height: 30px;
+    width: auto;
+    margin-top: 15px;
+}
+
+.syssetup_btn:hover {
+    background-color: rgb(54, 168, 255);
+}
+
+.syssetup_btn:active {
+    background-color: rgb(0, 126, 222);
+}
+
+.syssetup_img {
+    width: 170px;
+    height: 170px;
+}
+
+.syssetup_smallimg {
+    width: 45px;
+    height: 45px;
+}
+
+.syssetup_divider {
+    width: 95%;
+    height: 2px;
+    background-color: rgb(194, 194, 194);
+}
+
+/*
+
+#askForImageFile-btn_save {
+    background-color: rgb(0, 145, 255);
+}
+#askForImageFile-btn_save:hover {
+    background-color: rgb(54, 168, 255);
+}
+#askForImageFile-btn_save:active {
+    background-color: rgb(0, 126, 222);
+}
+    
+*/
