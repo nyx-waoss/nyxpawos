@@ -54,6 +54,15 @@ function checkLoadingTimeout() {
 }
 checkLoadingTimeout();
 
+const params = new URLSearchParams(window.location.search);
+const mode = params.get('mode');
+
+if (mode === 'safe') {
+    document.body.style.backgroundImage = "url('assets/bs.png')";
+    document.documentElement.style.setProperty('--blur-multiplier', 0);
+    document.getElementById('main-style').href = 'safe.css';
+}
+
 //vars
 /*const systemSound = {
     error: new Audio('../assets/error.mp3'),
@@ -63,6 +72,52 @@ checkLoadingTimeout();
 
 //let formato24h = false;
 //let appDownloaded = []
+
+if ('getBattery' in navigator) {
+    navigator.getBattery().then(battery => {
+        
+        sysUpdateBattery(battery);
+        
+        battery.addEventListener('levelchange', () => {
+            sysUpdateBattery(battery);
+        });
+        
+        battery.addEventListener('chargingchange', () => {
+            sysUpdateBattery(battery);
+        });
+    });
+} else {
+    sysUpdateBattery('error');
+    console.warn('Battery API not available');
+}
+
+
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const gainNode = audioContext.createGain();
+gainNode.connect(audioContext.destination);
+
+function connectMediaElements() {
+    const mediaElements = document.querySelectorAll('audio, video');
+    
+    mediaElements.forEach(element => {
+        if (!element.dataset.connected) {
+            const source = audioContext.createMediaElementSource(element);
+            source.connect(gainNode);
+            element.dataset.connected = 'true';
+        }
+    });
+}
+
+connectMediaElements();
+
+const observer = new MutationObserver(connectMediaElements);
+observer.observe(document.body, { childList: true, subtree: true });
+
+document.getElementById('sysaudio_el').addEventListener('input', function() {
+    const volume = this.value / 100;
+    gainNode.gain.value = volume;
+});
+
 let sysEmgMenuTimer = null;
 let sysUsers = localStorage.getItem('sysUsers');
 if (sysUsers) {
@@ -87,6 +142,8 @@ let StarredDates = new Set();
 
 
 
+
+
 /*VARIABLES GLOBALES */
 window.SysVar = window.SysVar || {};
 SysVar.devMode = false;
@@ -100,7 +157,7 @@ SysVar.systemSound = {
 };
 SysVar.showconsoleerr = document.getElementById('showerrorscheckbox');
 SysVar.blockShutdown = false;
-SysVar.lockedSession = false;
+SysVar.lockedSession = true;
 SysVar.disableJSload = false;
 SysVar.windowManager0 = true;
 SysVar.sessionAutoStart = [
@@ -110,6 +167,88 @@ SysVar.sessionAutoStart = [
     "programs",
     "session"
 ];
+SysVar.currenttheme = 'dark';//light
+SysVar.themes = {
+    dark: {
+        '--btn-primary-base': 'rgb(0, 145, 255)',
+        '--btn-primary-hover': 'rgb(54, 168, 255)',
+        '--btn-primary-active': 'rgb(0, 126, 222)',
+
+        '--sysbar-base': 'rgba(0, 0, 0, 0.288)',
+        '--sysbar-second': '#0000007b',
+        '--sysbar-third': '#181818ea',
+
+        '--btn-secondary-base': 'rgba(75, 75, 75, 0.5)',
+        '--btn-secondary-hover': 'rgba(101, 101, 101, 0.66)',
+        '--btn-secondary-active': 'rgba(45, 45, 45, 0.5)',
+
+        '--win-grab-bg': 'rgba(0, 0, 0, 0.288)',
+        '--win-grab-title': 'rgb(255, 255, 255)',
+
+        '--win-grab-btn-icon': 'rgb(255, 255, 255)',
+        '--win-grab-btn': 'rgba(0, 0, 0, 0.372)',
+        '--win-grab-btn-hover': 'rgba(107, 107, 107, 0.425)',
+
+        '--win-bg': 'rgba(0, 0, 0, 0.656)',
+        '--win-second': 'rgba(0, 0, 0, 0.438)',
+        '--win-text': 'rgb(255, 255, 255)',
+
+        '--uisetting-base': 'rgb(46, 46, 46)',
+        '--uisetting-hover': 'rgb(62, 62, 62)',
+        '--settings-divider': 'rgba(255, 255, 255, 0.212)',
+
+        '--uisetting-second': '#555',
+        '--uisetting-third': '#292929',
+
+        '--file-btn-base': 'rgba(75, 75, 75, 0.5)',
+        '--file-btn-hover': 'rgba(101, 101, 101, 0.66)',
+        '--file-btn-active': 'rgba(45, 45, 45, 0.5)',
+        '--file-btn-selected': 'rgba(0, 78, 138, 0.419)',
+        '--file-btn-border': 'rgba(0, 0, 0, 0.5)'
+    },
+    light: {
+        '--btn-primary-base': 'rgb(0, 145, 255)',
+        '--btn-primary-hover': 'rgb(54, 168, 255)',
+        '--btn-primary-active': 'rgb(0, 126, 222)',
+
+        '--sysbar-base': 'rgba(255, 255, 255, 0.288)',
+        '--sysbar-second': '#ffffff7b',
+        '--sysbar-third': '#ffffffea',
+
+        '--btn-secondary-base': 'rgba(255, 255, 255, 0.5)',
+        '--btn-secondary-hover': 'rgba(255, 255, 255, 0.66)',
+        '--btn-secondary-active': 'rgba(255, 255, 255, 0.5)',
+
+        '--win-grab-bg': 'rgba(255, 255, 255, 0.288)',
+        '--win-grab-title': 'rgb(0, 0, 0)',
+
+        '--win-grab-btn-icon': 'rgb(0, 0, 0)',
+        '--win-grab-btn': 'rgba(255, 255, 255, 0.372)',
+        '--win-grab-btn-hover': 'rgba(0, 0, 0, 0.425)',
+
+        '--win-bg': 'rgba(255, 255, 255, 0.656)',
+        '--win-second': 'rgba(255, 255, 255, 0.438)',
+        '--win-text': 'rgb(0, 0, 0)',
+
+        '--uisetting-base': 'rgb(226, 226, 226)',
+        '--uisetting-hover': 'rgb(203, 203, 203)',
+        '--settings-divider': 'rgba(50, 50, 50, 0.212)',
+
+        '--uisetting-second': '#b4b4b4',
+        '--uisetting-third': '#9c9c9c',
+
+        '--file-btn-base': 'rgba(0, 0, 0, 0.2)',
+        '--file-btn-hover': 'rgba(0, 0, 0, 0.35)',
+        '--file-btn-active': 'rgba(0, 0, 0, 0.5)',
+        '--file-btn-selected': 'rgba(0, 78, 138, 0.419)',
+        '--file-btn-border': 'rgba(0, 0, 0, 0.5)'
+    }
+};
+SysVar.currentuser = {
+    user: 'system',
+    dName: 'System',
+    permissions: 'system'
+};
 
 
 
@@ -117,19 +256,28 @@ SysVar.sessionAutoStart = [
 /*VARIABLES GLOBALES END */
 //reestablecer variables desde localstorage:
 const usedBefore = localStorage.getItem('used-before');
-if (usedBefore) {
-    loadDataReg();
+if (mode !== 'safe') {
+    if (usedBefore) {
+        loadDataReg();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-function saveDataReg() {
+async function saveDataReg() {
+    if (mode === 'safe') {
+        const confirmSaveRege = await showMsgBox("Datos","Quieres guardar los cambios?", "Guardar", "Descartar");
+        if (!confirmSaveRege) {
+            return;
+        }
+    }
     localStorage.setItem('sessionAutoStart', JSON.stringify(SysVar.sessionAutoStart));
     const data = {
         format24h: SysVar.format24h,
-        lockedSession: SysVar.lockedSession,
+        //lockedSession: SysVar.lockedSession,
         windowManager0: SysVar.windowManager0,
         disableJSload: SysVar.disableJSload,
         devMode: SysVar.devMode,
+        currenttheme: SysVar.currenttheme
     };
     localStorage.setItem('SysRegConfig', JSON.stringify(data));
 }
@@ -141,10 +289,11 @@ function loadDataReg() {
         const data = JSON.parse(saved);
 
         SysVar.format24h = data.format24h;
-        SysVar.lockedSession = data.lockedSession;
+        //SysVar.lockedSession = data.lockedSession;
         SysVar.windowManager0 = data.windowManager0;
         SysVar.disableJSload = data.disableJSload;
         SysVar.devMode = data.devMode;
+        SysVar.currenttheme = data.currenttheme;
     }
 }
 
@@ -444,13 +593,36 @@ const loginscrLoginText = document.getElementById('loginscr_logintext');
 const loginscr = document.getElementById('loginscr');
 let loginin_user = '';
 
-async function sysshutdown() {
+async function sysshutdown(askConfirm = true) {
     try {
         if (SysVar.blockShutdown) {
             showAlertBox('❌ Error', 'function sysshutdown() is blocked by your administrator');
         } else {
-            const confirmSysShutdown = await showMsgBox("⚠️ Advertencia!","Quieres apagar el sistema? Asegurate de guardar tus datos", "Apagar", "Cancelar");
-            if (confirmSysShutdown) {
+            if (askConfirm) {
+                const confirmSysShutdown = await showMsgBox("⚠️ Advertencia!","Quieres apagar el sistema? Asegurate de guardar tus datos", "Apagar", "Cancelar");
+                if (confirmSysShutdown) {
+
+                    await saveDataReg();
+
+                    localStorage.setItem('sys_status', 'shutdown');
+                    hideTopBar();
+                    hideAppBar();
+                    sysComQuitTasks();
+                    setTimeout(() => {
+                        document.body.style.backgroundImage = "url('assets/bs.png')";
+                        setTimeout(() => {
+                            document.body.classList.add("hidden");
+                            const sysScripts = document.querySelectorAll('script');
+                            sysScripts.forEach(script => script.parentNode.removeChild(script));
+                            localStorage.setItem('sys_status', 'off');
+                            window.close();
+                        }, 1100);
+                    }, 900);
+                    
+                }
+            } else {
+                await saveDataReg();
+
                 localStorage.setItem('sys_status', 'shutdown');
                 hideTopBar();
                 hideAppBar();
@@ -462,11 +634,9 @@ async function sysshutdown() {
                         const sysScripts = document.querySelectorAll('script');
                         sysScripts.forEach(script => script.parentNode.removeChild(script));
                         localStorage.setItem('sys_status', 'off');
-                        saveDataReg();
                         window.close();
                     }, 1100);
                 }, 900);
-                
             }
         }
     }  catch (error) {
@@ -475,18 +645,32 @@ async function sysshutdown() {
     }
 }
 
-async function sysrestart() {
+async function sysrestart(askConfirm = true) {
     try {
-        const confirmSysRestart = await showMsgBox("⚠️ Advertencia!","Quieres reiniciar el sistema? Asegurate de guardar tus datos", "Reiniciar", "Cancelar");
-        if (confirmSysRestart) {
+        if (askConfirm) {
+            const confirmSysRestart = await showMsgBox("⚠️ Advertencia!","Quieres reiniciar el sistema? Asegurate de guardar tus datos", "Reiniciar", "Cancelar");
+            if (confirmSysRestart) {
+                await saveDataReg();
+
+                hideTopBar();
+                hideAppBar();
+                sysComQuitTasks();
+                localStorage.setItem('sys_status', 'off');
+                setTimeout(() => {
+                    
+                    window.location.href = "index.html";
+                }, 2200);   
+            }
+        } else {
+            await saveDataReg();
+
             hideTopBar();
             hideAppBar();
             sysComQuitTasks();
             localStorage.setItem('sys_status', 'off');
-            setTimeout(() => {
-                saveDataReg();
+            setTimeout(() => {                
                 window.location.href = "index.html";
-            }, 2200);   
+            }, 2200);  
         }
     } catch (error) {
         console.error('Failed to reboot system: ', error);
@@ -825,6 +1009,28 @@ function nekiriShowAnswer() {
     userInput.value = '';
 }
 
+let audioDPOpen = false;
+const audioButton = document.getElementById('topbar_audio');
+const audioDropdown = document.getElementById('audio-dropdown');
+
+audioButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    if (audioDPOpen) {
+        audioDropdown.classList.add('hidden');
+        audioDPOpen = false;
+        return;
+    }
+
+    const rect = audioButton.getBoundingClientRect();
+
+    audioDropdown.style.right = (window.innerWidth - rect.right) + "px";
+    audioDropdown.style.top = rect.bottom + "px";
+    audioDropdown.classList.remove('hidden');
+
+    audioDPOpen = true;
+});
+
 
 
 
@@ -839,7 +1045,7 @@ document.addEventListener('keydown', e => {
             sysEmgMenuTimer = setTimeout(() => {
                 sysEmgMenu.classList.remove('hidden');
                 sysEmgMenu.style.zIndex = topZ + 10;
-            }, 1000);
+            }, 10);
         }
     }
 
@@ -882,14 +1088,16 @@ function sysPlaySound(soundname) {
 
 function sysExecApp(appName, options = {}) {
     if (typeof AppManager === 'undefined') {
-        console.error('AppManager not avilable');
+        console.error('AppManager not available');
         return;
     }
 
-    if (SysVar.lockedSession) {
-        console.error('Session locked');
-        showAlertBox('Error', 'The current session is locked by your administrator', {as_win:true,icon:'❌'});
-        return;
+    if (appName !== 'syssetup') {
+        if (SysVar.lockedSession) {
+            console.error('Session locked');
+            showAlertBox('Error', 'The current session is locked by your administrator', {as_win:true,icon:'❌'});
+            return;
+        }
     }
 
     if (appName === 'appcenter') {
@@ -987,8 +1195,9 @@ async function sysShowRunDialog() {
                 }
             }
         } else if (command === '--terminal') {
+            const consoleCom = args.join(' ');
             sysExecApp('terminal');
-            setTimeout(() => runCommand(args[0]), 90)
+            setTimeout(() => runCommand(consoleCom), 90);
         } else if (command === '--devmode') {
             if (SysVar.devMode) {
                 if (args[0] === '--as$npss') {
@@ -1052,6 +1261,48 @@ async function formatSystem() {
         setTimeout(() => {
             window.close();
         }, 2000);
+    }
+}
+
+function getBTSVGRoute(level) {
+    if (level >= 80) {
+        return 'assets/system/bt-full.svg';
+    } else if (level >= 60) {
+        return 'assets/system/bt-semifull.svg';
+    } else if (level >= 40) {
+        return 'assets/system/bt-half.svg';
+    } else if (level >= 20) {
+        return 'assets/system/bt-low.svg';
+    } else {
+        return 'assets/system/bt-none.svg';
+    }
+}
+
+function sysUpdateBattery(battery) {
+    if (battery === 'error') {
+        const btIcon = document.getElementById('topbar_battery');
+        btIcon.src = 'assets/system/error.svg';
+        btIcon.classList.remove('battery-charging');
+        btIcon.classList.remove('battery-empty');
+    } else {
+        const level = Math.round(battery.level * 100);
+        const charging = battery.charging;
+
+        const btIcon = document.getElementById('topbar_battery');
+
+        btIcon.src = getBTSVGRoute(level);
+
+        if (level < 10) {
+            btIcon.classList.add('battery-empty');
+        } else {
+            btIcon.classList.remove('battery-empty');
+        }
+
+        if (charging) {
+            btIcon.classList.add('battery-charging');
+        } else {
+            btIcon.classList.remove('battery-charging');
+        }
     }
 }
 
@@ -1134,5 +1385,66 @@ console.error = function(...args) {
     }
 }
 
+window.addEventListener('message', (event) => {
+    
+    const { action, windowId, enable } = event.data;
+    
+    if (action === 'fullscreen') {
+        const appName = windowId.replace('win_', '').replace('config', 'settings');
+        sysFullscreenApp(appName, enable);
+    } else if (action === 'maximize') {
+        maximizeWindow(windowId);
+    } else if (action === 'restore') {
+        restoreWindow(windowId);
+    }
+});
+
+function maximizeWindow(windowId) {
+    const win = document.getElementById(windowId);
+    if (!win || !SysVar.windowManager0) return;
+    
+    if (win.classList.contains('win-max')) return;
+    
+    win.dataset.savedWidth = win.style.width || window.getComputedStyle(win).width;
+    win.dataset.savedHeight = win.style.height || window.getComputedStyle(win).height;
+    win.dataset.savedLeft = win.style.left || window.getComputedStyle(win).left;
+    win.dataset.savedTop = win.style.top || window.getComputedStyle(win).top;
+    
+    win.classList.add('win-max');
+    win.style.width = '';
+    win.style.height = '';
+    win.style.left = '';
+    win.style.top = '';
+    
+    const maximizeBtn = win.querySelector('.grab-btn:not(:last-child)');
+    if (maximizeBtn && maximizeBtn.textContent === '□') {
+        maximizeBtn.textContent = '❐';
+    }
+    
+    hideTopBar();
+}
+
+function restoreWindow(windowId) {
+    const win = document.getElementById(windowId);
+    if (!win) return;
+    
+    win.classList.remove('win-max');
+    win.classList.remove('win-fullscreen');
+    
+    if (win.dataset.savedWidth) {
+        win.style.width = win.dataset.savedWidth;
+        win.style.height = win.dataset.savedHeight;
+        win.style.left = win.dataset.savedLeft;
+        win.style.top = win.dataset.savedTop;
+    }
+    
+    const maximizeBtn = win.querySelector('.grab-btn:not(:last-child)');
+    if (maximizeBtn && maximizeBtn.textContent === '❐') {
+        maximizeBtn.textContent = '□';
+    }
+    
+    showTopBar();
+    showAppBar();
+}
 
 window.scriptReady('sys');

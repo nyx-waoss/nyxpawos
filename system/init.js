@@ -1,6 +1,9 @@
 console.log("System startup initiated!");
 console.log("Current: init.js");
 
+const params2 = new URLSearchParams(window.location.search);
+const mode2 = params2.get('mode');
+
 let sysScriptIsOK = false;
 
 function initializeLoginScreen() {
@@ -125,11 +128,21 @@ function systemIntegrityCheck() {
 
         const usedBefore = localStorage.getItem('used-before');
         if (usedBefore) {
-            loadDataReg();
-            if (!SysVar.sessionAutoStart.includes('UI')) {
-                sysBsod('X-SUI-INR','System check failed! SystemUI initialization failed, UI Service not ready. System cannot continue.');
-                return;
+            if (mode2 !== 'safe') {
+                loadDataReg();
+                if (!SysVar.sessionAutoStart.includes('UI')) {
+                    throw new Error(`System check failed! SystemUI initialization failed, UI Service not ready.`);
+                    
+                }
             }
+        }
+
+
+        if (!window.fs.isFolder('/system/users/root')) {
+            throw new Error(`System user not found`);
+        }
+        if (!window.fs.isFolder('/system/temp')) {
+            throw new Error(`Could not extract temporal files: 'system/temp' not found`);
         }
 
         //esta variable se establece hasta el final, de esta forma en caso de que algo en el script falle, la variable no se inicializa y eso significa que hay algun error:
@@ -138,6 +151,22 @@ function systemIntegrityCheck() {
     } catch (e) {
         sysBsod('X-DOM-CRT','System check failed! SystemUI initialization failed, DOM elements missing: ' + e.message + ' System cannot continue.');
     }
+}
+
+function initSysTheme() {
+    const theme = SysVar.themes[SysVar.currenttheme];
+
+    if (!theme) {
+        console.error('Theme not found!');
+        SysVar.currenttheme = 'dark';
+        return;
+    }
+
+    Object.entries(theme).forEach(([variable, value]) => {
+        document.documentElement.style.setProperty(variable, value);
+    });
+
+    console.log('Theme set succesfully');
 }
 
 
@@ -163,9 +192,9 @@ document.getElementById('startupscr').classList.remove('hidden');
 document.getElementById('startupscrimg').classList.remove('hidden');
 document.getElementById('startupscrtext').classList.add('hidden');
 
-systemIntegrityCheck()
-
+initSysTheme();
 setupCloseButtons();
+systemIntegrityCheck()
 
 
 

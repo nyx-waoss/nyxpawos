@@ -1,0 +1,68 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label,
+span,
+p,
+a {
+    font-family: 'Consolas', monospace;
+}
+
+* {
+    cursor: none;
+}
+
+body {
+    pointer-events: none;
+    background-color: black;
+    font-family: 'Consolas', monospace;
+    color: white;
+    
+}
+
+.hidden {
+    display: none !important;
+}
+
+#toptext {
+    white-space: pre-line;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    max-width: 300px;
+}
+
+.item {
+    padding: 4px;
+    margin: 5px 0;
+    background-color: black;
+    color: white;
+}
+
+.item.selected {
+    background-color: rgb(255, 255, 255);
+    color: black;
+}
+
+.title {
+    color: black;
+    background-color: white;
+    margin: 5px 0;
+    padding: 4px;
+    text-align: center;
+}
+
+.title.bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
+    text-align: left;
+}

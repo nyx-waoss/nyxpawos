@@ -14,7 +14,11 @@ const saveNoteClose = document.getElementById('btn_savenote');
 notesSaveBtn.addEventListener('click', () => {
     saveNoteWindow.style.width = '400px';
     saveNoteWindow.style.height = '210px';
+    saveNoteWindow.style.removeProperty('opacity');
     saveNoteWindow.classList.remove('hidden');
+    setTimeout(() => {
+        saveNoteWindow.classList.add('window_anim_open');
+    }, 10);
     saveNoteWindow.style.zIndex = ++topZ;
     saveNoteInput.value = '';
     saveNoteInput.focus();
@@ -34,18 +38,30 @@ saveNoteBtnConfirm.addEventListener('click', () => {
     
     if (success) {
         console.log(`Nota saved as: ${finalFilename}`);
-        saveNoteWindow.classList.add('hidden');
+        saveNoteWindow.classList.remove('window_anim_open');
+        setTimeout(() => {
+            saveNoteWindow.classList.add('hidden');
+            saveNoteWindow.style.removeProperty('opacity');
+        }, 200);
     } else {
         showAlertBox('❌ Error','Error al guardar la nota: Ya existe un archivo con el mismo nombre o no se pudo generar');
     }
 });
 
 saveNoteBtnCancel.addEventListener('click', () => {
-    saveNoteWindow.classList.add('hidden');
+    saveNoteWindow.classList.remove('window_anim_open');
+    setTimeout(() => {
+        saveNoteWindow.classList.add('hidden');
+        saveNoteWindow.style.removeProperty('opacity');
+    }, 200);
 });
 
 saveNoteClose.addEventListener('click', () => {
-    saveNoteWindow.classList.add('hidden');
+    saveNoteWindow.classList.remove('window_anim_open');
+    setTimeout(() => {
+        saveNoteWindow.classList.add('hidden');
+        saveNoteWindow.style.removeProperty('opacity');
+    }, 200);
 });
 
 // Presionar Enter en el input para guardar rapido jsjsj

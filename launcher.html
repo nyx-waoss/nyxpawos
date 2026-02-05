@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NyxPawOS</title>
     <link rel="stylesheet" href="launcher.css">
+    <link rel="icon" type="image/x-icon" href="../assets/logow.webp">
 </head>
 <body>
     <div class="panels_div">
@@ -45,6 +46,10 @@
                     <p>Consola de desarrollador</p>
                     <input type="checkbox">
                 </div>
+                <div style="display: flex; flex-direction: row; gap: 10px;">
+                    <p>Modo de recuperacion</p>
+                    <input type="checkbox" id="safemode">
+                </div>
                 <div class="divider"></div>
                 <p>NyxPawOS Launcher ✨ v1.0 2026</p>
                 
@@ -67,15 +72,69 @@
         <button onclick="launchsys()" id="button">Iniciar!</button>
         <button onclick="opensettings()" id="settingsbtn">Configuracion</button>
     </div>
+    
+    <div id="stopWindow" class="hidden">
+        <h2>Quieres detener NyxPawOS?</h2>
+        <p>Usa esto solo como ultimo recurso, al continuar, forzaras el apagado del sistema y tus datos no se guardaran! Solo uses esta funcion en situaciones de emergencia!</p>
+        <div id="btns_div">
+            <button id="stop_btn" class="winbtn" onclick="stopSys()">Detener</button>
+            <button id="cancel_btn" class="winbtn" onclick="cancelStop()">Cancelar</button>
+        </div>
+    </div>
 
     <script>
+        const w = screen.availWidth;
+        const h = screen.availHeight;
+        let sysWindow = null;
+
+        function stopSys() {
+            try {
+                sysWindow.close();
+                const win = document.getElementById('stopWindow');
+                win.classList.add('hidden');
+            } catch(error) {
+                const win = document.getElementById('stopWindow');
+                win.classList.add('hidden');
+                console.error('Error: ' + error.message);
+            }
+        }
+
+        function cancelStop() {
+            const win = document.getElementById('stopWindow');
+            win.classList.add('hidden');
+        }
+
+        function sureToStop() {
+            const win = document.getElementById('stopWindow');
+            win.classList.remove('hidden');
+        }
+
+        let state = 'idle';
         const launchBtn = document.getElementById('button');
         function launchsys() {
-            launchBtn.textContent = 'Cargando...'
-            setTimeout(() => {
-                window.open("index.html", "nyxpaw_os", "width=1280,height=720")
-                launchBtn.textContent = 'Iniciar!'
-            }, 300);
+            if (state === 'idle') {
+                launchBtn.textContent = 'Cargando...'
+                state = 'wait';
+                setTimeout(() => {
+                    if (document.getElementById('safemode').checked) {
+                        sysWindow = window.open("safe/safeboot.html", "nyxpaw_os", `width=${w},height=${h},left=0,top=0`);
+                    } else {
+                        sysWindow = window.open("index.html", "nyxpaw_os", `width=${w},height=${h},left=0,top=0`);
+                    }
+                    launchBtn.textContent = 'Detener';
+                    state = 'running';
+
+                    const checkWin = setInterval(() => {
+                        if (sysWindow.closed) {
+                            launchBtn.textContent = 'Iniciar!';
+                            state = 'idle';
+                            clearInterval(checkWin);
+                        }
+                    }, 3000);
+                }, 300);
+            } else if (state === 'running') {
+                sureToStop();
+            }
         }
 
         const infoDiv = document.getElementById('info_div');

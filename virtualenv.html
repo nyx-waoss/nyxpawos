@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="virtualenv.css">
+    <title>Virtual Environments</title>
+</head>
+<body>
+    <div id="contextMenu" class="hidden">
+        <button class="contextBtn" onclick="runMachine(machineInContext, machineInContextOS); contextMenu.classList.add('hidden');">▶️ Ejecutar</button>
+        <button class="contextBtn" onclick="delVM(machineInContext); contextMenu.classList.add('hidden');">🗑️ Borrar</button>
+        <div class="contextDivider"></div>
+        <button class="contextBtn" onclick="modMachineFromContext(machineInContext, machineInContextOS); contextMenu.classList.add('hidden');">✏️ Modificar</button>
+        <button class="contextBtn" onclick="configMachineFromContext(); contextMenu.classList.add('hidden');">⚙️ Configuracion</button>
+        <button class="contextBtn" onclick="getinfMachineFromContext(machineInContext, machineInContextOS); contextMenu.classList.add('hidden');">ℹ️ Informacion</button>
+    </div>
+
+    <div id="toolbar" class="hidden">
+        <button onclick="closeMachine()">
+            <img src="assets/virtualenv/quit.png" alt="QUIT">
+        </button>
+        <button onclick="closeMachine()">
+            <img src="assets/virtualenv/power.png" alt="POWER">
+        </button>
+        <button onclick="toggleFullscreen()">
+            <img src="assets/virtualenv/full.png" alt="FULL">
+        </button>
+    </div>
+
+    <iframe src="virtualenv_loading.html" class="hidden" id="main_iframe"></iframe>
+
+    <div id="leftsidebar">
+        <div id="options">
+            <button class="opts_btn" onclick="btnConfig()">
+                <img src="assets/virtualenv/settings.png" alt="Icon">
+                <p>Configuracion</p>
+            </button>
+            <button class="opts_btn" onclick="btnNewVM()">
+                <img src="assets/virtualenv/new.png" alt="Icon">
+                <p>Nuevo</p>
+            </button>
+        </div>
+        <div id="itemsList"></div>
+    </div>
+
+    <div id="workspace">
+        <p id="selectText">Selecciona una maquina virtual o crea una nueva</p>
+        <div id="newVMOptions" class="hidden">
+            <p style="margin-bottom: 60px;">Nueva maquina virtual</p>
+            <div class="contElMenu">
+                <p>Nombre</p>
+                <input type="text" id="newVMName" autocomplete="off">
+            </div>
+            <div class="contElMenu">
+                <p>Sistema Operativo</p>
+                <select id="dropdownOS">
+                    <option value="stylesel">=== Microsoft ===</option>
+                    <option value="win98">Microsoft Windows 98</option>
+                    <option value="winxp">Microsoft Windows XP</option>
+                    <option value="win10">Microsoft Windows 10</option>
+                    <option value="win11">Microsoft Windows 11</option>
+                    <option value="win12">Microsoft Windows 12 (Concept)</option>
+
+                    <option value="stylesel">=== Linux ===</option>
+                    <option value="ubuntu" selected>Linux Ubuntu</option>
+
+                    <option value="stylesel">=== MacOS ===</option>
+                    <option value="macos">MacOS X</option>
+
+                    <option value="stylesel">=== Other ===</option>
+                    <option value="instictos">InstictOS</option>
+                    <option value="hyggshi">Hyggshi Web OS Edition</option>
+                    <option value="other">Custom...</option>
+                </select>
+            </div>
+            <div class="contElMenu hidden" id="otherOSInput">
+                <p>Ruta del OS (.html o https://):</p>
+                <input type="text" id="newVMRoute" autocomplete="off">
+            </div>
+            <button id="createVMbtn" class="confirmBtn" onclick="addNewVM()">Crear</button>
+        </div>
+        <div id="VMInfo" class="hidden">
+            <p style="margin-bottom: 60px;">Informacion</p>
+            <div class="contElMenu">
+                <p>Nombre:</p>
+                <p id="InfoDiv_name_text" style="font-weight: bold;"><strong>Cargando...</strong></p>
+            </div>
+            <div class="contElMenu">
+                <p>Sistema Operativo:</p>
+                <p id="InfoDiv_OS_text" style="font-weight: bold;"><strong>Cargando...</strong></p>
+            </div>
+            <button id="closeinfoVMbtn" onclick="goToMainScrWS()">Cerrar</button>
+        </div>
+        <div id="VMmodName" class="hidden">
+            <p style="margin-bottom: 60px;">Nueva maquina virtual</p>
+            <div class="contElMenu">
+                <p>Nombre</p>
+                <input type="text" id="readyVMNewName" autocomplete="off">
+            </div>
+            <button id="renameVMName" class="confirmBtn" onclick="renameMachine(selectedMachineToMod, document.getElementById('readyVMNewName').value); goToMainScrWS();">Guardar</button>
+        </div>
+        <div id="VMsysConfig" class="hidden">
+            <p style="margin-bottom: 60px;">Configuracion de la VM</p>
+
+            <div class="contElMenuVertical">
+                <div class="contElMenu">
+                    <p>Almacenamiento (en GB)</p>
+                    <input type="text" id="newStorageSizeText" autocomplete="off">
+                    <p id="newStorageBothConv">MB: 0000, GB: 0000</p>
+                </div>
+                <input type="range" min="2" max="2048" value="52" id="newStorageSizeRange" class="bottomRange">
+            </div>
+            <div class="contElMenuVertical">
+                <div class="contElMenu">
+                    <p>RAM (en GB)</p>
+                    <input type="text" id="newRamSizeText" autocomplete="off">
+                    <p id="newRAMBothConv">MB: 0000, GB: 0000</p>
+                </div>
+                <input type="range" min="0.016" max="64" value="8" id="newRamSizeRange" class="bottomRange">
+            </div>
+            <div class="contElMenuVertical">
+                <div class="contElMenu">
+                    <p>Nucleos de la CPU</p>
+                    <input type="text" id="newCPUCoresText" autocomplete="off">
+                </div>
+                <input type="range" min="1" max="16" value="2" id="newCPUCoresRange" class="bottomRange">
+            </div>
+            <div class="contElMenuVertical">
+                <div class="contElMenu">
+                    <p>VRAM (en MB)</p>
+                    <input type="text" id="newVramSizeText" autocomplete="off">
+                </div>
+                <input type="range" min="16" max="1024" value="128" id="newVramSizeRange" class="bottomRange">
+            </div>
+            <div class="contElMenu">
+                <p>Tipo de disco</p>
+                <select id="dropdownNewDisk">
+                    <option value="HDD">HDD (Lento)</option>
+                    <option value="SDD" selected>SSD (Rapido)</option>
+                    <option value="NVMe">NVMe (El mejor)</option>
+                </select>
+            </div>
+            <div class="contElMenu">
+                <p>Adaptador de Red</p>
+                <select id="dropdownNewNet">
+                    <option value="NAT">NAT</option>
+                    <option value="BRI" selected>Bridged</option>
+                    <option value="HOST">Solo Host</option>
+                    <option value="NON">Sin red</option>
+                </select>
+            </div>
+            <div class="contElMenu">
+                <p>Arranque</p>
+                <select id="dropdownNewStartup">
+                    <option value="uefi" selected>UEFI</option>
+                    <option value="bios">Legacy BIOS</option>
+                </select>
+            </div>
+
+            <button id="setVMConfig" class="confirmBtn" onclick="goToMainScrWS()">Guardar</button>
+        </div>
+    </div>
+
+    
+    <script src="virtualenv.js"></script>
+</body>
+</html>

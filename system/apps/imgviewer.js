@@ -25,7 +25,11 @@ imageViewerAskBtnConfirm.addEventListener('click', function() {
         imageViewerCurrentURL = imageViewerURLVid;
 
         imageViewerSelectedFile = null;
-        imageViewerWindowSelect.classList.add('hidden');
+        imageViewerWindowSelect.classList.remove('window_anim_open');
+        setTimeout(() => {
+            imageViewerWindowSelect.classList.add('hidden');
+            imageViewerWindowSelect.style.removeProperty('opacity');
+        }, 200);
     }
 });
 
@@ -39,11 +43,19 @@ imageViewerPlayer.addEventListener('ended', () => {
 imageViewerAskBtnCancel.addEventListener('click', () => {
     imageViewerSelectedFile = null;
     imageViewerFileSelector.value = '';
-    imageViewerWindowSelect.classList.add('hidden');
+    imageViewerWindowSelect.classList.remove('window_anim_open');
+    setTimeout(() => {
+        imageViewerWindowSelect.classList.add('hidden');
+        imageViewerWindowSelect.style.removeProperty('opacity');
+    }, 200);
 });
 
 imageViewerAskClose.addEventListener('click', () => {
-    imageViewerWindowSelect.classList.add('hidden');
+    imageViewerWindowSelect.classList.remove('window_anim_open');
+    setTimeout(() => {
+        imageViewerWindowSelect.classList.add('hidden');
+        imageViewerWindowSelect.style.removeProperty('opacity');
+    }, 200);
 });
 
 window.scriptReady('imgviewer');

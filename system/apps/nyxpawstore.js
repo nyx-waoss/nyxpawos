@@ -16,13 +16,15 @@ let nyxpawstoreTranslatedApp = nyxpawstoreCurrentApp;
 const nyxpawstoreAppTranslation = {
     "clima":"weather",
     "arcade":"arcade",
-    "venge":"vengegame"
+    "venge":"vengegame",
+    "virtualenvs":"virtualenv"
 }
 
 const nyxpawstoreAppsInfo = {
     Arcade: "Estas aburrido? Pues esto ya no sera un problema, porque con NyxPaw Arcade podras difrutar de juegos HTML compatibles con NyxPawOS!! NyxPaw Arcade utiliza servicios externos, pero los juegos disponibles son verificados para asegurar una buena experiencia de usuario, con una interfaz simple y amigable",
     Clima: "Mira el clima y la temperatura local :D",
-    Venge: "Venge is an objective-based first-person shooter. Every match is an intense unique experience with the ability cards that you can get in the game."
+    Venge: "Venge is an objective-based first-person shooter. Every match is an intense unique experience with the ability cards that you can get in the game.",
+    VirtualEnvs: "Emulate and Simulate computer with this program, create virtual machines based on javascript and add custom machines with a web view."
 };
 
 const nyxpawstoreMainMenu = document.getElementById('nyxpawstore_mainmenu');
@@ -59,9 +61,19 @@ function nyxPawStoreBackToMenu() {
 }
 
 function nyxPawStoreGetApp() {
+    nyxpawstoreGetBtn.textContent = "Verificando...";
     nyxpawstoreTranslatedApp = nyxpawstoreAppTranslation[nyxpawstoreCurrentApp.toLowerCase()] || nyxpawstoreCurrentApp.toLowerCase();
     nyxpawstoreAppID = "appcenter-" + nyxpawstoreTranslatedApp;
     console.log(nyxpawstoreAppID);
+
+    const appElement = document.getElementById(nyxpawstoreAppID);
+    
+    if (!appElement) {
+        console.error('Program to download not found: '+nyxpawstoreAppID);
+        showAlertBox('❌ Error', 'App no encontrada');
+        nyxpawstoreGetBtn.textContent = "Error [X]";
+        return;
+    }
 
     if (SysVar.appDownloaded.includes(nyxpawstoreCurrentApp)) {
         console.log('Delete');
@@ -73,7 +85,7 @@ function nyxPawStoreGetApp() {
         document.getElementById(nyxpawstoreAppID).classList.remove('hidden');
     }
 
-    nyxpawstoreGetBtn.textContent = "Verificando...";
+    
 
     setTimeout(() => {
         if (SysVar.appDownloaded.includes(nyxpawstoreCurrentApp)) {

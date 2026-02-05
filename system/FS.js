@@ -407,6 +407,31 @@ function getFileIcon(fileName) {
 
     return iconMap[extenc] || '📄';
 }
+    
+function fileExist(path) {
+    const fs = getFileSystem();
+    const normalizedPath = normalizePath(path);
+    return fs[normalizedPath] !== undefined;
+}
+
+function fileExistInPath(name, path = currentDirectory) {
+    const fs = getFileSystem();
+    const normalizedPath = normalizePath(path);
+    const fullPath = normalizedPath === '/' ? `/${name}` : `${normalizedPath}/${name}`;
+    return fs[fullPath] !== undefined;
+}
+
+function isFile(path) {
+    const fs = getFileSystem();
+    const normalizedPath = normalizePath(path);
+    return fs[normalizedPath] && fs[normalizedPath].type === 'file';
+}
+
+function isFolder(path) {
+    const fs = getFileSystem();
+    const normalizedPath = normalizePath(path);
+    return fs[normalizedPath] && fs[normalizedPath].type === 'folder';
+}
 
 
 window.createFolder = createFolder;
@@ -419,6 +444,10 @@ window.updateFileList = updateFileList;
 window.getCurrentDirectory = getCurrentDirectory;
 window.getSelectedItem = getSelectedItem;
 window.getSelectedItemType = getSelectedItemType;
+window.fileExist = fileExist;
+window.fileExistInPath = fileExistInPath;
+window.isFile = isFile;
+window.isFolder = isFolder;
 
 window.fs = {
   createFolder: createFolder,
@@ -430,7 +459,11 @@ window.fs = {
   updateFileList: updateFileList,
   getCurrentDirectory: getCurrentDirectory,
   getSelectedItem: getSelectedItem,
-  getSelectedItemType: getSelectedItemType
+  getSelectedItemType: getSelectedItemType,
+  fileExist: fileExist,
+  fileExistInPath: fileExistInPath,
+  isFile: isFile,
+  isFolder: isFolder
 };
 
 console.log("window.fs working:", window.fs);

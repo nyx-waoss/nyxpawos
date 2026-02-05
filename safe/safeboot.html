@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="safeboot.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../assets/logow.webp">
+    <title>Safeboot</title>
+</head>
+<body>
+    <p class="title" id="title">Instict OS Recovery Menu</p>
+    <p id="toptext">Instict OS Failed to start. A recient hardware or software change might be the cause.<br>Select one of the recovery options below.</p>
+    <ul class="menu" id="mainMenu">
+        <li class="item" data-value="boot">Startup normally</li>
+        <li class="item" data-value="safe">Enter Safe Mode</li>
+        <li class="item" data-value="format">Format System</li>
+        <li class="item" data-value="advanced">Advanced options...</li>
+    </ul>
+
+    <ul class="menu hidden" id="advancedMenu">
+        <li class="item selected" data-value="back">← Back to main menu</li>
+        <li class="item" data-value="formatbutfiles">Reinstall system files (keep your files)</li>
+        <li class="item" data-value="diag">Run system diagnostics</li>
+        <li class="item" data-value="off">Shutdown</li>
+    </ul>
+    <p id="description">Description: </p>
+
+    <p class="title bottom">ENTER = Choose || ↑ ↓ Move</p>
+    <script src="safeboot.js"></script>
+</body>
+</html>

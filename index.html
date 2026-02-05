@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NyxPaw OS</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" id="main-style">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel="icon" type="image/x-icon" href="../assets/logow.webp">
 </head>
 <body>
     <!--Bsod-->
@@ -90,9 +92,15 @@
             <img src="assets/logow.webp" alt="Start Button">
         </button>
         <p id="timetext" class="center">Time</p>
-        <button id="topbar_nekiri" class="right">
-            <img src="assets/nekiri.png" alt="Nekiri">
-        </button>
+        <div class="right" id="topbar_right_el">
+            <button id="topbar_audio">
+                <img src="assets/system/volume.svg" alt="Audio">
+            </button>
+            <img id="topbar_battery" src="assets/system/bt-full.svg" alt="Battery">
+            <button id="topbar_nekiri">
+                <img src="assets/nekiri.png" alt="Nekiri">
+            </button>
+        </div>
     </div>
 
     <!--Dropdowns de la topbar-->
@@ -112,6 +120,14 @@
         </div>
         <p id="nekiri_response">Hola! Soy Nekiri, en que puedo ayudarte?</p>
     </div>
+
+    <div class="dropdown-menu hidden" id="audio-dropdown">
+        <div class="uisetting">
+            <label>Volumen</label>
+            <input type="range" min="0" max="100" id="sysaudio_el">
+        </div>
+    </div>
+
 
     <!--Barra con las apps-->
     <div id="appbar">
@@ -323,6 +339,14 @@
 
         <div class="win_content content_settings">
             <div class="settings-sidebar">
+                <button class="tab profile" data-tab="profile">
+                    <i class="fi fi-ss-user"></i>
+                    <div style="display: flex; flex-direction: column; gap: 8px;" class="tabprofilet">
+                        <p id="dnametab">DISPLAY_NAME</p>
+                        <p class="tabprofilet2">Perfil ></p>
+                    </div>
+                </button>
+                <div class="sidebar-divider"></div>
                 <button class="tab active" data-tab="wifi">Wi-Fi</button>
                 <button class="tab" data-tab="network">Red</button>
                 <button class="tab" data-tab="bt">Bluetooth</button>
@@ -346,6 +370,29 @@
             </div>
 
             <div class="settings-content">
+
+                <div class="tab-content" id="profile">
+                    <h3 id="profiletitle">Hola!</h3>
+                    <div class="uisetting userinfogrid">
+                        <div class="userinfodiv">
+                            <p class="userinfotitle">Nombre de usuario:</p>
+                            <p class="userinfosubtitle" id="userinfouserp">user</p>
+                        </div>
+                        <div class="userinfodiv">
+                            <p class="userinfotitle">Nombre:</p>
+                            <p class="userinfosubtitle" id="userinfodnamep">User</p>
+                        </div>
+                        <div class="userinfodiv">
+                            <p class="userinfotitle">Correo Electronico:</p>
+                            <p class="userinfosubtitle">Desconocido</p>
+                        </div>
+                        <div class="userinfodiv">
+                            <p class="userinfotitle">Telefono:</p>
+                            <p class="userinfosubtitle">Desconocido</p>
+                        </div>
+                    </div>
+                    
+                </div>
 
                 <div class="tab-content active" id="wifi">
                     <h3>Wi-Fi</h3>
@@ -1174,7 +1221,7 @@
 
         <div class="win_content content_nyxvideoplayer">
             
-            <button onclick="document.getElementById('win_askForVideoFile').classList.remove('hidden')" id="nyxvideoplayer_selectVid">Elegir video</button>
+            <button onclick="document.getElementById('win_askForVideoFile').style.removeProperty('opacity');document.getElementById('win_askForVideoFile').classList.remove('hidden');setTimeout(() => {document.getElementById('win_askForVideoFile').classList.add('window_anim_open');}, 10);" id="nyxvideoplayer_selectVid">Elegir video</button>
             <video id="nyxvideoplayer_player" controls>Hubo un problema con la reproduccion del video: Video no soportado - VID-NOWK</video>
         </div>
         <div class="resize-handle"></div>
@@ -1187,7 +1234,7 @@
 
         <div class="win_content content_nyximageviewer">
             
-            <button onclick="document.getElementById('win_askForImageFile').classList.remove('hidden')" id="nyximageviewer_selectVid">Elegir imagen</button>
+            <button onclick="document.getElementById('win_askForImageFile').style.removeProperty('opacity');document.getElementById('win_askForImageFile').classList.remove('hidden');setTimeout(() => {document.getElementById('win_askForImageFile').classList.add('window_anim_open');}, 10);" id="nyximageviewer_selectVid">Elegir imagen</button>
             <img id="nyximageviewer_player" controls>Imagen</img>
         </div>
         <div class="resize-handle"></div>
@@ -1223,6 +1270,14 @@
                     </div>
                     <div class="horizontal_divider"></div>
                     <button onclick="nyxPawStoreOpenTab('Venge', 'assets/apps/venge.png')">Ver mas...</button>
+                </div>
+                <div class="nyxpawstore_app">
+                    <div class="nyxpawstore_imgtextrow">
+                        <img src="assets/apps/virtualenv.png">
+                        <p>Virtual Environments</p>
+                    </div>
+                    <div class="horizontal_divider"></div>
+                    <button onclick="nyxPawStoreOpenTab('VirtualEnvs', 'assets/apps/virtualenv.png')">Ver mas...</button>
                 </div>
             </div>
 
@@ -1350,6 +1405,17 @@
             </div>
             <div id="regedit_listgownusr" class="regedit_list hidden">
             </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+    <div class="window hidden" id="win_virtualenv">
+        <div class="grab">
+            <span class="grab-title">🖥️  Virtual Environments</span>
+            <button class="grab-btn" id="btn_virtualenv">X</button>
+        </div>
+
+        <div class="win_content content_virtualenv">
+            <iframe src="virtualenv.html" id="virtualenviframe"></iframe>
         </div>
         <div class="resize-handle"></div>
     </div>
@@ -1565,6 +1631,10 @@
                 <button class="appcenter-appbtn"> <img class="appcenter-img" src="assets/apps/venge.png" alt="Venge"> </button>
                 <p>Venge</p>
             </div>
+            <div class="appcenter_appdiv hidden" id="appcenter-virtualenv" onclick="hideappcenter()">
+                <button class="appcenter-appbtn"> <img class="appcenter-img" src="assets/apps/virtualenv.png" alt="Virtual Environments"> </button>
+                <p>Virtual Environments</p>
+            </div>
 
         </div>
     </div>
@@ -1576,7 +1646,6 @@
 
 
 
-    
     <!--Scripts-->
     <script>
         console.log('Starting up...');

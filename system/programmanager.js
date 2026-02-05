@@ -25,7 +25,8 @@ const AppManager = {
         taskmanager: 'system/apps/taskmanager.js',
         vengegame: 'system/apps/vengegame.js',
         eventviewer: 'system/apps/eventviewer.js',
-        regedit: 'system/apps/regedit.js'
+        regedit: 'system/apps/regedit.js',
+        virtualenv: 'system/apps/virtualenv.js'
         
     },
 
@@ -156,7 +157,15 @@ const AppManager = {
         const size = customSizes[appName] || defaultSize;
         windowEl.style.width = size.width;
         windowEl.style.height = size.height;
+        windowEl.classList.remove('window_anim_open');
+        windowEl.style.removeProperty('opacity');
         windowEl.classList.remove('hidden');
+
+        void windowEl.offsetHeight;
+
+        setTimeout(() => {
+            windowEl.classList.add('window_anim_open');
+        },20);
     },
     
     unloadApp(appName) {
@@ -182,7 +191,11 @@ const AppManager = {
         const windowEl = document.getElementById(windowId);
         
         if (windowEl) {
-            windowEl.classList.add('hidden');
+            windowEl.classList.remove('window_anim_open');
+            setTimeout(() => {
+                windowEl.style.removeProperty('opacity');
+                windowEl.classList.add('hidden');
+            },200); 
         }
         
         if (appData.script) {

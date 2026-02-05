@@ -29,16 +29,18 @@ function addMLines(linesArray) {
 let printLines = [];
 
 function _runCommandInternal(incommand) {
-    if (incommand.includes('<') && incommand.includes('>')) {
-        if (!SysVar.devMode) {
-            addLine('Comando bloqueado: El comando contiene una etiqueta HTML, activa el modo desarrollador para permitir!');
-            terminalInput.value = '';
-            return;
-        } else {
-            if (!incommand.includes('runxss')) {
-                addLine('Usa el comando runxss para inyectar HTML');
+    if (!incommand.includes('jscom')) {
+        if (incommand.includes('<') && incommand.includes('>')) {
+            if (!SysVar.devMode) {
+                addLine('Comando bloqueado: El comando contiene una etiqueta HTML, activa el modo desarrollador para permitir!');
                 terminalInput.value = '';
                 return;
+            } else {
+                if (!incommand.includes('runxss')) {
+                    addLine('Usa el comando runxss para inyectar HTML');
+                    terminalInput.value = '';
+                    return;
+                }
             }
         }
     }
@@ -83,6 +85,7 @@ function _runCommandInternal(incommand) {
             'devMode --set 1: Activa el modo desarrollador/experimental',
             'devMode --set 0: Desactiva el modo desarrollador/experimental',
             'runxss --args HTML: ejecuta codigo HTML en la terminal',
+            'jscom --args: ejecuta codigo javascript en la terminal',
             ''
         ];
         addMLines(printLines);
@@ -119,11 +122,41 @@ function _runCommandInternal(incommand) {
     } else if (command === 'shutdown') {
         if (args[0] === '--now') {
             addLine('Apagando NyxPaw...');
-            sysshutdown();
+            sysshutdown(false);
         } else {
             const shutdownTime = args[0];
             setTimeout(() => {
-                sysshutdown();
+                sysshutdown(false);
+            }, shutdownTime);
+        }
+    } else if (command === 'reboot') {
+        if (args[0] === '--now') {
+            addLine('Reiniciando NyxPaw...');
+            sysrestart(false);
+        } else if (args[0] === '--mode') {
+            const mode = args[1];
+            addLine(`Reiniciando en modo ${mode}...`);
+            hideTopBar();
+            hideAppBar();
+            sysComQuitTasks();
+            localStorage.setItem('sys_status', 'off');
+            setTimeout(() => {                    
+                window.location.href = `index.html?mode=${mode}`;
+            }, 2200);
+        } else if (args[0] === '--recovery') {
+            const mode = args[1];
+            addLine(`Reiniciando en modo recovery...`);
+            hideTopBar();
+            hideAppBar();
+            sysComQuitTasks();
+            localStorage.setItem('sys_status', 'off');
+            setTimeout(() => {                    
+                window.location.href = `safe/safeboot.html`;
+            }, 2200);
+        } else {
+            const shutdownTime = args[0];
+            setTimeout(() => {
+                sysrestart(false);
             }, shutdownTime);
         }
     } else if (command === 'crashtest') {
@@ -143,6 +176,20 @@ function _runCommandInternal(incommand) {
         addLine('Done');
     } else if (command === 'exec') {
         sysExecApp(args[0]);
+    } else if (command === 'jscom') {
+        if (SysVar.devMode) {
+            const jsCode = args.join(' ');
+            try {
+                const result = eval(jsCode);
+                if (result !== undefined) {
+                    addLine(String(result));
+                }
+            } catch (error) {
+                addLine(`Error: ${error.message}`);
+            }
+        } else {
+            addLine('Activa el modo desarrollador para ejecutar javascript');
+        }
     } else if (command === 'taskmgr') {
         if (args[0] === '--new') {
             sysExecApp(args[1]);
@@ -167,12 +214,48 @@ function _runCommandInternal(incommand) {
             addLine('Inicia un crasheo de prueba');
         } else if (args[0] === 'exec') {
             addLine('Ejecuta la aplicacion que este entre comillas, por ejemplo exec "settings" abre configuracion');
+        } else if (args[0] === 'shutdown') {
+            printLines = [
+                'apaga el sistema con argumentos:',
+                '--now: apaga en este momento',
+                'tiempo en ms: apaga dentro del tiempo establecido',
+                ' ',
+                'Apaga en 3 segundos:',
+                'shutdown 3000',
+                'Tiempo ms ^ ',
+                '                                                                        ',
+            ];
+            addMLines(printLines);
+        } else if (args[0] === 'reboot') {
+            printLines = [
+                'reinicia el sistema con argumentos:',
+                '--now: reinicia en este momento',
+                'tiempo en ms: reinicia dentro del tiempo establecido',
+                '--recovery: abre el modo recuperacion',
+                '--mode MODO: reinicia en un modo:',
+                '--mode safe: reinicia en modo seguro',
+                ' ',
+                'Reinicia en 3 segundos:',
+                'shutdown 3000',
+                'Tiempo ms ^ ',
+                '                                                                        ',
+            ];
+            addMLines(printLines);
         } else if (args[0] === 'modEl') {
             printLines = [
                 'Establece propiedades personalizadas a un elemento del sistema, por ejemplo:',
                 'Cambiar el fondo de pantalla:',
                 'modEl desktopBG prop.backgroundImage "https://www.sitio.com/imagen.jpeg"',
                 ' Elemento ^             ^ Propiedad               fuente ^              ',
+                '                                                                        ',
+            ];
+            addMLines(printLines);
+        } else if (args[0] === 'jscom') {
+            printLines = [
+                'Ejecuta codigo javascript en la terminal:',
+                'Muesta "Hello world":',
+                'jscom console.log("Hello world");',
+                ' Codigo JS ^                           ',
                 '                                                                        ',
             ];
             addMLines(printLines);

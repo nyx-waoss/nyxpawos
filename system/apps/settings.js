@@ -49,4 +49,33 @@ function _openSettingsTabInternal(tabId) {
     win.querySelector(`#${tabId}`)?.classList.add("active");
 }
 
+function updateProfileInfo() {
+    const tabname = document.getElementById('dnametab');
+
+    const title = document.getElementById('profiletitle');
+
+    const username = document.getElementById('userinfouserp');
+    const dname = document.getElementById('userinfodnamep');
+
+    title.textContent = 'Hola '+SysVar.currentuser.dName+'!';
+    username.textContent = SysVar.currentuser.user;
+    dname.textContent = SysVar.currentuser.dName;
+    tabname.textContent = SysVar.currentuser.dName;
+}
+
+
+
+
+
+
+
+function init_settings() {
+    updateProfileInfo();
+    console.log('Initiating settings...');
+}
+
+function cleanup_settings() {
+    updateProfileInfo();
+    console.log('Cleaning settings...');
+}
 window.scriptReady('settings');

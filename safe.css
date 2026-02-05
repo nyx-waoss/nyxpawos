@@ -1,112 +1,56 @@
 /*
 COLORS
-Idle: rgba(75, 75, 75, 0.5);
-Hover: rgba(101, 101, 101, 0.66);
-Active: rgba(45, 45, 45, 0.5);*/
+Idle: rgb(75, 75, 75);
+Hover: rgb(101, 101, 101);
+Active: rgb(45, 45, 45);*/
+*{
+    backdrop-filter: none !important;
+}
 
 :root {
-    --blur-multiplier: 1;
+    --blur-multiplier: 0;
 
     --btn-primary-base: rgb(0, 145, 255);
     --btn-primary-hover: rgb(54, 168, 255);
     --btn-primary-active: rgb(0, 126, 222);
 
     
-    --sysbar-base: rgba(0, 0, 0, 0.288);
+    --sysbar-base: rgb(0, 0, 0);
     --sysbar-second: #0000007b;
     --sysbar-third: #181818ea;
 
-    --btn-secondary-base: rgba(75, 75, 75, 0.5);
-    --btn-secondary-hover: rgba(101, 101, 101, 0.66);
-    --btn-secondary-active: rgba(45, 45, 45, 0.5);
+    --btn-secondary-base: rgb(75, 75, 75);
+    --btn-secondary-hover: rgb(101, 101, 101);
+    --btn-secondary-active: rgb(45, 45, 45);
 
-    --win-grab-bg: rgba(0, 0, 0, 0.288);
+    --win-grab-bg: rgb(0, 0, 0);
     --win-grab-title: rgb(255, 255, 255);
 
     --win-grab-btn-icon: rgb(255, 255, 255);
-    --win-grab-btn: rgba(0, 0, 0, 0.372);
-    --win-grab-btn-hover: rgba(107, 107, 107, 0.425);
+    --win-grab-btn: rgb(0, 0, 0);
+    --win-grab-btn-hover: rgb(107, 107, 107);
 
-    --win-bg: rgba(0, 0, 0, 0.656);
-    --win-second: rgba(0, 0, 0, 0.438);
+    --win-bg: rgb(35, 35, 35);
+    --win-second: rgb(25, 25, 25);
     --win-text: rgb(255, 255, 255);
     
     --uisetting-base: rgb(46, 46, 46);
     --uisetting-hover: rgb(62, 62, 62);
-    --settings-divider: rgba(255, 255, 255, 0.212);
+    --settings-divider: rgb(255, 255, 255);
 
     --uisetting-second: #555;
     --uisetting-third: #292929;
 
-    --file-btn-base: rgba(75, 75, 75, 0.5);
-    --file-btn-hover: rgba(101, 101, 101, 0.66);
-    --file-btn-active: rgba(45, 45, 45, 0.5);
-    --file-btn-selected: rgba(0, 78, 138, 0.419);
-    --file-btn-border: rgba(0, 0, 0, 0.5);
-    
-
-    /*
-    --sysbar-base: rgba(255, 255, 255, 0.288);
-    --sysbar-second: #ffffff7b;
-    --sysbar-third: #ffffffea;
-
-    --btn-secondary-base: rgba(255, 255, 255, 0.5);
-    --btn-secondary-hover: rgba(255, 255, 255, 0.66);
-    --btn-secondary-active: rgba(255, 255, 255, 0.5);
-
-    --win-grab-bg: rgba(255, 255, 255, 0.288);
-    --win-grab-title: rgb(0, 0, 0);
-
-    --win-grab-btn-icon: rgb(0, 0, 0);
-    --win-grab-btn: rgba(255, 255, 255, 0.372);
-    --win-grab-btn-hover: rgba(0, 0, 0, 0.425);
-
-    --win-bg: rgba(255, 255, 255, 0.656);
-    --win-second: rgba(255, 255, 255, 0.438);
-    --win-text: rgb(0, 0, 0);
-    
-    --uisetting-base: rgb(226, 226, 226);
-    --uisetting-hover: rgb(203, 203, 203);
-    --settings-divider: rgba(50, 50, 50, 0.212);
-
-    --uisetting-second: #b4b4b4;
-    --uisetting-third: #9c9c9c;
-
-    --file-btn-base: rgba(0, 0, 0, 0.2);
-    --file-btn-hover: rgba(0, 0, 0, 0.35);
-    --file-btn-active: rgba(0, 0, 0, 0.5);
-    --file-btn-selected: rgba(0, 78, 138, 0.419);
-    --file-btn-border: rgba(0, 0, 0, 0.5);*/
+    --file-btn-base: rgb(75, 75, 75);
+    --file-btn-hover: rgb(101, 101, 101);
+    --file-btn-active: rgb(45, 45, 45);
+    --file-btn-selected: rgb(0, 78, 138);
+    --file-btn-border: rgb(0, 0, 0);
 }
 
 /* Scroll bar */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.45) rgba(0,0,0,0.2);
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-    border-radius: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.25);
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.4);
-    border-radius: 8px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255,255,255,0.6);
-}
-
-
 body {
-    background-image: url(assets/wallpaper.jpg);
+    background-color: #000000;
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
@@ -194,7 +138,6 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     height: 10px;
     background-color: #000000;
     border: 1px solid white;
-    border-radius: 10px;
     overflow: hidden;
     margin-bottom: 10px;
 }
@@ -203,13 +146,12 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     width: 0%;
     height: 100%;
     background: linear-gradient(90deg, #ffffff, #f0f0f0);
-    border-radius: 10px;
     animation: width 0.1s ease;
 }
 
 .startupscr_loadingtext {
     text-align: center;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 14px;
     color: #b2b2b2;
 }
@@ -253,17 +195,16 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.445);
+    background-color: rgb(0, 0, 0);
     backdrop-filter: blur(calc(8px * var(--blur-multiplier)));
     z-index: 9002;
 }
 
 #msg-box {
     background-color: #0000007c;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     /*border: 1px solid #ccc;*/
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
+    box-shadow: 0 4px 8px rgb(0, 0, 0);
     width: 400px;
     height: fit-content;
     padding: 20px;
@@ -282,7 +223,6 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     border: none;
     background: #ffffff3b;
     color: rgb(255, 255, 255);
-    border-radius: 8px;
 }
 
 #msg-box-input:hover {
@@ -295,7 +235,6 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     border: none;
     background: #ffffff22;
     color: rgb(255, 255, 255);
-    border-radius: 8px;
 }
 
 #msg-box-okbtn:hover {
@@ -309,7 +248,6 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     border: none;
     background: #ffffff22;
     color: rgb(255, 255, 255);
-    border-radius: 8px;
 }
 
 #msg-box-cancelbtn:hover {
@@ -322,12 +260,11 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: var(--win-bg, rgba(0, 0, 0, 0.72));
+    background: var(--win-bg, rgb(0, 0, 0));
     backdrop-filter: blur(calc(20px * var(--blur-multiplier)));
-    font-family: 'Outfit', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     /*border: 1px solid #ccc;*/
-    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.4);
-    border-radius: 8px;
+    box-shadow: 0px 5px 5px rgb(0, 0, 0);
     min-width: 350px;
     width: auto;
     height: fit-content;
@@ -378,13 +315,13 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 /*
 
 #askForImageFile-btn_cancel {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
 }
 #askForImageFile-btn_cancel:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 #askForImageFile-btn_cancel:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
@@ -408,7 +345,6 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     border: none;
     background: #ffffff3b;
     color: rgb(255, 255, 255);
-    border-radius: 8px;
     margin-bottom: 5px;
     margin-top: 14px;
 }
@@ -433,7 +369,6 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     border: none;
     background-color: rgb(0, 145, 255);
     color: rgb(255, 255, 255);
-    border-radius: 8px;
 }
 
 #msg-box-win-okbtn:hover {
@@ -451,18 +386,17 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     margin-top: 5px;
     padding: 8px;
     border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
     color: rgb(255, 255, 255);
-    border-radius: 8px;
 }
 
 #msg-box-win-cancelbtn:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
     color: rgb(255, 255, 255);
 }
 
 #msg-box-win-cancelbtn:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
     color: rgb(255, 255, 255);
 }
 
@@ -480,7 +414,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.445);
+    background-color: rgb(0, 0, 0);
     backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
     z-index: 9003;
 }
@@ -488,7 +422,6 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 .loginscr_account {
     padding: 10px;
     margin-bottom: 8px;
-    border-radius: 8px;
     background-color: rgb(46, 46, 46);
     height: 50px;
     width: 220px;
@@ -498,7 +431,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     justify-content: center;
     gap: 20px;
     color: white;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
 }
 
 .loginscr_account:hover {
@@ -529,13 +462,13 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #loginscr-btn_cancel {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
 }
 #loginscr-btn_cancel:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 #loginscr-btn_cancel:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
@@ -559,9 +492,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #loginscr_passwordinput {
-    border-radius: 6px;
-    border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+        border: none;
+    background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
     width: 100%;
@@ -570,7 +502,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #loginscr_passwordinput:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 .content_askforuserspassword {
@@ -590,13 +522,13 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #sysaskfornewuserdata-btn_cancel {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
 }
 #sysaskfornewuserdata-btn_cancel:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 #sysaskfornewuserdata-btn_cancel:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
@@ -620,9 +552,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #settings_newuser_usernameinput {
-    border-radius: 6px;
-    border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+        border: none;
+    background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
     width: 100%;
@@ -631,13 +562,12 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #settings_newuser_usernameinput:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #settings_newuser_displaynameinput {
-    border-radius: 6px;
-    border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+        border: none;
+    background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
     width: 100%;
@@ -646,13 +576,12 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #settings_newuser_displaynameinput:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #settings_newuser_passwordinput {
-    border-radius: 6px;
-    border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+        border: none;
+    background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
     width: 100%;
@@ -661,7 +590,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #settings_newuser_passwordinput:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 
@@ -680,11 +609,11 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     display: flex;
     align-items: center;
     padding: 0 12px;
-    background-color: var(--sysbar-base, rgba(0, 0, 0, 0.288));
+    background-color: var(--sysbar-base, rgb(0, 0, 0));
     backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
     z-index: 8000;
     /*transision*/
-    transition: transform 0.5s ease;
+    
 
     box-sizing: border-box;
 }
@@ -707,7 +636,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 
 #timetext {
     color: white;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
 }
 
 #topbar_button {
@@ -726,19 +655,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     height: 23px;
 }
 
-#topbar_audio {
-    background: none;
-    border: none;
-    padding: 0;
-    width: 18px;
-    height: 18px;
-}
-
 #topbar_button:hover {
-    filter: brightness(0.60);
-}
-
-#topbar_audio:hover {
     filter: brightness(0.60);
 }
 
@@ -746,39 +663,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     filter: brightness(0.60);
 }
 
-#topbar_right_el {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 15px;
-    width: auto ;
-    margin: 0;
-}
-
-#topbar_battery {
-    background: none;
-    border: none;
-    padding: 0;
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-}
-
-.battery-empty {
-    filter: invert(27%) sepia(98%) saturate(7498%) hue-rotate(356deg) brightness(95%) contrast(118%);
-}
-
-.battery-charging {
-    filter: invert(48%) sepia(92%) saturate(460%) hue-rotate(85deg) brightness(95%) contrast(95%);
-}
-
 #topbar_button img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-#topbar_audio img {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -799,8 +684,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     background: var(--sysbar-second, #0000007b);
     color: white;
     padding: 10px;
-    border-radius: 6px;
-    z-index: 8035;
+        z-index: 8035;
     backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
     align-items: center;
     
@@ -809,8 +693,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 .dropdown-menu button {
     background-color: transparent;
     border: none;
-    border-radius: 8px;
-    color: white;
+        color: white;
     padding: 6px;
     margin: 0;
     width: 100%;
@@ -821,7 +704,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 .dropdown-menu button:active {
-    background-color: rgba(255, 255, 255, 0.445);
+    background-color: rgb(255, 255, 255);
 }
 
 #nekiri-dropdown {
@@ -840,24 +723,22 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #nekiri_input {
-    border: 2px solid rgba(49, 49, 49, 0.849);
+    border: 2px solid rgb(49, 49, 49);
     background-color: rgb(21, 21, 21);
-    border-radius: 8px;
-    color: white;
+        color: white;
     width: 100%;
 }
 
 #nekiri_send {
-    border: 2px solid rgba(49, 49, 49, 0.849);
+    border: 2px solid rgb(49, 49, 49);
     background-color: rgb(21, 21, 21);
-    border-radius: 8px;
-    color: white;
+        color: white;
     width: 30px;
 }
 
 #nekiri_response {
     color: white;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
 }
 
 #appbar {
@@ -873,8 +754,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     padding: 15px;
     box-sizing: border-box;
 
-    border-radius: 10px;
-    background-color: var(--sysbar-base, rgba(0, 0, 0, 0.288));
+        background-color: var(--sysbar-base, rgb(0, 0, 0));
     backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
     z-index: 8002;
 
@@ -888,14 +768,14 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     overflow-y: auto;
     overflow-x: hidden;
 
-    transition: transform 0.5s ease;
+    
 }
 
 .appbar-app {
     border: none;
     background: none;
 
-    transition: transform 0.2s ease, filter 0.15s ease;
+    
     transform-origin: center;
 }
 
@@ -918,27 +798,21 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     top: 0;
 
     color: white;
-    background-color: rgba(0, 0, 0, 0.434);
+    background-color: rgb(0, 0, 0);
     width: auto;
     padding: 2px 12px;
     height: 30px;
-    border-radius: 8px;
-    backdrop-filter: blur(calc(5px * var(--blur-multiplier)));
-    font-family: 'Outfit', sans-serif;
+        backdrop-filter: blur(calc(5px * var(--blur-multiplier)));
+    font-family: 'JetBrains Mono', monospace;
     text-align: center;
     justify-content: center;
 
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.15s ease;
+    
     z-index: 8003;
 }
 /*Ventanas*/
-.window_anim_open {
-    transform: scale(1) !important;
-    opacity: 1 !important;
-}
-
 .window.win-max {
     left: 85px !important;
     top: 4px !important;
@@ -960,29 +834,24 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     width: 300px;
     height: 200px;
 
-    background: var(--win-bg, rgba(0, 0, 0, 0.656));
+    background: var(--win-bg, rgb(0, 0, 0));
     backdrop-filter: blur(calc(20px * var(--blur-multiplier)));
     color: white;
-    border-radius: 8px;
-
-    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.4);
+    
+    box-shadow: 0px 5px 5px rgb(0, 0, 0);
 
     z-index: 8020;
     overflow: hidden;
 
-    font-family: 'Outfit', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
 
     display: flex;
     flex-direction: column;
-
-    transform: scale(0.9);
-    transition: transform 0.1s ease, opacity 0.1s ease;
-    opacity: 0;
 }
 
 .grab {
     height: 38px;
-    background: var(--win-grab-bg, rgba(0, 0, 0, 0.288));
+    background: var(--win-grab-bg, rgb(0, 0, 0));
 
     display: flex;
     align-items: center;
@@ -1002,18 +871,17 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 .grab-btn {
-    background: var(--win-grab-btn, rgba(0, 0, 0, 0.372));
+    background: var(--win-grab-btn, rgb(0, 0, 0));
     border: none;
     color: var(--win-text, white);
     font-size: 14px;
     padding: 3px;
-    border-radius: 50%;
-    width: 28px;
+        width: 28px;
     height: 28px;
 }
 
 .grab-btn:hover {
-    background-color: var(--win-grab-btn-hover, rgba(107, 107, 107, 0.425))
+    background-color: var(--win-grab-btn-hover, rgb(107, 107, 107))
 }
 
 .win_content {
@@ -1059,11 +927,10 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 
 .settings-sidebar {
     width: 160px;
-    background: var(--win-second, rgba(0, 0, 0, 0.288));
+    background: var(--win-second, rgb(0, 0, 0));
     padding: 6px;
     box-sizing: border-box;
-    border-radius: 10px;
-    overflow-y: auto;
+        overflow-y: auto;
     min-height: 0;
     color: var(--win-text, white);
 }
@@ -1078,8 +945,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     color: var(--win-text, white);
     text-align: left;
 
-    border-radius: 6px;
-}
+    }
+
 
 .settings-sidebar .tab.profile {
     width: 100%;
@@ -1102,15 +969,15 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 
 .tabprofilet2 {
     font-size: 10px;
-    color: gray;
+    color: rgb(0, 0, 0);
 }
 
 .settings-sidebar .tab:hover {
-    background-color: rgba(0, 0, 0, 0.372);
+    background-color: rgb(0, 0, 0);
 }
 
 .settings-sidebar .tab:active {
-    background-color: rgba(0, 0, 0, 0.504);
+    background-color: rgb(0, 0, 0);
 }
 
 .settings-content {
@@ -1132,15 +999,13 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 .sidebar-divider {
     height: 1px;
     margin: 8px 6px;
-    background: var(--settings-divider, rgba(255, 255, 255, 0.212));
+    background: var(--settings-divider, rgb(255, 255, 255));
 }
 
 .uisetting {
     padding: 10px;
     margin-bottom: 8px;
-    border-radius: 8px;
-    background-color: var(--uisetting-base, rgb(46, 46, 46));
-    font-family: 'Outfit', sans-serif;
+        background-color: var(--uisetting-base, rgb(46, 46, 46));
 }
 
 .uisetting:hover {
@@ -1177,8 +1042,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     position: absolute;
     inset: 0;
     background: var(--uisetting-third, #555);
-    border-radius: 20px;
-    transition: 0.2s;
+        
 }
 
 .slider::before {
@@ -1189,8 +1053,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     left: 2px;
     top: 2px;
     background: white;
-    border-radius: 50%;
-    transition: 0.2s;
+        
 }
 
 .switch input:checked + .slider {
@@ -1209,8 +1072,7 @@ input[type="range"] {
     width: 100%;
     padding: 6px;
     margin-top: 4px;
-    border-radius: 6px;
-    border: none;
+        border: none;
     background: var(--uisetting-second, #555);
     color: rgb(255, 255, 255);
 }
@@ -1218,16 +1080,14 @@ input[type="range"] {
 .select {
     width: 100%;
     padding: 6px;
-    border-radius: 6px;
-    background: var(--uisetting-second, #555);
+        background: var(--uisetting-second, #555);
     color: white;
     border: none;
 }
 
 .btn {
     padding: 6px 10px;
-    border-radius: 6px;
-    border: none;
+        border: none;
     background: var(--uisetting-second, #555);
     color: white;
     cursor: pointer;
@@ -1243,8 +1103,7 @@ input[type="range"] {
 
 #screendiv {
     padding: 4px;
-    border-radius: 5px;
-    color: rgb(0, 0, 0);
+        color: rgb(0, 0, 0);
     box-shadow: 0px 2px 5px rgb(0, 0, 0);
     width: 160px;
     height: 110px;
@@ -1266,34 +1125,6 @@ input[type="range"] {
     font-size: 28px;
 }
 
-.userinfogrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 10px;
-}
-
-.userinfodiv {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border: 2px solid white;
-    padding: 18px;
-    border-radius: 8px;
-}
-
-.userinfotitle {
-    margin: 0;
-    font-size: 18px;
-    color: rgb(255, 255, 255);
-}
-
-.userinfosubtitle {
-    margin: 0;
-    font-size: 16px;
-    color: gray;
-}
-
 
 
 /*Notas*/
@@ -1309,23 +1140,21 @@ input[type="range"] {
     border: none;
     outline: none;
     box-sizing: border-box;
-    border-radius: 8px;
-    font-family: 'Outfit', sans-serif;
+        font-family: 'JetBrains Mono', monospace;
     top: 6px;
 }
 
 .content_notes button {
-    border-radius: 8px;
-    border: none;
+        border: none;
     color: white;
-    background-color: rgba(0, 0, 0, 0.272);
+    background-color: rgb(0, 0, 0);
     padding: 2px;
     width: 76px;
     height: 30px;
 }
 
 .content_notes button:hover {
-    background-color: rgba(0, 0, 0, 0.393);
+    background-color: rgb(0, 0, 0);
 }
 
 .program_topbar {
@@ -1345,9 +1174,8 @@ input[type="range"] {
 }
 
 #notes-savefilename {
-    border-radius: 6px;
-    border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+        border: none;
+    background-color: rgb(75, 75, 75);
     color: white; 
     height: 30px;
     width: 100%;
@@ -1356,7 +1184,7 @@ input[type="range"] {
 }
 
 #notes-savefilename:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #notes-btnsdiv {
@@ -1371,18 +1199,17 @@ input[type="range"] {
     width: 100%;
     height: 25px;
     border: none;
-    border-radius: 6px;
-    color: white;
+        color: white;
 }
 
 #notes-btn_cancel {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
 }
 #notes-btn_cancel:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 #notes-btn_cancel:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
@@ -1416,18 +1243,17 @@ input[type="range"] {
     width: 100%;
     height: 25px;
     border: none;
-    border-radius: 6px;
-    color: white;
+        color: white;
 }
 
 #files-btn_cancel {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
 }
 #files-btn_cancel:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 #files-btn_cancel:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
@@ -1477,8 +1303,7 @@ input[type="range"] {
     height: 30px;
     margin-bottom: 10px;
     background-color: rgb(46, 46, 46);
-    border-radius: 8px;
-    border: none;
+        border: none;
     color: white;
     text-align: right;
     font-size: 34px;
@@ -1493,19 +1318,18 @@ input[type="range"] {
 }
 
 .calcbutton {
-    background-color: rgba(75, 75, 75, 0.5);
-    border-radius: 8px;
-    border: none;
+    background-color: rgb(75, 75, 75);
+        border: none;
     color: white;
     font-size: medium;
 }
 
 .calcbutton:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 .calcbutton:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 /*Navegador*/
@@ -1518,8 +1342,7 @@ input[type="range"] {
 #browseriframe {
     flex: 1;
     border: none;
-    border-radius: 8px;
-    
+        
 }
 
 #navbar {
@@ -1533,15 +1356,14 @@ input[type="range"] {
 #navbar input {
     flex: 1;
     min-width: 0;
-    border-radius: 6px;
-    border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+        border: none;
+    background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
 }
 
 #navbar input:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #navbar input:active {
@@ -1549,19 +1371,18 @@ input[type="range"] {
 }
 
 #navbar button {
-    border-radius: 6px;
-    border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+        border: none;
+    background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
 }
 
 #navbar button:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #navbar button:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 /*Files*/
@@ -1572,43 +1393,41 @@ input[type="range"] {
 .file-btn {
     width: 100%;
     text-align: center;
-    border-radius: 6px;
-    padding: 4px 8px;
+        padding: 4px 8px;
     border: none;
-    background-color: var(--file-btn-base, rgba(75, 75, 75, 0.5));
+    background-color: var(--file-btn-base, rgb(75, 75, 75));
     color: white;
     text-align: left;
 }
 
 .file-btn:hover {
-    background-color: var(--file-btn-hover, rgba(101, 101, 101, 0.66));
+    background-color: var(--file-btn-hover, rgb(101, 101, 101));
 }
 
 .file-btn:active {
-    background-color: var(--file-btn-active, rgba(45, 45, 45, 0.5));
+    background-color: var(--file-btn-active, rgb(45, 45, 45));
 }
 
 .file-btn.selected {
-    background-color: var(--file-btn-selected, rgba(101, 101, 101, 0.66));
+    background-color: var(--file-btn-selected, rgb(101, 101, 101));
     border: 1px solid var(--file-btn-border, gray);
 }
 
 .file-btn-up {
     width: auto;
     text-align: center;
-    border-radius: 6px;
-    padding: 4px 8px;
+        padding: 4px 8px;
     border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
     color: white;
 }
 
 .file-btn-up:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 .file-btn-up:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
@@ -1623,26 +1442,25 @@ input[type="range"] {
 #toolbar button {
     width: auto;
     text-align: center;
-    border-radius: 6px;
-    padding: 4px 8px;
+        padding: 4px 8px;
     border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
     color: white;
 }
 
 #toolbar button:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #toolbar button:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 #verticaldivisor {
     width: 2px;
     height: 24px;
     margin: 0px 6px;
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
 }
 
 .filesaltmenu {
@@ -1653,8 +1471,7 @@ input[type="range"] {
     background: #0000007b;
     color: white;
     padding: 10px;
-    border-radius: 8px;
-    z-index: 8022;
+        z-index: 8022;
     backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
     min-width: 150px;
 }
@@ -1662,14 +1479,13 @@ input[type="range"] {
     width: 100%;
     background: none;
     color: white;
-    border-radius: 8px;
-    text-align: left;
+        text-align: left;
     border: none;
     padding: 4px 10px;
 }
 
 .filesaltmenu button:hover {
-    background: rgba(101, 101, 101, 0.66);
+    background: rgb(101, 101, 101);
 }
 
 .content_askforfilecreation {
@@ -1680,9 +1496,8 @@ input[type="range"] {
 }
 
 #files-newfilename {
-    border-radius: 6px;
-    border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+        border: none;
+    background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
     width: 100%;
@@ -1691,13 +1506,12 @@ input[type="range"] {
 }
 
 #files-newfilename:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #files-newfiletype {
-    border-radius: 6px;
-    border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+        border: none;
+    background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
     width: 100%;
@@ -1706,7 +1520,7 @@ input[type="range"] {
 }
 
 #files-newfiletype:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #files-btnsdiv {
@@ -1721,18 +1535,17 @@ input[type="range"] {
     width: 100%;
     height: 25px;
     border: none;
-    border-radius: 6px;
-    color: white;
+        color: white;
 }
 
 #files-btn_cancel {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
 }
 #files-btn_cancel:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 #files-btn_cancel:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
@@ -1776,8 +1589,7 @@ input[type="range"] {
     border: none;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-    font-size: 20px;
+        font-size: 20px;
 }
 
 .calendar_nav-btn:hover {
@@ -1811,10 +1623,9 @@ input[type="range"] {
     justify-content: center;
     align-items: center;
     border: 2px solid #e0e0e0;
-    border-radius: 10px;
-    transition: all 0.3s;
+        
     position: relative;
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
 }
 
 .calendar_day:hover {
@@ -1889,9 +1700,8 @@ input[type="range"] {
     gap: 10px;
     overflow-y: scroll;
     flex-shrink: 0;
-    background: rgba(0, 0, 0, 0.288);
-    border-radius: 8px;
-    padding: 4px;
+    background: rgb(0, 0, 0);
+        padding: 4px;
 }
 
 #toyboxBtnsDiv button {
@@ -1901,16 +1711,15 @@ input[type="range"] {
     align-items: center;
     background-color: transparent;
     border: none;
-    border-radius: 8px;
-    color: white;
+        color: white;
 }
 
 #toyboxBtnsDiv button:hover {
-    background-color: rgba(0, 0, 0, 0.372);
+    background-color: rgb(0, 0, 0);
 }
 
 #toyboxBtnsDiv button:active {
-    background-color: rgba(0, 0, 0, 0.504);
+    background-color: rgb(0, 0, 0);
 }
 
 
@@ -1920,8 +1729,7 @@ input[type="range"] {
     margin-top: 4px;
     object-fit: cover;
     display: block;
-    border-radius: 8px;
-}
+    }
 
 .toyboxTab {
     flex: 1;
@@ -1938,13 +1746,13 @@ input[type="range"] {
 }
 
 #askForVideoFile-btn_cancel {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
 }
 #askForVideoFile-btn_cancel:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 #askForVideoFile-btn_cancel:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
@@ -1960,35 +1768,34 @@ input[type="range"] {
 }
 
 #nyxvideoplayer_openFilePrompt {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
     margin-bottom: 10px;
 }
 
 #nyxvideoplayer_openFilePrompt:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #nyxvideoplayer_openFilePrompt:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
 
 #nyxvideoplayer_selectVid {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
     margin-bottom: 10px;
     border: none;
-    border-radius: 8px;
-    color: white;
+        color: white;
     height: 25px;
 }
 
 #nyxvideoplayer_selectVid:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #nyxvideoplayer_selectVid:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 /*Nyx img player*/
@@ -2005,13 +1812,13 @@ input[type="range"] {
 }
 
 #askForImageFile-btn_cancel {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
 }
 #askForImageFile-btn_cancel:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 #askForImageFile-btn_cancel:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
@@ -2027,35 +1834,34 @@ input[type="range"] {
 }
 
 #nyximageviewer_openFilePrompt {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
     margin-bottom: 10px;
 }
 
 #nyximageviewer_openFilePrompt:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #nyximageviewer_openFilePrompt:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
 
 #nyximageviewer_selectVid {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
     margin-bottom: 10px;
     border: none;
-    border-radius: 8px;
-    color: white;
+        color: white;
     height: 25px;
 }
 
 #nyximageviewer_selectVid:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #nyximageviewer_selectVid:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 /*nyxclient*/
@@ -2068,8 +1874,7 @@ input[type="range"] {
 #nytclientiframe {
     flex: 1;
     border: none;
-    border-radius: 8px;
-    
+        
 }
 
 #nytclientnavbar {
@@ -2083,15 +1888,14 @@ input[type="range"] {
 #nytclientnavbar input {
     flex: 1;
     min-width: 0;
-    border-radius: 6px;
-    border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+        border: none;
+    background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
 }
 
 #nytclientnavbar input:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #nytclientnavbar input:active {
@@ -2099,19 +1903,18 @@ input[type="range"] {
 }
 
 #nytclientnavbar button {
-    border-radius: 6px;
-    border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+        border: none;
+    background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
 }
 
 #nytclientnavbar button:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #nytclientnavbar button:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 /*ARCADE*/
@@ -2141,9 +1944,8 @@ input[type="range"] {
 .nyxpawstore_app {
     width: 270px;
     height: 150px;
-    background-color: rgba(75, 75, 75, 0.5);
-    border-radius: 8px;
-
+    background-color: rgb(75, 75, 75);
+    
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -2174,11 +1976,10 @@ input[type="range"] {
     border: none;
     color: white;
     padding: 2px;
-    border-radius: 8px;
-}
+    }
 
 .nyxpawstore_app button:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 .horizontal_divider  {
@@ -2217,18 +2018,17 @@ input[type="range"] {
 #nyxpawstore_apptabtitlenbtn button {
     width: 120px;
     height: 25px;
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgb(75, 75, 75);
     border: none;
-    border-radius: 8px;
-    color: white;
+        color: white;
 }
 
 #nyxpawstore_apptabtitlenbtn button:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #nyxpawstore_apptabtitlenbtn button:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 
@@ -2238,17 +2038,16 @@ input[type="range"] {
     height: 25px;
     background-color: transparent;
     border: none;
-    border-radius: 8px;
-    color: white;
+        color: white;
     margin-bottom: 30px;
 }
 
 #nyxpawstore_backbutton:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgb(101, 101, 101);
 }
 
 #nyxpawstore_backbutton:active {
-    background-color: rgba(45, 45, 45, 0.5);
+    background-color: rgb(45, 45, 45);
 }
 
 /*TASK MANAGER*/
@@ -2263,8 +2062,7 @@ input[type="range"] {
     width: 100%;
     height: 45px;
     background-color: #00000086;
-    border-radius: 8px;
-    display: flex;
+        display: flex;
     flex-direction: row;
     gap: 0;
     align-items: center;
@@ -2274,8 +2072,7 @@ input[type="range"] {
 #taskmanager_topbar button {
     margin-left: 10px;
     background-color: #ffffff2c;
-    border-radius: 8px;
-    border: none;
+        border: none;
     height: 25px;
     color: white;
 }
@@ -2295,8 +2092,7 @@ input[type="range"] {
     flex-direction: row;
     gap: 10px;
     background-color: #00000086;
-    border-radius: 8px;
-    align-items: center;
+        align-items: center;
     margin-bottom: 5px;
 }
 
@@ -2333,8 +2129,7 @@ input[type="range"] {
     align-items: center;
     gap: 8px;
     background-color: #ffffff18;
-    border-radius: 8px;
-    padding: 12px;
+        padding: 12px;
     margin-right: auto;
 }
 
@@ -2356,34 +2151,31 @@ input[type="range"] {
     align-items: center;
     gap: 8px;
     background-color: #ffffff18;
-    border-radius: 8px;
-    padding: 12px;
+        padding: 12px;
     margin-left: auto;
 }
 
 .eventviewer_btn {
     height: 28px;
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.13);
+    background-color: rgb(255, 255, 255);
     color: white;
     border: none;
-    border-radius: 8px;
-}
+    }
 
 .eventviewer_btn:hover {
-    background-color: rgba(255, 255, 255, 0.205);
+    background-color: rgb(255, 255, 255);
 }
 
 .eventviewer_btn:active {
-    background-color: rgba(255, 255, 255, 0.324);
+    background-color: rgb(255, 255, 255);
 }
 
 .eventviewer_event {
-    background-color: rgba(255, 255, 255, 0.265);
+    background-color: rgb(255, 255, 255);
     box-sizing: border-box;
     width: 100%;
-    border-radius: 8px;
-    height: 28px;
+        height: 28px;
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -2392,7 +2184,7 @@ input[type="range"] {
 }
 
 .eventviewer_event:hover {
-    background-color: rgba(255, 255, 255, 0.205);
+    background-color: rgb(255, 255, 255);
 }
 
 .eventviewer_text {
@@ -2417,8 +2209,7 @@ input[type="range"] {
     align-items: center;
     gap: 8px;
     background-color: #ffffff18;
-    border-radius: 8px;
-    padding: 12px;
+        padding: 12px;
     margin-right: auto;
 }
 
@@ -2435,58 +2226,45 @@ input[type="range"] {
 .regedit_btn {
     height: 28px;
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.13);
-    color: white;
+    background-color: rgb(255, 255, 255); 
     border: none;
-    border-radius: 8px;
+    color: #000000;
 }
 
 .regedit_btn:hover {
-    background-color: rgba(255, 255, 255, 0.205);
+    background-color: rgb(255, 255, 255);
 }
 
 .regedit_btn:active {
-    background-color: rgba(255, 255, 255, 0.324);
+    background-color: rgb(255, 255, 255);
 }
 
 .regedit_el {
-    background-color: rgba(255, 255, 255, 0.265);
+    background-color: rgb(255, 255, 255);
     box-sizing: border-box;
     width: 100%;
-    border-radius: 8px;
-    height: 28px;
+        height: 28px;
     display: flex;
     flex-direction: row;
     gap: 20px;
     align-items: center;
     padding-left: 10px;
+    color: #000000;
 }
 
 .regedit_el:hover {
-    background-color: rgba(255, 255, 255, 0.205);
+    background-color: rgb(255, 255, 255);
 }
 
 .regedit_el button {
     height: 20px;
-    background-color: rgba(255, 255, 255, 0.226);
-    color: white;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     border: none;
-    border-radius: 8px;
-}
+    }
 
 .regedit_el button:active {
-    background-color: rgba(255, 255, 255, 0);
-}
-
-/*ARCADE*/
-#virtualenviframe {
-    position: static;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: transparent;
+    background-color: rgb(255, 255, 255);
 }
 
 
@@ -2511,9 +2289,9 @@ input[type="range"] {
 
 /*
 COLORS
-Idle: rgba(75, 75, 75, 0.5);
-Hover: rgba(101, 101, 101, 0.66);
-Active: rgba(45, 45, 45, 0.5);
+Idle: rgb(75, 75, 75);
+Hover: rgb(101, 101, 101);
+Active: rgb(45, 45, 45);
 
 Otros:*/
 #win_appcenter {
@@ -2523,11 +2301,10 @@ Otros:*/
     left: 50%;
     transform: translate(-50%, -50%);
 
-    background: rgba(0, 0, 0, 0.656);
+    background: rgb(0, 0, 0);
     backdrop-filter: blur(calc(20px * var(--blur-multiplier)));
     color: white;
-    border-radius: 8px;
-
+    
     width: 700px !important;
     height: 500px !important; /*Le pongo !important xq no debe seguir las reglas de las ventanas dinamicas xD*/
 
@@ -2551,9 +2328,8 @@ Otros:*/
     margin-top: 15px;
     margin-bottom: 10px;
     padding: 0 16px;
-    border-radius: 9999px;
-
-    background-color: rgba(255, 255, 255, 0.196);
+    
+    background-color: rgb(255, 255, 255);
     color: white;
     font-size: 14px;
 }
@@ -2565,15 +2341,14 @@ Otros:*/
     margin-top: 15px;
     margin-bottom: 10px;
     padding: 0 16px;
-    border-radius: 50%;
-
-    background-color: rgba(255, 255, 255, 0.196);
+    
+    background-color: rgb(255, 255, 255);
     color: white;
     font-size: 14px;
 }
 
 #appcenterclose:hover {
-    background-color: rgba(255, 255, 255, 0.336);
+    background-color: rgb(255, 255, 255);
 }
 
 #appcenterapps {
@@ -2591,14 +2366,13 @@ Otros:*/
     align-items: center;
 
     background-color: transparent;
-    border-radius: 8px;
-
-    font-family: 'Outfit', sans-serif;
+    
+    font-family: 'JetBrains Mono', monospace;
     text-align: center;
 }
 
 .appcenter_appdiv:hover {
-    background-color: rgba(0, 0, 0, 0.203);
+    background-color: rgb(0, 0, 0);
 }
 
 .appcenter-appbtn {
@@ -2623,8 +2397,7 @@ Otros:*/
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    border-radius: 0 !important;
-    z-index: 8040 !important;
+        z-index: 8040 !important;
 }
 
 .window.win-fullscreen .grab {
@@ -2667,7 +2440,7 @@ Otros:*/
     align-items: center;
     justify-content: center;
 
-    transition: transform 0.4s ease-in-out;
+    
     transform: translateX(100%);
 }
 
@@ -2680,9 +2453,8 @@ Otros:*/
 }
 
 .syssetup_container {
-    background: rgba(255, 255, 255, 0.747);
+    background: rgb(255, 255, 255);
     border: none;
-    border-radius: 8px;
     box-shadow: 0px 0px 5px rgb(84, 84, 84);
     padding: 50px;
     display: flex;
@@ -2697,7 +2469,6 @@ Otros:*/
 }
 
 .syssetup_btn {
-    border-radius: 8px;
     border: none;
     background-color: rgb(0, 145, 255);
     color: white;

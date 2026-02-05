@@ -1,6 +1,8 @@
 console.log("Current: usermanager.js");
 
 window.SysVar = window.SysVar || {};
+SysVar.lockedSession = true;
+console.log('session locked')
 
 function sysAskLoginPassword(user) {
     loginin_user = user;
@@ -15,14 +17,22 @@ function sysAskLoginPassword(user) {
     document.documentElement.requestFullscreen();
 
     if (userData.password === '') {
+        SysVar.currentuser.user = loginin_user;
+        SysVar.currentuser.dName = userData.displayName;
+        SysVar.currentuser.permissions = 'user';
+        SysVar.lockedSession = false;
         setTimeout(() => {
             loginscr.classList.add('hidden');
             showAppBar();
             showTopBar();
         }, 700);
     } else {
-        askForPasswordWin.classList.remove('hidden');
         askForPasswordWin.style.zIndex = 9005;
+        askForPasswordWin.style.removeProperty('opacity');
+        askForPasswordWin.classList.remove('hidden');
+        setTimeout(() => {
+            askForPasswordWin.classList.add('window_anim_open');
+        }, 10);
         loginscrPassInput.focus();
     }
 }
@@ -31,6 +41,10 @@ function sysclosesesion() {
     hideAppBar();
     hideTopBar();
     sysComQuitTasks();
+    SysVar.lockedSession = true;
+    SysVar.currentuser.user = 'system';
+    SysVar.currentuser.dName = 'System';
+    SysVar.currentuser.permissions = 'system';
     setTimeout(() => {
         const allLoginTexts = document.querySelectorAll('.loginscr_logintext');
         allLoginTexts.forEach(text => {
@@ -50,7 +64,12 @@ loginscrBtnCancel.addEventListener('click', () => {
     const userDiv = document.querySelector(`[data-username="${loginin_user}"]`);
     const loginText = userDiv.querySelector('.loginscr_logintext');
 
-    askForPasswordWin.classList.add('hidden');
+    askForPasswordWin.classList.remove('window_anim_open');
+    setTimeout(() => {
+        askForPasswordWin.classList.add('hidden');
+        askForPasswordWin.style.removeProperty('opacity');
+    }, 200);
+    
     loginText.textContent = 'Iniciar sesion';
 });
 
@@ -71,7 +90,15 @@ function tryLoginToUser() {
     const loginText = userDiv.querySelector('.loginscr_logintext');
 
     if (loginscrPassInput.value === userData.password) {
-        askForPasswordWin.classList.add('hidden');
+        askForPasswordWin.classList.remove('window_anim_open');
+        setTimeout(() => {
+            askForPasswordWin.classList.add('hidden');
+            askForPasswordWin.style.removeProperty('opacity');
+        }, 200);
+        SysVar.currentuser.user = loginin_user; //como obtengo el usuario aqui?
+        SysVar.currentuser.dName = userData.displayName;
+        SysVar.currentuser.permissions = 'user';
+        SysVar.lockedSession = false;
         setTimeout(() => {
             loginscr.classList.add('hidden');
             showAppBar();
@@ -88,7 +115,7 @@ function tryLoginToUser() {
                 showAlertBox('Bienvenido :3', 'Bienvenido a NyxPaw OS Therian edition, el sistema operativo para therians!');
                 localStorage.setItem('sysStartupConfig', 'none');
             }
-        }, 700);
+        }, 600);
     } else {
         askForPasswordWin.classList.add('hidden');
         loginText.textContent = 'Contraseña incorrecta!';

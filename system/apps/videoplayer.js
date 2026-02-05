@@ -25,7 +25,11 @@ videoPlayerAskBtnConfirm.addEventListener('click', function() {
         videoPlayerCurrentURL = videoPlayerURLVid;
 
         videoPlayerSelectedFile = null;
-        videoPlayerWindowSelect.classList.add('hidden');
+        videoPlayerWindowSelect.classList.remove('window_anim_open');
+        setTimeout(() => {
+            videoPlayerWindowSelect.classList.add('hidden');
+            videoPlayerWindowSelect.style.removeProperty('opacity');
+        }, 200);
     }
 });
 
@@ -39,11 +43,19 @@ videoPlayerPlayer.addEventListener('ended', () => {
 videoPlayerAskBtnCancel.addEventListener('click', () => {
     videoPlayerSelectedFile = null;
     videoPlayerFileSelector.value = '';
-    videoPlayerWindowSelect.classList.add('hidden');
+    videoPlayerWindowSelect.classList.remove('window_anim_open');
+    setTimeout(() => {
+        videoPlayerWindowSelect.classList.add('hidden');
+        videoPlayerWindowSelect.style.removeProperty('opacity');
+    }, 200);
 });
 
 videoPlayerAskClose.addEventListener('click', () => {
-    videoPlayerWindowSelect.classList.add('hidden');
+    videoPlayerWindowSelect.classList.remove('window_anim_open');
+    setTimeout(() => {
+        videoPlayerWindowSelect.classList.add('hidden');
+        videoPlayerWindowSelect.style.removeProperty('opacity');
+    }, 200);
 });
 
 window.scriptReady('videoplayer');
