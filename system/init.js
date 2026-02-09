@@ -137,12 +137,13 @@ function systemIntegrityCheck() {
             }
         }
 
-
-        if (!window.fs.isFolder('/system/users/root')) {
-            throw new Error(`System user not found`);
-        }
-        if (!window.fs.isFolder('/system/temp')) {
-            throw new Error(`Could not extract temporal files: 'system/temp' not found`);
+        if (usedBefore) {
+            if (!window.fs.isFolder('/system/users/root')) {
+                throw new Error(`System user not found`);
+            }
+            if (!window.fs.isFolder('/system/temp')) {
+                throw new Error(`Could not extract temporal files: 'system/temp' not found`);
+            }
         }
 
         //esta variable se establece hasta el final, de esta forma en caso de que algo en el script falle, la variable no se inicializa y eso significa que hay algun error:

@@ -80,6 +80,19 @@ notesNewBtn.addEventListener('click', () => {
     //accion del boton de abrir ya abre files, no hay necesidad de esta funcion xD
 });*/
 
+window.notesSetTXArea = function(content) {
+    if (!AppManager.loadedApps.has('notes')) {
+        AppManager.loadApp('notes').then(() => {
+            setTimeout(() => {
+                notesTextarea.value = content;
+            }, 70);
+        });
+        return;
+    }
+
+    notesTextarea.value = content;
+}
+
 function cleanup_notes() {
     console.log('Cleaning notes...');
     

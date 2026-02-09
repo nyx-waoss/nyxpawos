@@ -373,19 +373,51 @@ const settingsNewuserDisplaynameinput = document.getElementById('settings_newuse
 const settingsNewuserPasswordinput = document.getElementById('settings_newuser_passwordinput');
 
 function sysAskForNewUserData() {
+    winSysAskForNewUserData.style.removeProperty('opacity');
     winSysAskForNewUserData.classList.remove('hidden');
+    setTimeout(() => {
+        winSysAskForNewUserData.classList.add('window_anim_open');
+    }, 10);
     winSysAskForNewUserData.style.height = '460px';
     winSysAskForNewUserData.style.width = '440px';
 }
 
 sysaskfornewuserdataBtnCancel.addEventListener('click', () => {
-    winSysAskForNewUserData.classList.add('hidden');
+    winSysAskForNewUserData.classList.remove('window_anim_open');
+    setTimeout(() => {
+        winSysAskForNewUserData.classList.add('hidden');
+        winSysAskForNewUserData.style.removeProperty('opacity');
+    }, 200);
 });
 
 sysaskfornewuserdataBtnLogin.addEventListener('click', () => {
     sysCreateUser(settingsNewuserUsernameinput.value, settingsNewuserDisplaynameinput.value, settingsNewuserPasswordinput.value);
     refreshUserCards();
-    winSysAskForNewUserData.classList.add('hidden');
+    winSysAskForNewUserData.classList.remove('window_anim_open');
+    setTimeout(() => {
+        winSysAskForNewUserData.classList.add('hidden');
+        winSysAskForNewUserData.style.removeProperty('opacity');
+    }, 200);
 });
 
 window.scriptReady('usermanager');
+
+/*
+
+ABRIR:
+askForPasswordWin.style.removeProperty('opacity');
+askForPasswordWin.classList.remove('hidden');
+setTimeout(() => {
+    askForPasswordWin.classList.add('window_anim_open');
+}, 10);
+
+
+
+CERRAR:
+winAskfile.classList.remove('window_anim_open');
+setTimeout(() => {
+    winAskfile.classList.add('hidden');
+    winAskfile.style.removeProperty('opacity');
+}, 200);
+
+*/

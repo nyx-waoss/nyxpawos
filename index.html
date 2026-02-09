@@ -119,6 +119,10 @@
             <button id="nekiri_send">➤</button>
         </div>
         <p id="nekiri_response">Hola! Soy Nekiri, en que puedo ayudarte?</p>
+        <div id="nekiri_smartcard" class="hidden">
+            <img src="assets/apps/browser/3.png" id="nekiri_netimg">
+            <button id="nekiri_search" onclick="nekiriRunBtnFunc()">Buscar en internet</button>
+        </div>
     </div>
 
     <div class="dropdown-menu hidden" id="audio-dropdown">
@@ -162,6 +166,7 @@
     <div id="filesaltmenu" class="filesaltmenu hidden">
         <button id="ctx-open">Abrir</button>
         <button id="ctx-delete">Eliminar</button>
+        <button id="ctx-addhome">Agregar al inicio</button>
     </div>
 
     <!--System Apps-->
@@ -1084,8 +1089,21 @@
                 <button onclick="filesCreateNewFileType()">+</button>
                 <button onclick="files_delobj()">🗑</button>
                 <button onclick="files_modobj()">✎</button>
+                <input type="text" autocomplete="off" id="files_toolbar_dirinput">
             </div>
-            <div id="file-list"></div>
+            <div id="files_main_workspace">
+                <div id="files_recomended_dirs">
+                    <button class="files-recdir-button" onclick="setDirectory('/system/styledui/fileshome')">🏠 Inicio</button>
+                    <div style="width: 100%; height: 1px; background-color: rgba(255, 255, 255, 0.5);"></div>
+                    <button class="files-recdir-button" onclick="setDirectory('/home/videos')">🎬 Videos</button>
+                    <button class="files-recdir-button" onclick="setDirectory('/home/images')">🖼️ Imagenes</button>
+                    <button class="files-recdir-button" onclick="setDirectory('/home/documents')">📄 Documentos</button>
+                    <div style="width: 100%; height: 1px; background-color: rgba(255, 255, 255, 0.5);"></div>
+                    <button class="files-recdir-button" onclick="setDirectory('/')">🖥️ This PC</button>
+                    <button class="files-recdir-button hidden" onclick="setDirectory('/system/mnt/disk1')">💾 USB</button>
+                </div>
+                <div id="file-list"></div>
+            </div>
         </div>
         <div class="resize-handle"></div>
     </div>
@@ -1279,6 +1297,14 @@
                     <div class="horizontal_divider"></div>
                     <button onclick="nyxPawStoreOpenTab('VirtualEnvs', 'assets/apps/virtualenv.png')">Ver mas...</button>
                 </div>
+                <!--<div class="nyxpawstore_app">
+                    <div class="nyxpawstore_imgtextrow">
+                        <img src="assets/apps/vscode.png">
+                        <p>VSCode</p>
+                    </div>
+                    <div class="horizontal_divider"></div>
+                    <button onclick="nyxPawStoreOpenTab('VSCode', 'assets/apps/vscode.png')">Ver mas...</button>
+                </div>-->
             </div>
 
             <div id="nyxpawstore_apptab" class="hidden">
@@ -1415,7 +1441,18 @@
         </div>
 
         <div class="win_content content_virtualenv">
-            <iframe src="virtualenv.html" id="virtualenviframe"></iframe>
+            <iframe src="system_appload.html?img=assets/apps/virtualenv.png" sandbox="allow-scripts allow-same-origin" id="virtualenviframe"></iframe>
+        </div>
+        <div class="resize-handle"></div>
+    </div>
+    <div class="window hidden" id="win_vscode">
+        <div class="grab">
+            <span class="grab-title">🔷  VSCode</span>
+            <button class="grab-btn" id="btn_vscode">X</button>
+        </div>
+
+        <div class="win_content content_vscode">
+            <iframe src="system_appload.html?img=assets/apps/vscode.png&avl=0" sandbox="allow-scripts allow-same-origin" id="vscodeiframe"></iframe>
         </div>
         <div class="resize-handle"></div>
     </div>
@@ -1634,6 +1671,10 @@
             <div class="appcenter_appdiv hidden" id="appcenter-virtualenv" onclick="hideappcenter()">
                 <button class="appcenter-appbtn"> <img class="appcenter-img" src="assets/apps/virtualenv.png" alt="Virtual Environments"> </button>
                 <p>Virtual Environments</p>
+            </div>
+            <div class="appcenter_appdiv hidden" id="appcenter-vscode" onclick="hideappcenter()">
+                <button class="appcenter-appbtn"> <img class="appcenter-img" src="assets/apps/vscode.png" alt="VSCode"> </button>
+                <p>VSCode</p>
             </div>
 
         </div>

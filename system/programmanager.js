@@ -26,7 +26,8 @@ const AppManager = {
         vengegame: 'system/apps/vengegame.js',
         eventviewer: 'system/apps/eventviewer.js',
         regedit: 'system/apps/regedit.js',
-        virtualenv: 'system/apps/virtualenv.js'
+        virtualenv: 'system/apps/virtualenv.js',
+        vscode: 'system/apps/vscode.js'
         
     },
 

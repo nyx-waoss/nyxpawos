@@ -249,8 +249,32 @@ SysVar.currentuser = {
     dName: 'System',
     permissions: 'system'
 };
-
-
+SysVar.filesQuickAccess = [
+    {
+        emoji:'🎬',
+        text: 'Videos',
+        route: '/home/videos',
+        eltype: 'folder'
+    },
+    {
+        emoji:'🖼️',
+        text: 'Imagenes',
+        route: '/home/images',
+        eltype: 'folder'
+    },
+    {
+        emoji:'📄',
+        text: 'Documentos',
+        route: '/home/documents',
+        eltype: 'folder'
+    },
+    {
+        emoji:'🖥️',
+        text: 'This PC',
+        route: '/',
+        eltype: 'folder'
+    }
+];
 
 
 /*VARIABLES GLOBALES END */
@@ -270,30 +294,79 @@ async function saveDataReg() {
             return;
         }
     }
-    localStorage.setItem('sessionAutoStart', JSON.stringify(SysVar.sessionAutoStart));
-    const data = {
-        format24h: SysVar.format24h,
-        //lockedSession: SysVar.lockedSession,
-        windowManager0: SysVar.windowManager0,
-        disableJSload: SysVar.disableJSload,
-        devMode: SysVar.devMode,
-        currenttheme: SysVar.currenttheme
-    };
-    localStorage.setItem('SysRegConfig', JSON.stringify(data));
+
+    try {
+        if (SysVar.sessionAutoStart !== undefined) {
+            localStorage.setItem('sessionAutoStart', JSON.stringify(SysVar.sessionAutoStart));
+        } else {
+            console.error('Error while saving data: "sessionAutoStart" is undefined');
+        }
+    } catch (error) {
+        console.error('Error while saving data "sessionAutoStart":',error);
+    }
+    
+
+    const data = {};
+    const props = [
+        'format24h',
+        'windowManager0',
+        'disableJSload',
+        'devMode',
+        'currenttheme',
+        'filesQuickAccess'
+    ]
+
+    props.forEach(prop => {
+        if (SysVar[prop] !== undefined) {
+            data[prop] = prop === 'filesQuickAccess'
+                ? JSON.stringify(SysVar[prop])
+                : SysVar[prop];
+        } else {
+            console.error(`Error while saving data: "${prop}" is undefined`);
+        }
+    });
+
+    if (Object.keys(data).length > 0) {
+        try {
+            localStorage.setItem('SysRegConfig', JSON.stringify(data));
+        } catch (error) {
+            console.error('Error while saving data:',error);
+        }
+    }
+
 }
 
 function loadDataReg() {
-    SysVar.sessionAutoStart = JSON.parse(localStorage.getItem('sessionAutoStart'));
-    const saved = localStorage.getItem('SysRegConfig');
-    if (saved) {
-        const data = JSON.parse(saved);
+    try {
+        const sessionAUST = localStorage.getItem('sessionAutoStart');
+        if (sessionAUST !== null) {
+            SysVar.sessionAutoStart = JSON.parse(sessionAUST);
+        }
+    } catch (error) {
+        console.error('Error while loading data "sessionAutoStart":',error);
+    }
+    
+    try {
+        const saved = localStorage.getItem('SysRegConfig');
+        if (saved) {
+            const data = JSON.parse(saved);
 
-        SysVar.format24h = data.format24h;
-        //SysVar.lockedSession = data.lockedSession;
-        SysVar.windowManager0 = data.windowManager0;
-        SysVar.disableJSload = data.disableJSload;
-        SysVar.devMode = data.devMode;
-        SysVar.currenttheme = data.currenttheme;
+            if (data.format24h !== undefined) SysVar.format24h = data.format24h;
+            if (data.windowManager0 !== undefined) SysVar.windowManager0 = data.windowManager0;
+            if (data.disableJSload !== undefined) SysVar.disableJSload = data.disableJSload;
+            if (data.devMode !== undefined) SysVar.devMode = data.devMode;
+            if (data.currenttheme !== undefined) SysVar.currenttheme = data.currenttheme;
+
+            if (data.filesQuickAccess !== undefined) {
+                try {
+                    SysVar.filesQuickAccess = JSON.parse(data.filesQuickAccess);
+                } catch (error) {
+                    console.error('Error while loading data "filesQuickAccess":',error);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error while loading data:',error);
     }
 }
 
@@ -608,8 +681,12 @@ async function sysshutdown(askConfirm = true) {
                     hideTopBar();
                     hideAppBar();
                     sysComQuitTasks();
+                    document.getElementById('start-dropdown').classList.add('hidden');
+                    document.getElementById('audio-dropdown').classList.add('hidden');
+                    document.getElementById('nekiri-dropdown').classList.add('hidden');
                     setTimeout(() => {
                         document.body.style.backgroundImage = "url('assets/bs.png')";
+                        document.documentElement.style.cursor = 'none';
                         setTimeout(() => {
                             document.body.classList.add("hidden");
                             const sysScripts = document.querySelectorAll('script');
@@ -822,6 +899,9 @@ function getRandomNekiriRes(type, array) {
 const nekiriInput = document.getElementById('nekiri_input');
 const nekiriRes = document.getElementById('nekiri_response');
 const nekiriSend = document.getElementById('nekiri_send');
+const nekiriSmartcard = document.getElementById('nekiri_smartcard');
+const nekiriSmartcardBtn = document.getElementById('nekiri_search');
+const nekiriSmartcardImg = document.getElementById('nekiri_netimg');
 
 let nekiriDPOpen = false;
 const nekiriButton = document.getElementById('topbar_nekiri');
@@ -857,12 +937,31 @@ nekiriInput.addEventListener('keydown', (e) => {
 });
 
 let nekiriAnswers = [];
+let nekiriButtonAction = '';
+let nekiriButtonActionArg = '';
 
 
+function nekiriShowSmartCard(type, args1 = '', args2 = '') {
+    if (type === 'search') {
+        nekiriSmartcardBtn.textContent = args1;
+        nekiriButtonActionArg = args2;
+        nekiriButtonAction = 'search';
+        nekiriSmartcardImg.src = 'assets/apps/browser/3.png';
+        nekiriSmartcard.classList.remove('hidden');
+    }
+}
+
+function nekiriRunBtnFunc() {
+    if (nekiriButtonAction === 'search') {
+        sysExecApp('browser');
+        setTimeout(() => browserSetWebTo(nekiriButtonActionArg), 90);
+    }
+} 
 
 
 function nekiriShowAnswer() {
     const userInput = nekiriInput.value.toLowerCase();
+    nekiriSmartcard.classList.add('hidden');
 
     if (userInput.includes('hola')) {
         nekiriAnswers = [
@@ -919,14 +1018,14 @@ function nekiriShowAnswer() {
             "Puedes ver la versión del sistema en la ventana 'Acerca de' uwu"
         ]
         nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('therian') || userInput.includes('furr')) {
+    } else if (userInput.includes('therian') && userInput.includes('furr')) {
         nekiriAnswers = [
             "Los therians no son furros!! Los therians sienten una conexión espiritual con los animales, los furros disfrutan de usar fursuits o mas que nada el hobby como tal, me explico?",
             "Mucha gente se confunde, pero los therians no son lo mismo que los furros... Los furros simplemente disfrutan del hobby (arte, trajes, etc...) y los therians sienten una conexión espiritual!",
             "Hay una gran diferencia entre los therians y los furros, pero mucha gente los confunde. Los therians sienten una conexión espiritual con los animales, los furros disfrutan de usar fursuits o mas que nada el hobby como tal, me explico?"
         ]
         nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-        //aqui mostrar tarjetita con info
+        nekiriShowSmartCard('search','Buscar en internet', encodeURI(`https://www.google.com/search?q=¿Los therians son lo mismo que los furros?&igu=1`));
     } else if (userInput.includes('gracias') || userInput.includes('agrade')) {
         nekiriAnswers = [
             "De nada! Si necesitas otra cosa solo dime :D",
@@ -941,7 +1040,52 @@ function nekiriShowAnswer() {
             "Gracias por reir! Todos se burlan de mi... menos tu!"
         ]
         nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
+    } else if (userInput.includes('tierno') || userInput.includes('uwu') || userInput.includes('nya') || userInput.includes('arigato') || userInput.includes('goodboy') || userInput.includes('rwar')) {
+        nekiriAnswers = [
+            "Nya!",
+            "Rwar! :3",
+            "Nya! UwU!",
+            "I am a good boy! UwU!",
+            "Nya! Arigato!",
+            "Nya, itchi ni san nya! Arigatoooo!"
+        ]
+        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
+    } else if (userInput.includes('clima') || userInput.includes('temperatura') || userInput.includes('weather')) {
+        sysExecApp('weather');
+        nekiriAnswers = [
+            "Aqui tienes el clima!",
+            "Toma! El clima para ti :3",
+            "Acabo de abrir la app de clima",
+            "Este es el clima actual :3"
+        ]
+        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
+    } else if ((userInput.includes('quiero') || userInput.includes('deseo') || userInput.includes('gustaria') || userInput.includes('podemos') || userInput.includes('que tal si')) && (userInput.includes('habla') || userInput.includes('conversa') || userInput.includes('charla'))) {
+        nekiriAnswers = [
+            "Claro que si! De que quieres hablar?",
+            "Dale!! Hablemos un rato :D Tu empiezas",
+            "Oks! Charlemos un rato si te parece bien!",
+            "Okie pero tu empiezas! No tengo buenos temas de conversacion jeje :3"
+        ]
+        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
+    } else if (userInput.includes('busca') && (userInput.includes('internet') || userInput.includes('google') || userInput.includes('navegador'))) {
+        nekiriAnswers = [
+            "Esto es lo que encontre:",
+            "Encontre esto en internet, te sirve?",
+            "Esto fue lo que encontre:",
+            "Encontre esto, que tal?"
+        ]
+        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
+        nekiriShowSmartCard('search','Buscar en internet', encodeURI(`https://www.google.com/search?q=${userInput}&igu=1`));
+    } else if (userInput.includes('eres') && (userInput.includes('quien') || userInput.includes('que') || userInput.includes('esto'))) {
+        nekiriAnswers = [
+            "Soy Nekiri, el asistente personal de NyxPawOS! Te puedo ayudar con todo lo que quieras!",
+            "Me llamo Nekiri, te puedo ayudar con lo que tu quieras! Abrir apps, documentos, buscar en internet, etc...",
+            "Soy tu asistente personal! Puedo ayudarte en todo lo que quieras!",
+            "Soy Nekiri, y soy tu asistente personal! Te ayudare a abrir apps, buscar documentos, etc... o solo podemos hablar :D"
+        ]
+        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
     }
+    
     
     
     
@@ -1003,10 +1147,11 @@ function nekiriShowAnswer() {
             "No te entendí, pero encontre esto en internet:"
         ]
         nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-        //mostrar tarjetita con boton para buscar en google
+        nekiriShowSmartCard('search','Buscar en internet', encodeURI(`https://www.google.com/search?q=${userInput}&igu=1`));
     }
 
     userInput.value = '';
+    nekiriInput.value = '';
 }
 
 let audioDPOpen = false;
@@ -1103,6 +1248,7 @@ function sysExecApp(appName, options = {}) {
     if (appName === 'appcenter') {
         const appCenter = document.getElementById('win_appcenter');
         if (appCenter) {
+            appCenter.style.zIndex = topZ + 10;
             appCenter.classList.remove('hidden');
             return;
         }

@@ -4,6 +4,7 @@ let currentDirectory = '/';
 let selectedItem = null;
 let selectedItemType = null;
 const openNotesModTextarea = document.querySelector('#win_notes textarea');
+window.SysVar = window.SysVar || {};
 
 function initFileSystem() {
     try {
@@ -189,6 +190,78 @@ function changeDirectory(name) {
     updateFileList();
 }
 
+function setDirectory(name) {
+    const fs = getFileSystem();
+    const normalizedPath = normalizePath(name);
+
+    if (!fs[normalizedPath]) {
+        console.error('Directory not found: '+normalizedPath);
+        showAlertBox('Error', `Dir ${normalizedPath} not found!`, {as_win:true, icon:'❌'});
+        return;
+    }
+
+    if (fs[normalizedPath].type !== 'folder') {
+        console.error('Not a directory: '+normalizedPath);
+        showAlertBox('Error', `${normalizedPath} is not a folder!`, {as_win:true, icon:'❌'});
+        return;
+    }
+
+    currentDirectory = normalizedPath;
+    updateFileList();
+}
+
+function createCustomElement(newObject) {
+    if (newObject === 'files-homegrid') {
+        const quickAccessArr = SysVar.filesQuickAccess;
+
+        if (!quickAccessArr || quickAccessArr.length === 0) {
+            console.error('SysVar.filesQuickAccess is not valid!');
+            showAlertBox('Error', `Ha ocurrido un error! Revisa Event Viewer para mas informacion.`, {as_win:true, icon:'❌'});
+            return;
+        }
+
+        const filesHomegrid = document.createElement('div');
+        filesHomegrid.id = 'files-homegrid';
+
+        for (const QAitem of quickAccessArr) {
+            const filesHomegridBtn = document.createElement('div');
+            filesHomegridBtn.className = 'files-homegrid-btn';
+
+            const filesHomegridBtnIco = document.createElement('div');
+            filesHomegridBtnIco.className = 'files-homegrid-btn-ico';
+            filesHomegridBtnIco.textContent = QAitem.emoji;
+
+            const filesHomegridBtnTxt = document.createElement('div');
+            filesHomegridBtnTxt.className = 'files-homegrid-btn-txt';
+            filesHomegridBtnTxt.textContent = QAitem.text;
+
+            filesHomegridBtn.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                if (QAitem.eltype === 'folder') {
+                    setDirectory(QAitem.route);
+                } else if (QAitem.eltype === 'file') {
+                    setDirectory(QAitem.route);
+                    const fileContToOpen = openFile(QAitem.text, QAitem.route);
+                    if (fileContToOpen) {
+                        sysExecApp('notes');
+                        setTimeout(() => notesSetTXArea(fileContToOpen), 90);
+                    } else {
+                        console.error('fileContToOpen is not valid:',fileContToOpen);
+                        showAlertBox('Error', `Ha ocurrido un error! Revisa Event Viewer para mas informacion.`, {as_win:true, icon:'❌'});
+                    }
+                }
+            });
+
+            filesHomegridBtn.appendChild(filesHomegridBtnIco);
+            filesHomegridBtn.appendChild(filesHomegridBtnTxt);
+
+            filesHomegrid.appendChild(filesHomegridBtn);
+        }
+
+        document.getElementById('file-list').appendChild(filesHomegrid);
+    }
+}
+
 function updateFileList() {
     const fs = getFileSystem();
     const fileListDiv = document.getElementById('file-list');
@@ -197,12 +270,19 @@ function updateFileList() {
     const normalizedPath = normalizePath(currentDirectory);
     const currentDir = fs[normalizedPath];
 
+    document.getElementById('files_toolbar_dirinput').value = currentDirectory;
+
     if (!currentDir) {
         fileListDiv.innerHTML = '<p>Directorio no encontrado</p>';
         return;
     }
 
-    const pathDisplay = document.createElement('div');
+    if (currentDirectory === '/system/styledui/fileshome') {
+        createCustomElement('files-homegrid');
+        return;
+    }
+
+    /*const pathDisplay = document.createElement('div');
     pathDisplay.textContent = `Directorio actual: ${currentDirectory}`;
     pathDisplay.style.marginBottom = '10px';
     pathDisplay.style.fontWeight = 'bold';
@@ -216,7 +296,7 @@ function updateFileList() {
         upButton.style.marginBottom = '5px';
         upButton.addEventListener('dblclick', () => changeDirectory('..'));
         fileListDiv.appendChild(upButton);
-    }
+    }*/
     if (currentDir.children && currentDir.children.length > 0) {
         currentDir.children.forEach(itemName => {
             const itemPath = normalizedPath === '/' ? `/${itemName}` : `${normalizedPath}/${itemName}`;
@@ -246,12 +326,11 @@ function updateFileList() {
             if (item.type === 'folder') {
                 button.addEventListener('dblclick', () => changeDirectory(itemName));
             } else {
-                button.addEventListener('click', () => {
+                button.addEventListener('dblclick', () => {
                     const content = openFile(itemName);
-                    console.log(`Get content of ${itemName}:`, content);
-                    openNotesModTextarea.value = content;
-                    document.getElementById('win_notes').classList.remove('hidden');
-                    document.getElementById('win_files').classList.add('hidden');
+                    console.log(`Get content of ${itemName}...`);
+                    sysExecApp('notes');
+                    setTimeout(() => notesSetTXArea(content), 90);
                 });
             }
             fileListDiv.appendChild(button);
@@ -308,7 +387,6 @@ function setupContextMenu() {
 function setupContextMenuActions() {
     const contextMenu = document.getElementById('filesaltmenu');
     
-    //Eliminar
     const deleteBtn = document.getElementById('ctx-delete');
     deleteBtn.addEventListener('click', async () => {
         const itemName = contextMenu.dataset.targetItem;
@@ -328,11 +406,34 @@ function setupContextMenuActions() {
         if (itemType === 'file') {
             const content = window.fs.openFile(itemName);
             console.log('Content:', content);
-            openNotesModTextarea.value = content;
-            document.getElementById('win_notes').classList.remove('hidden');
-            document.getElementById('win_files').classList.add('hidden');
+            console.log(`Get content of ${itemName}...`);
+            sysExecApp('notes');
+            setTimeout(() => notesSetTXArea(content), 90);
         } else {
             window.fs.changeDirectory(itemName);
+        }
+        contextMenu.classList.add('hidden');
+    });
+
+    const addhomeBtn = document.getElementById('ctx-addhome');
+    addhomeBtn.addEventListener('click', () => {
+        const itemName = contextMenu.dataset.targetItem;
+        const itemType = contextMenu.dataset.targetType;
+        
+        if (itemType === 'file') {
+            SysVar.filesQuickAccess.push({
+                emoji:'📄',
+                text: itemName,
+                route: currentDirectory,
+                eltype: 'file'
+            });
+        } else {
+            SysVar.filesQuickAccess.push({
+                emoji:'🗂️',
+                text: itemName,
+                route: `${currentDirectory}/${itemName}`,
+                eltype: 'folder'
+            });
         }
         contextMenu.classList.add('hidden');
     });
@@ -448,6 +549,7 @@ window.fileExist = fileExist;
 window.fileExistInPath = fileExistInPath;
 window.isFile = isFile;
 window.isFolder = isFolder;
+window.setDirectory = setDirectory;
 
 window.fs = {
   createFolder: createFolder,
@@ -463,7 +565,8 @@ window.fs = {
   fileExist: fileExist,
   fileExistInPath: fileExistInPath,
   isFile: isFile,
-  isFolder: isFolder
+  isFolder: isFolder,
+  setDirectory: setDirectory
 };
 
 console.log("window.fs working:", window.fs);

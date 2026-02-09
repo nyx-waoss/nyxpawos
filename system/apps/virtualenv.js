@@ -12,7 +12,7 @@ function init_virtualenv() {
 
 function cleanup_virtualenv() {
     console.log('Cleaning virtualenv...');
-    iframe.src = 'virtualenv.html';
+    iframe.src = 'system_appload.html?img=assets/apps/virtualenv.png';
 }
 
 window.scriptReady('virtualenv');

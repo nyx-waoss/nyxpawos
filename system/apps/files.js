@@ -1,5 +1,7 @@
 console.log("Current: apps/files.js");
 
+const topDirInput = document.getElementById('files_toolbar_dirinput');
+
 const winAskfile = document.getElementById("win_askforfilecreation");
 const closeAskfile = document.getElementById("btn_askforfilecreation");
 const newFileTypeObj = document.getElementById("files-newfiletype");
@@ -26,7 +28,12 @@ function files_newobj() {
         winAskfile.style.width = '400px';
         winAskfile.style.height = '240px'; 
 
-        winAskfile.classList.remove("hidden");
+        winAskfile.style.removeProperty('opacity');
+        winAskfile.classList.remove('hidden');
+        setTimeout(() => {
+            winAskfile.classList.add('window_anim_open');
+        }, 10);
+
         winAskfile.style.zIndex = ++topZ;
         newFileNameInput.focus();
 
@@ -39,7 +46,11 @@ function files_newobj() {
                 return;
             }
 
-            winAskfile.classList.add("hidden");
+            winAskfile.classList.remove('window_anim_open');
+            setTimeout(() => {
+                winAskfile.classList.add('hidden');
+                winAskfile.style.removeProperty('opacity');
+            }, 200);
 
             filesBtnOk.removeEventListener('click', handleOk);
             filesBtnCancel.removeEventListener('click', handleCancel);
@@ -48,7 +59,11 @@ function files_newobj() {
         }
 
         const handleCancel = () => {
-            winAskfile.classList.add("hidden");
+            winAskfile.classList.remove('window_anim_open');
+            setTimeout(() => {
+                winAskfile.classList.add('hidden');
+                winAskfile.style.removeProperty('opacity');
+            }, 200);
 
             filesBtnOk.removeEventListener('click', handleOk);
             filesBtnCancel.removeEventListener('click', handleCancel);
@@ -73,7 +88,11 @@ function files_modobj() {
 }
 
 closeAskfile.addEventListener("click", () => {
-    winAskfile.classList.add("hidden");
+    winAskfile.classList.remove('window_anim_open');
+    setTimeout(() => {
+        winAskfile.classList.add('hidden');
+        winAskfile.style.removeProperty('opacity');
+    }, 200);
 });
 
 async function filesCreateNewFileType() {
@@ -98,6 +117,20 @@ async function filesCreateNewFileType() {
         console.error('Failed to create file: ', error);
         showAlertBox('❌ Error', 'No se pudo crear el archivo');
     }
+}
+
+topDirInput.addEventListener('change', () => {
+    window.fs.setDirectory(topDirInput.value);
+});
+
+function init_files() {
+    console.log('Initiating files...');
+    topDirInput.value = getCurrentDirectory();
+}
+
+function cleanup_files() {
+    console.log('Cleaning files...');
+    topDirInput.value = '';
 }
 
 window.scriptReady('files');

@@ -13,7 +13,7 @@
         <div class="contextDivider"></div>
         <button class="contextBtn" onclick="modMachineFromContext(machineInContext, machineInContextOS); contextMenu.classList.add('hidden');">✏️ Modificar</button>
         <button class="contextBtn" onclick="configMachineFromContext(); contextMenu.classList.add('hidden');">⚙️ Configuracion</button>
-        <button class="contextBtn" onclick="getinfMachineFromContext(machineInContext, machineInContextOS); contextMenu.classList.add('hidden');">ℹ️ Informacion</button>
+        <button class="contextBtn" onclick="getinfMachineFromContext(); contextMenu.classList.add('hidden');">ℹ️ Informacion</button>
     </div>
 
     <div id="toolbar" class="hidden">
@@ -28,7 +28,7 @@
         </button>
     </div>
 
-    <iframe src="virtualenv_loading.html" class="hidden" id="main_iframe"></iframe>
+    <iframe src="virtualenv_loading.html" class="hidden" id="main_iframe" sandbox="allow-scripts allow-same-origin"></iframe>
 
     <div id="leftsidebar">
         <div id="options">
@@ -41,6 +41,7 @@
                 <p>Nuevo</p>
             </button>
         </div>
+        <p id="loadingText">Cargando...</p>
         <div id="itemsList"></div>
     </div>
 
@@ -89,6 +90,22 @@
             <div class="contElMenu">
                 <p>Sistema Operativo:</p>
                 <p id="InfoDiv_OS_text" style="font-weight: bold;"><strong>Cargando...</strong></p>
+            </div>
+            <div class="contElMenu">
+                <p>Almacenamiento (En GB):</p>
+                <p id="InfoDiv_storage_gb" style="font-weight: bold;"><strong>Cargando...</strong></p>
+            </div>
+            <div class="contElMenu">
+                <p>Almacenamiento (En MB):</p>
+                <p id="InfoDiv_storage_mb" style="font-weight: bold;"><strong>Cargando...</strong></p>
+            </div>
+            <div class="contElMenu">
+                <p>RAM (En GB):</p>
+                <p id="InfoDiv_ram_gb" style="font-weight: bold;"><strong>Cargando...</strong></p>
+            </div>
+            <div class="contElMenu">
+                <p>RAM (En MB):</p>
+                <p id="InfoDiv_ram_mb" style="font-weight: bold;"><strong>Cargando...</strong></p>
             </div>
             <button id="closeinfoVMbtn" onclick="goToMainScrWS()">Cerrar</button>
         </div>
@@ -158,7 +175,26 @@
                 </select>
             </div>
 
-            <button id="setVMConfig" class="confirmBtn" onclick="goToMainScrWS()">Guardar</button>
+            <button id="setVMConfig" class="confirmBtn" onclick="modifyConfigMachine(selectedMachineToMod, configVMStorageRange.value, configVMRamRange.value); goToMainScrWS();">Guardar</button>
+        </div>
+        <div id="ProgramConfig" class="hidden">
+            <p style="margin-bottom: 60px;">Configuracion de Virtual Environments</p>
+
+            <div class="contElMenu" id="otherOSInput">
+                <p>Almacenamiento por defecto (en GB)</p>
+                <input type="text" id="defaultStorage" autocomplete="off" value="52">
+            </div>
+            <div class="contElMenu" id="otherOSInput">
+                <p>RAM por defecto (en GB)</p>
+                <input type="text" id="defaultRam" autocomplete="off" value="8">
+            </div>
+            <div class="contElMenu" id="otherOSInput">
+                <p>Nucleos del CPU por defecto</p>
+                <input type="text" id="defaultCores" autocomplete="off" value="2">
+            </div>
+
+            <button id="deleteSysConfig" class="delBtn" onclick="deleteAllMachines(); location.reload();">Eliminar maquinas virtuales</button>
+            <button id="saveSysConfig" class="confirmBtn" onclick="goToMainScrWS()">Guardar</button>
         </div>
     </div>
 

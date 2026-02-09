@@ -1,8 +1,14 @@
+let db;
+
 let machinesAdded = [];
 let newOsDir = document.getElementById('dropdownOS').value;
 let isFullscreen = false;
+
 let machineInContext = null;
 let machineInContextOS = null;
+let machineInContextStorage = null;
+let machineInContextRam = null;
+
 let selectedMachineToMod = null;
 const WINDOW_ID = 'win_virtualenv';
         
@@ -27,6 +33,39 @@ const predefinedMachines = {
     instictos: 'index.html'
 };
 
+
+//Proteccion fullscreen---------------------------------------------------------------------------------------
+
+document.addEventListener('fullscreenchange', handleFullscreenChange);
+document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+function handleFullscreenChange() {
+    const fullscreenElement = document.fullscreenElement || 
+                             document.webkitFullscreenElement || 
+                             document.mozFullScreenElement ||
+                             document.msFullscreenElement;
+    
+    if (fullscreenElement === mainIframe || 
+        (fullscreenElement && fullscreenElement.closest('iframe') === mainIframe)) {
+        
+        console.log('Fullscreen blocked');
+        
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        
+    }
+}
+
+//Proteccion end---------------------------------------------------------------------------------------
 
 const list = document.getElementById('itemsList');
 
@@ -161,10 +200,30 @@ configVMVRAMText.addEventListener('change', () => {
 
 
 
+initDB();
+updateList();
 
-updateList()
+console.log('Loading indexedDB and machines...')
+document.getElementById('loadingText').classList.remove('hidden');
+initDB().then(() => {
+    document.getElementById('loadingText').classList.add('hidden');
+    console.log('IndexedDB is ready!');
+
+    idbGet('machines').then(savedMachines => {
+        if (savedMachines) {
+            machinesAdded = savedMachines;
+        }
+        updateList();
+    })
+});
 
 //------------------------------------------------------------------------//
+function btnConfig() {
+    goToMainScrWS();
+    document.getElementById('ProgramConfig').classList.remove('hidden');
+    document.getElementById('selectText').classList.add('hidden');
+}
+
 function convertValue(value, from, to) {
     value = parseFloat(value);
 
@@ -179,11 +238,21 @@ function convertValue(value, from, to) {
 }
 
 function goToMainScrWS() {
+    document.getElementById('selectText').classList.remove('hidden');
     document.getElementById('VMmodName').classList.add('hidden');
     document.getElementById('VMInfo').classList.add('hidden');
-    document.getElementById('selectText').classList.remove('hidden');
     document.getElementById('newVMOptions').classList.add('hidden');
     document.getElementById('VMsysConfig').classList.add('hidden');
+    document.getElementById('ProgramConfig').classList.add('hidden');
+}
+
+function modifyConfigMachine(oldName, newStorage, newRam) {
+    const machine = machinesAdded.find(m => m.name === oldName);
+    if (machine) {
+        machine.storage = newStorage;
+        machine.ram = newRam;
+        updateList();
+    }
 }
 
 function renameMachine(oldName, newName) {
@@ -195,9 +264,13 @@ function renameMachine(oldName, newName) {
 }
 
 function configMachineFromContext() {
+    selectedMachineToMod = machineInContext;
     goToMainScrWS();
     document.getElementById('VMsysConfig').classList.remove('hidden');
     document.getElementById('selectText').classList.add('hidden');
+
+    configVMStorageRange.value = machineInContextStorage;
+    configVMRamRange.value = machineInContextRam;
 
     newStorageBothConv.textContent = `MB: ${convertValue(configVMStorageRange.value, 'GB', 'MB')}, GB: ${convertValue(configVMStorageRange.value, 'GB', 'GB')}`;
     newRAMBothConv.textContent = `MB: ${convertValue(configVMRamRange.value, 'GB', 'MB')}, GB: ${convertValue(configVMRamRange.value, 'GB', 'GB')}`;
@@ -217,13 +290,20 @@ function modMachineFromContext() {
     document.getElementById('readyVMNewName').value = machineInContext;
 }
 
-function getinfMachineFromContext(name, os) {
+function getinfMachineFromContext(name = machineInContext, os = machineInContextOS, storage = machineInContextStorage, ram = machineInContextRam) {
+
     goToMainScrWS();
     document.getElementById('VMInfo').classList.remove('hidden');
     document.getElementById('selectText').classList.add('hidden');
 
     document.getElementById('InfoDiv_name_text').textContent = name;
     document.getElementById('InfoDiv_OS_text').textContent = os;
+
+    document.getElementById('InfoDiv_storage_gb').textContent = convertValue(storage, 'GB', 'GB');
+    document.getElementById('InfoDiv_storage_mb').textContent = convertValue(storage, 'GB', 'MB');
+
+    document.getElementById('InfoDiv_ram_gb').textContent = convertValue(ram, 'GB', 'GB');
+    document.getElementById('InfoDiv_ram_mb').textContent = convertValue(ram, 'GB', 'MB');
 }
 
 function addNewVM() {
@@ -235,7 +315,7 @@ function addNewVM() {
         osDir = document.getElementById('newVMRoute').value;
     }
 
-    machinesAdded.push({name: document.getElementById('newVMName').value, os: newOsDir});
+    machinesAdded.push({name: document.getElementById('newVMName').value, os: newOsDir, storage:52, ram:8});
     document.getElementById('newVMName').value = '';
 
     goToMainScrWS();
@@ -256,6 +336,17 @@ function btnNewVM() {
 function closeMachine() {
     console.log(`Stopping current...`);
     toolbar.classList.add('hidden');
+
+    document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    window.parent.postMessage({
+        action: 'fullscreen',
+        windowId: WINDOW_ID,
+        enable: false
+    }, '*');
 
     setTimeout(() => {
         workspace.classList.remove('hidden');
@@ -280,6 +371,8 @@ function runMachine(name, os) {
 
 function updateList() {
     list.innerHTML = '';
+    document.getElementById('loadingText').classList.remove('hidden');
+    saveAllMachines();
     machinesAdded.forEach((machine, idx) => {
         const divItem = document.createElement('div');
         divItem.className = 'item';
@@ -327,6 +420,8 @@ function updateList() {
 
             machineInContext = machine.name;
             machineInContextOS = machine.os;
+            machineInContextStorage = machine.storage;
+            machineInContextRam = machine.ram;
 
             contextMenu.classList.remove("hidden");
         };
@@ -340,6 +435,8 @@ function updateList() {
 
             machineInContext = machine.name;
             machineInContextOS = machine.os;
+            machineInContextStorage = machine.storage;
+            machineInContextRam = machine.ram;
 
             contextMenu.classList.remove("hidden");
         });
@@ -355,6 +452,7 @@ function updateList() {
 
         list.appendChild(divItem);
     });
+    document.getElementById('loadingText').classList.add('hidden');
 }
 
 document.getElementById('dropdownOS').addEventListener('change', e => {
@@ -391,3 +489,119 @@ PCjs Machines
 
 
 */
+//FUNCIONES DEL SISTEMA:
+function initDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open("Virtualenv", 1);
+
+        request.onupgradeneeded = () => {
+            db = request.result;
+            if (!db.objectStoreNames.contains('machines')) {
+                db.createObjectStore('machines');
+            }
+        };
+        request.onsuccess = () => {
+            db = request.result;
+            dbReady = true;
+            console.log('Success when loading database');
+            resolve(db);
+        };
+        request.onerror = () => {
+            console.error('Error when loading database');
+            reject(request.error);
+        };
+    });
+}
+
+function idbSet(key, value) {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            reject(new Error('IndexedDB not ready!'));
+            return;
+        }
+
+        const tx = db.transaction("machines", "readwrite");
+        const store = tx.objectStore("machines");
+        const req = store.put(value, key);
+
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+    
+}
+
+function idbGet(key) {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            reject(new Error('IndexedDB not ready!'));
+            return;
+        }
+
+        const tx = db.transaction("machines", "readonly");
+        const store = tx.objectStore("machines");
+        const req = store.get(key);
+
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+function idbDel(key) {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            reject(new Error('IndexedDB not ready!'));
+            return;
+        }
+
+        const tx = db.transaction("machines", "readwrite");
+        const store = tx.objectStore("machines");
+        const req = store.delete(key);
+
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+    });
+}
+
+function idbClear() {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            reject(new Error('IndexedDB not ready!'));
+            return;
+        }
+
+        const tx = db.transaction("machines", "readwrite");
+        const store = tx.objectStore("machines");
+        const req = store.clear();
+
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+    });
+}
+
+function idbGetMachines() {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            reject(new Error('IndexedDB not ready!'));
+            return;
+        }
+
+        const tx = db.transaction("machines", "readonly");
+        const store = tx.objectStore("machines");
+        const req = store.getAll();
+
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+function saveAllMachines() {
+    idbSet('machines', machinesAdded);
+}
+function loadAllMachines(callback) {
+    idbGet('machines').then(data => {
+        callback(data);
+    });
+}
+function deleteAllMachines() {
+    idbClear();
+}

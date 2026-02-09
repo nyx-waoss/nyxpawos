@@ -13,6 +13,19 @@ function normalizeURL(url) {
     return url;
 }
 
+function _browser_setwebtoInternal(inurl) {
+    let url = inurl.trim();
+    if (!url) return;
+
+    url = normalizeURL(url);
+
+    historyStack = historyStack.slice(0, historyIndex + 1);
+    historyStack.push(url);
+    historyIndex++;
+
+    briframe.src = url;
+}
+
 function browser_goto() {
     let url = brinput.value.trim();
     if (!url) return;
@@ -58,6 +71,19 @@ brinput.addEventListener("keydown", (e) => {
         browser_goto();
     }
 });
+
+window.browserSetWebTo = function(inurl) {
+    if (!AppManager.loadedApps.has('browser')) {
+        AppManager.loadApp('browser').then(() => {
+            setTimeout(() => {
+                _browser_setwebtoInternal(inurl);
+            }, 70);
+        });
+        return;
+    }
+
+    _browser_setwebtoInternal(inurl);
+};
 
 function init_browser() {
     console.log('Initiating browser...');

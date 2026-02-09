@@ -111,6 +111,19 @@ function createSystemFiles() {
     window.fs.createFile('config.npcf', 'root{PROTECTED_INFO}', '/system/users/root');
     window.fs.createFile('data.npcf', 'root{PROTECTED_INFO}', '/system/users/root');
     window.fs.createFile('cache.npfr', 'root{PROTECTED_INFO}', '/system/users/root');
+
+
+
+    window.fs.createFolder('styledui', '/system');//     /system/styledui/fileshome
+    window.fs.createFolder('fileshome', '/system/styledui');
+    window.fs.createFile('styled.css', 'Mj6DoC{display:grid}', '/system/styledui/fileshome');
+    window.fs.createFile('home.lnkh', '/', '/system/styledui/fileshome');
+
+
+
+    window.fs.createFolder('mnt', '/system');
+    window.fs.createFolder('disk0', '/system/mnt');
+    //Si se conecta un USB aparece aqui, se crea una carpeta disk1
 }
 
 //-----------------------------------------------------------------------------------------------

@@ -38,9 +38,13 @@ Active: rgba(45, 45, 45, 0.5);*/
     --uisetting-second: #555;
     --uisetting-third: #292929;
 
-    --file-btn-base: rgba(75, 75, 75, 0.5);
-    --file-btn-hover: rgba(101, 101, 101, 0.66);
-    --file-btn-active: rgba(45, 45, 45, 0.5);
+    --file-recombtn-base: rgba(255, 255, 255, 0.130);
+    --file-recombtn-hover: rgba(255, 255, 255, 0.205);
+    --file-recombtn-active: rgba(255, 255, 255, 0.08);
+
+    --file-btn-base: rgba(255, 255, 255, 0.15);
+    --file-btn-hover: rgba(255, 255, 255, 0.28);
+    --file-btn-active: rgba(255, 255, 255, 0.08);
     --file-btn-selected: rgba(0, 78, 138, 0.419);
     --file-btn-border: rgba(0, 0, 0, 0.5);
     
@@ -855,9 +859,42 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     width: 30px;
 }
 
+#nekiri_search {
+    border: 2px solid rgba(49, 49, 49, 0.849);
+    background-color: rgb(21, 21, 21);
+    border-radius: 8px;
+    color: white;
+    width: 180px;
+    height: 50px;
+}
+#nekiri_search:hover {
+    background-color: rgba(49, 49, 49, 0.849);
+}
+
+#nekiri_netimg {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+
 #nekiri_response {
     color: white;
     font-family: 'Outfit', sans-serif;
+}
+
+#nekiri_smartcard {
+    border: 2px solid rgba(49, 49, 49, 0.849);
+    background-color: rgb(21, 21, 21);
+    border-radius: 8px;
+    color: white;
+    width: 100%;
+    height: 150px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
 }
 
 #appbar {
@@ -1569,9 +1606,56 @@ input[type="range"] {
     overflow: auto;
 }
 
+#files_main_workspace {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+#files_recomended_dirs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    width: 170px;
+    height: 100%;
+
+    border: none;
+    background-color: rgba(255, 255, 255, 0.149);
+    border-radius: 8px;
+    margin: 10px;
+    padding: 5px;
+}
+
+.files-recdir-button {
+    width: 100%;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: var(--file-recombtn-base, rgba(255, 255, 255, 0.130));
+    color: white;
+    text-align: left;
+}
+
+.files-recdir-button:hover {
+    background-color: var(--file-recombtn-hover, rgba(255, 255, 255, 0.205));
+}
+
+.files-recdir-button:active {
+    background-color: var(--file-recombtn-active, rgba(255, 255, 255, 0.08));
+}
+
+#file-list {
+    flex: 1;
+    height: 100%;
+}
+
 .file-btn {
     width: 100%;
-    text-align: center;
     border-radius: 6px;
     padding: 4px 8px;
     border: none;
@@ -1611,6 +1695,48 @@ input[type="range"] {
     background-color: rgba(45, 45, 45, 0.5);
 }
 
+#files-homegrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.files-homegrid-btn {
+    width: auto;
+    height: auto;
+
+    padding: 8px;
+    border: none;
+    background-color: var(--file-btn-base, rgba(75, 75, 75, 0.5));
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+}
+
+.files-homegrid-btn:hover {
+    background-color: var(--file-btn-hover, rgba(101, 101, 101, 0.66));
+}
+
+.files-homegrid-btn:active {
+    background-color: var(--file-btn-active, rgba(45, 45, 45, 0.5));
+}
+
+.files-homegrid-btn-ico {
+    font-size: 24px;
+}
+
+.files-homegrid-btn-txt {
+    font-size: 14px;
+}
+
+
+
+
+
+
 
 
 #toolbar {
@@ -1635,6 +1761,25 @@ input[type="range"] {
 }
 
 #toolbar button:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+#toolbar input {
+    width: auto;
+    flex: 1;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+}
+
+#toolbar input:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#toolbar input:active {
     background-color: rgba(45, 45, 45, 0.5);
 }
 
@@ -2478,15 +2623,29 @@ input[type="range"] {
     background-color: rgba(255, 255, 255, 0);
 }
 
-/*ARCADE*/
+/*virtualenvs*/
 #virtualenviframe {
     position: static;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     border: none;
     background: transparent;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/*virtualenvs*/
+#vscodeiframe {
+    position: static;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    border: none;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 

@@ -4,9 +4,9 @@ html, body {
     height: 100vh;
     box-sizing: border-box;
 
-    /*background: none;
-    /*DEBUG:*/
-    background: repeating-conic-gradient(#252525 0% 25%, #494949 0% 50%) 50% / 20px 20px;
+    background: none;
+    /*DEBUG:
+    background: repeating-conic-gradient(#252525 0% 25%, #494949 0% 50%) 50% / 20px 20px;*/
 }
 
 body {
@@ -90,6 +90,12 @@ body {
 
 .contextBtn:hover {
     background-color: rgba(0, 0, 0, 0.103);
+}
+
+#loadingText {
+    font-size: 18px;
+    color: black;
+    font-family: sans-serif;
 }
 
 /*//////////////////////////////////////////////////////////////*/
@@ -427,6 +433,27 @@ body {
 .confirmBtn:active {
     background-color: rgb(73, 146, 255);
 }
+
+.delBtn {
+    font-size: 14px;
+    width: 190px;
+    height: 24px;
+
+    color: white;
+    background-color: rgb(193, 36, 36);
+    border: none;
+    border-radius: 8px;
+}
+
+.delBtn:hover {
+    background-color: rgb(161, 30, 30);
+}
+
+.delBtn:active {
+    background-color: rgb(232, 71, 71);
+}
+
+
 
 #closeinfoVMbtn {
     font-size: 14px;

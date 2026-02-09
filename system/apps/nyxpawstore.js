@@ -17,14 +17,15 @@ const nyxpawstoreAppTranslation = {
     "clima":"weather",
     "arcade":"arcade",
     "venge":"vengegame",
-    "virtualenvs":"virtualenv"
+    "virtualenvs":"virtualenv",
+    "vscode":"vscode"
 }
 
 const nyxpawstoreAppsInfo = {
     Arcade: "Estas aburrido? Pues esto ya no sera un problema, porque con NyxPaw Arcade podras difrutar de juegos HTML compatibles con NyxPawOS!! NyxPaw Arcade utiliza servicios externos, pero los juegos disponibles son verificados para asegurar una buena experiencia de usuario, con una interfaz simple y amigable",
     Clima: "Mira el clima y la temperatura local :D",
     Venge: "Venge is an objective-based first-person shooter. Every match is an intense unique experience with the ability cards that you can get in the game.",
-    VirtualEnvs: "Emulate and Simulate computer with this program, create virtual machines based on javascript and add custom machines with a web view."
+    VirtualEnvs: "Editor de código moderno, rápido y personalizable. Compatible con múltiples lenguajes, extensiones, terminal y Git integrado."
 };
 
 const nyxpawstoreMainMenu = document.getElementById('nyxpawstore_mainmenu');
