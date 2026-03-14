@@ -1,0 +1,54 @@
+/*Toybox*/
+.content_toybox {
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 10px;
+}
+
+#toyboxBtnsDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    overflow-y: scroll;
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.288);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+#toyboxBtnsDiv button {
+    width: 230px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    color: white;
+}
+
+#toyboxBtnsDiv button:hover {
+    background-color: rgba(0, 0, 0, 0.372);
+}
+
+#toyboxBtnsDiv button:active {
+    background-color: rgba(0, 0, 0, 0.504);
+}
+
+
+#toyboxBtnsDiv button img{
+    width: 220px;
+    height: 160px;
+    margin-top: 4px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+}
+
+.toyboxTab {
+    flex: 1;
+    min-width: 0;
+}

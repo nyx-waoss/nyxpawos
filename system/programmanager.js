@@ -92,6 +92,16 @@ const AppManager = {
         });
     },
 
+    loadAppCSS(appName) {
+        if (appName == "syssetup" || appName == "appcenter") return;
+        if (document.getElementById(`appcss_${appName}`)) return;
+        let cssLink = document.createElement('link');
+        cssLink.id = `appcss_${appName}`;
+        cssLink.rel = 'stylesheet';
+        cssLink.href = `system/apps/css/${appName}.css`;
+        document.head.appendChild(cssLink);
+    },
+
     async loadAppHTML(appName) {
         const htmlPath = this.htmlPaths[appName];
         if (!htmlPath) return;
@@ -110,6 +120,10 @@ const AppManager = {
             console.log(` ${appName} is already loaded!`);
             this.showWindow(appName);
             return;
+        }
+
+        if (!(navigator.onLine)) {
+            showAlertBox('🛜 Sin internet', `Conectate a internet para abrir ${appName}`);
         }
         
         const appPath = this.appPaths[appName];
@@ -137,6 +151,14 @@ const AppManager = {
             await this.loadAppHTML(appName);
         } catch(error) {
             console.error(`Cannot inject HTML for ${appName}: ${error}`);
+            document.documentElement.style.cursor = "default";
+            return;
+        }
+
+        try {
+            this.loadAppCSS(appName);
+        } catch(error) {
+            console.error(`Cannot load css styles for ${appName}: ${error}`);
             document.documentElement.style.cursor = "default";
             return;
         }
@@ -291,6 +313,9 @@ const AppManager = {
         if (appData.script) {
             appData.script.remove();
         }
+
+        let appcss = document.getElementById(`appcss_${appName}`);
+        if (appcss) appcss.remove();
         
         stopUsageTimer(appName);
         this.loadedApps.delete(appName);
@@ -339,6 +364,14 @@ const AppManager = {
             }
         } catch(error) {
             console.warn('Script unload failed for ' + appname + '. Error: ' + error);
+        }
+
+        
+        try {
+            let appcss = document.getElementById(`appcss_${appname}`);
+            if (appcss) appcss.remove();
+        } catch(error) {
+            console.warn('CSS unload failed for ' + appname + '. Error: ' + error);
         }
 
         stopUsageTimer(appname);
@@ -427,5 +460,6 @@ function stopUsageTimer(appName) {
         delete appUsageTimers[appName];
     }
 }
+
 
 window.scriptReady('programmanager');

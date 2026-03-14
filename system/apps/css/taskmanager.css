@@ -1,0 +1,53 @@
+/*TASK MANAGER*/
+.content_taskmanager {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+}
+
+#taskmanager_topbar {
+    width: 100%;
+    height: 45px;
+    background-color: #00000086;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#taskmanager_topbar button {
+    margin-left: 10px;
+    background-color: #ffffff2c;
+    border-radius: 8px;
+    border: none;
+    height: 25px;
+    color: white;
+}
+
+#taskmanager_topbar button:hover {
+    background-color: #ffffff6d;
+}
+
+#taskmanager_topbar button:active {
+    background-color: #ffffff14;
+}
+
+.taskmanager_task {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    background-color: #00000086;
+    border-radius: 8px;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.taskmanager_task img {
+    width: 28px;
+    height: 28px;
+}

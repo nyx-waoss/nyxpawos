@@ -1,0 +1,100 @@
+/*Notas*/
+.content_notes {
+    display: flex;
+}
+
+.content_notes textarea {
+    resize: none;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+    border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    top: 6px;
+}
+
+.content_notes button {
+    border-radius: 8px;
+    border: none;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.272);
+    padding: 2px;
+    width: 76px;
+    height: 30px;
+}
+
+.content_notes button:hover {
+    background-color: rgba(0, 0, 0, 0.393);
+}
+
+.program_topbar {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    padding: 2px;
+    gap: 6px;
+}
+
+
+.content_savenote {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+#notes-savefilename {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white; 
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#notes-savefilename:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#notes-btnsdiv {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+.files-btnstyled {
+    width: 100%;
+    height: 25px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+}
+
+#notes-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#notes-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#notes-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#notes-btn_save {
+    background-color: rgb(0, 145, 255);
+}
+#notes-btn_save:hover {
+    background-color: rgb(54, 168, 255);
+}
+#notes-btn_save:active {
+    background-color: rgb(0, 126, 222);
+}

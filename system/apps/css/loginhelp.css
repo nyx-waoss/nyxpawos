@@ -1,0 +1,30 @@
+.content_loginhelp {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    text-align: left;
+    overflow: auto;
+}
+
+.content_loginhelp h2,
+.content_loginhelp h4,
+.content_loginhelp p,
+.content_loginhelp ul {
+    margin: 0;
+    color: white;
+}
+
+.content_loginhelp a {
+    margin: 0;
+    color: rgb(55, 135, 255);
+    cursor: pointer;
+}
+
+.loginhelp_horizontaldiv {
+    height: 1px;
+    width: 95%;
+    background-color: white;
+    flex-shrink: 0;
+    align-self: stretch;
+}

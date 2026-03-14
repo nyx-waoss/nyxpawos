@@ -1,0 +1,55 @@
+/*nyxclient*/
+.content_nytclient {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+#nytclientiframe {
+    flex: 1;
+    border: none;
+    border-radius: 8px;
+    
+}
+
+#nytclientnavbar {
+    display: flex;
+    height: 29px;
+    align-items: center;
+    gap: 6px;
+    padding: 6px;
+}
+
+#nytclientnavbar input {
+    flex: 1;
+    min-width: 0;
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+}
+
+#nytclientnavbar input:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#nytclientnavbar input:active {
+    border: 2px solid white;
+}
+
+#nytclientnavbar button {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+}
+
+#nytclientnavbar button:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#nytclientnavbar button:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}

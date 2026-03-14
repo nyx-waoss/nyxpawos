@@ -1,0 +1,320 @@
+/*Files*/
+.content_files {
+    overflow: auto;
+}
+
+#files_main_workspace {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+#files_recomended_dirs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    width: 170px;
+    height: 100%;
+
+    border: none;
+    background-color: rgba(255, 255, 255, 0.149);
+    border-radius: 8px;
+    margin: 10px;
+    padding: 5px;
+}
+
+.files-recdir-button {
+    width: 100%;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: var(--file-recombtn-base, rgba(255, 255, 255, 0.130));
+    color: white;
+    text-align: left;
+}
+
+.files-recdir-button:hover {
+    background-color: var(--file-recombtn-hover, rgba(255, 255, 255, 0.205));
+}
+
+.files-recdir-button:active {
+    background-color: var(--file-recombtn-active, rgba(255, 255, 255, 0.08));
+}
+
+#file-list {
+    flex: 1;
+    height: 100%;
+}
+
+.file-btn {
+    width: 100%;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: var(--file-btn-base, rgba(75, 75, 75, 0.5));
+    color: white;
+    text-align: left;
+}
+
+.file-btn:hover {
+    background-color: var(--file-btn-hover, rgba(101, 101, 101, 0.66));
+}
+
+.file-btn:active {
+    background-color: var(--file-btn-active, rgba(45, 45, 45, 0.5));
+}
+
+.file-btn.selected {
+    background-color: var(--file-btn-selected, rgba(101, 101, 101, 0.66));
+    border: 1px solid var(--file-btn-border, gray);
+}
+
+.file-btn-up {
+    width: auto;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+}
+
+.file-btn-up:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+.file-btn-up:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+#files-homegrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.files-homegrid-btn {
+    width: auto;
+    height: auto;
+
+    padding: 8px;
+    border: none;
+    background-color: var(--file-btn-base, rgba(75, 75, 75, 0.5));
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+}
+
+.files-homegrid-btn:hover {
+    background-color: var(--file-btn-hover, rgba(101, 101, 101, 0.66));
+}
+
+.files-homegrid-btn:active {
+    background-color: var(--file-btn-active, rgba(45, 45, 45, 0.5));
+}
+
+.files-homegrid-btn-ico {
+    font-size: 24px;
+}
+
+.files-homegrid-btn-txt {
+    font-size: 14px;
+}
+
+
+
+
+
+
+
+
+#toolbar {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    margin-bottom: 10px;
+
+}
+
+#toolbar button {
+    width: auto;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+}
+
+#toolbar button:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#toolbar button:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+#toolbar input {
+    width: auto;
+    flex: 1;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+}
+
+#toolbar input:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#toolbar input:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+/*/////////////////////////////////////////////////////////////////////*/
+
+#savefilebar {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    margin-bottom: 1px;
+    margin-top: 14px;
+
+    border: none;
+    background-color: rgba(255, 255, 255, 0.149);
+    border-radius: 8px;
+    margin: 10px;
+    padding: 5px;
+}
+
+.savefilebar_btn {
+    width: auto;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+}
+
+.savefilebar_btn:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+.savefilebar_btn:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+#savefilebar_savebtn {
+    background-color: rgb(0, 145, 255);
+}
+
+#savefilebar_savebtn:hover {
+    background-color: rgb(54, 168, 255);
+}
+
+#savefilebar_savebtn:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#files_savefilebar_filename {
+    width: auto;
+    flex: 1;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+}
+
+#files_savefilebar_filename:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#files_savefilebar_filename:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+/*/////////////////////////////////////////////////////////////////////*/
+
+#verticaldivisor {
+    width: 2px;
+    height: 24px;
+    margin: 0px 6px;
+    background-color: rgba(75, 75, 75, 0.5);
+}
+
+.filesaltmenu {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: #0000007b;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 8022;
+    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
+    min-width: 150px;
+}
+.filesaltmenu button {
+    width: 100%;
+    background: none;
+    color: white;
+    border-radius: 8px;
+    text-align: left;
+    border: none;
+    padding: 4px 10px;
+}
+
+.filesaltmenu button:hover {
+    background: rgba(101, 101, 101, 0.66);
+}
+
+.content_askforfilecreation {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+#files-newfilename {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#files-newfilename:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#files-newfiletype {
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#files-newfiletype:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+

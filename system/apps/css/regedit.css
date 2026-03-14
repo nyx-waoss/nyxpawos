@@ -1,0 +1,78 @@
+/*regedit*/
+.content_regedit {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+#regedit_leftsidebar {
+    width: 200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff18;
+    border-radius: 8px;
+    padding: 12px;
+    margin-right: auto;
+}
+
+.regedit_list {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.regedit_btn {
+    height: 28px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.13);
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
+
+.regedit_btn:hover {
+    background-color: rgba(255, 255, 255, 0.205);
+}
+
+.regedit_btn:active {
+    background-color: rgba(255, 255, 255, 0.324);
+}
+
+.regedit_el {
+    background-color: rgba(255, 255, 255, 0.265);
+    box-sizing: border-box;
+    width: 100%;
+    border-radius: 8px;
+    height: 28px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    padding-left: 10px;
+}
+
+.regedit_el:hover {
+    background-color: rgba(255, 255, 255, 0.205);
+}
+
+.regedit_el button {
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.226);
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
+
+.regedit_el button:active {
+    background-color: rgba(255, 255, 255, 0);
+}

@@ -324,6 +324,33 @@ function goToPage(page) {
     }
 }
 
+function getNBriefBackgroundImg() {
+    try {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+
+        const NBriefCurrentTime = hours * 60 + minutes;
+
+        const dayStart = 6 * 60;
+        const dayEnd = 13 * 60 + 45;
+
+        const eveningStart = 13 * 60 + 46;
+        const eveningEnd = 18 * 60 + 25;
+
+        if (NBriefCurrentTime >= dayStart && NBriefCurrentTime <= dayEnd) {
+            return "url('assets/morning.png')";
+        } else if (NBriefCurrentTime >= eveningStart && NBriefCurrentTime <= eveningEnd) {
+            return "url('assets/afternoon.png')";
+        } else {
+            return "url('assets/night.png')";
+        }
+    } catch(error) {
+        console.error('Error when loading nekiri brief background: '+error);
+        return "url('assets/morning.png')";
+    }
+}
+
 
 
 //Codigo arriba ⬆️⬆️
@@ -338,6 +365,7 @@ async function init_nkbrief() {
     await renderAppsUsage();
     await renderMostUsed();
     await renderNews();
+    document.querySelector('.content_nkbrief').style.backgroundImage = getNBriefBackgroundImg();
 }
 
 function cleanup_nkbrief() {
