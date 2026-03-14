@@ -16,7 +16,6 @@
                 <h2>Therian Edition ✨</h2>
                 <div class="divider"></div>
                 <p>Bienvenido a NyxPawOS Therian Edition, el sistema operativo para therians!</p>
-                <p>Si estas viendo esta pantalla, es porque NyxPawOS Therian Edition se ha instalado correctamente! Ahora solo debes iniciarlo y configurarlo :3</p>
                 <div class="divider"></div>
                 <h2>Solucion de problemas:</h2>
                 <h4>Si el boton de inicio no funciona:</h4>
@@ -38,7 +37,8 @@
                 </ul>
                 <div class="divider"></div>
                 <h2>Disfruta del OS!</h2>
-                <p>Este sistema operativo esta basado en html y Javascript! No es un OS real!! - Creado por nyx_waoss</p>
+                <p>Este sistema operativo esta basado en html y Javascript! No es un OS real! - Creado por nyx_waoss</p>
+                <p>Idioma original: Español ✨</p>
             </div>
             <div class="hidden" id="settings_div">
                 <button onclick="hidesettings()">Volver</button>
@@ -50,6 +50,7 @@
                     <p>Modo de recuperacion</p>
                     <input type="checkbox" id="safemode">
                 </div>
+                <button onclick="deletealldata()">Eliminar datos</button>
                 <div class="divider"></div>
                 <p>NyxPawOS Launcher ✨ v1.0 2026</p>
                 
@@ -74,8 +75,8 @@
     </div>
     
     <div id="stopWindow" class="hidden">
-        <h2>Quieres detener NyxPawOS?</h2>
-        <p>Usa esto solo como ultimo recurso, al continuar, forzaras el apagado del sistema y tus datos no se guardaran! Solo uses esta funcion en situaciones de emergencia!</p>
+        <h2 id="windowbox_title">Quieres detener NyxPawOS?</h2>
+        <p id="windowbox_text">Usa esto solo como ultimo recurso, al continuar, forzaras el apagado del sistema y tus datos no se guardaran! Solo uses esta funcion en situaciones de emergencia!</p>
         <div id="btns_div">
             <button id="stop_btn" class="winbtn" onclick="stopSys()">Detener</button>
             <button id="cancel_btn" class="winbtn" onclick="cancelStop()">Cancelar</button>
@@ -83,30 +84,75 @@
     </div>
 
     <script>
+        var userNavigatorSupported = true;
+
+        if (!window.fetch) userNavigatorSupported = false;
+        if (!window.Promise) userNavigatorSupported = false;
+        if (!CSS.supports('backdrop-filter', 'blur(1px)')) userNavigatorSupported = false;
+
+        try {
+            new Function('async () => {}')();
+        } catch (e) {
+            userNavigatorSupported = false;
+        }
+
+        if (!userNavigatorSupported) {
+            document.body.innerHTML = `
+                <div style="text-align:center; padding:50px; font-family:sans-serif; background:white;">
+                    <h2>⚠️ Navegador no compatible.</h2>
+                    <p>Por favor actualiza tu navegador para continuar.</p>
+                </div>
+            `;
+        }
+    </script>
+
+    <script>
         const w = screen.availWidth;
         const h = screen.availHeight;
+        const windowboxTitle = document.getElementById('windowbox_title');
+        const windowboxText = document.getElementById('windowbox_text');
+        const stopBtn = document.getElementById('stop_btn');
+        const cancelBtn = document.getElementById('cancel_btn');
+        const winbox = document.getElementById('stopWindow');
+        let deletingDataPrompt = false;
         let sysWindow = null;
 
+        function deletealldata() {
+            deletingDataPrompt = true;
+            windowboxTitle.textContent = 'Quieres borrar todos tus datos?';
+            windowboxText.textContent = 'Esto restablecera el sistema a la configuracion de fabrica, borrara tus datos, y tendras que configurar el sistema de nuevo.\nEsta funcion suele ser util en caso de que el sistema no responda o no inicie.\nDesea continuar?';
+            stopBtn.textContent = 'Continuar';
+            cancelBtn.textContent = 'Cancelar';
+            winbox.classList.remove('hidden');
+        }
+
         function stopSys() {
-            try {
-                sysWindow.close();
-                const win = document.getElementById('stopWindow');
-                win.classList.add('hidden');
-            } catch(error) {
-                const win = document.getElementById('stopWindow');
-                win.classList.add('hidden');
-                console.error('Error: ' + error.message);
+            if (deletingDataPrompt) {
+                winbox.classList.add('hidden');
+                deletingDataPrompt = false;
+                localStorage.clear();
+            } else {
+                try {
+                    sysWindow.close();
+                    winbox.classList.add('hidden');
+                } catch(error) {
+                    winbox.classList.add('hidden');
+                    console.error('Error: ' + error.message);
+                }
             }
         }
 
         function cancelStop() {
-            const win = document.getElementById('stopWindow');
-            win.classList.add('hidden');
+            winbox.classList.add('hidden');
+            deletingDataPrompt = false;
         }
 
         function sureToStop() {
-            const win = document.getElementById('stopWindow');
-            win.classList.remove('hidden');
+            windowboxTitle.textContent = 'Quieres detener NyxPawOS?';
+            windowboxText.textContent = 'Usa esto solo como ultimo recurso, al continuar, forzaras el apagado del sistema y tus datos no se guardaran! Solo uses esta funcion en situaciones de emergencia!';
+            stopBtn.textContent = 'Detener';
+            cancelBtn.textContent = 'Cancelar';
+            winbox.classList.remove('hidden');
         }
 
         let state = 'idle';
@@ -150,5 +196,7 @@
             settingsDiv.classList.add('hidden');
         }
     </script>
+    
+    <script src="tu-app.js"></script>
 </body>
 </html>

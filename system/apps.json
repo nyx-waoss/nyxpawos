@@ -1,0 +1,26 @@
+{
+  "apps": [
+    { "id": "settings" },
+    { "id": "notes" },
+    { "id": "calc" },
+    { "id": "browser" },
+    { "id": "files" },
+    { "id": "calendar" },
+    { "id": "terminal" },
+    { "id": "toybox" },
+    { "id": "nyxvideoplayer", "jsFile": "videoplayer", "htmlFile": "videoplayer" },
+    { "id": "nyximageviewer", "jsFile": "imgviewer", "htmlFile": "imgviewer" },
+    { "id": "nyxpawstore" },
+    { "id": "nytclient", "jsFile": "ytclient", "htmlFile": "ytclient" },
+    { "id": "weather" },
+    { "id": "arcade" },
+    { "id": "taskmanager" },
+    { "id": "vengegame" },
+    { "id": "eventviewer" },
+    { "id": "regedit" },
+    { "id": "virtualenv" },
+    { "id": "vscode" },
+    { "id": "nkbrief" },
+    { "id": "loginhelp" }
+  ]
+}

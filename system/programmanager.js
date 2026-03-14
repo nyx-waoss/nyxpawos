@@ -4,8 +4,31 @@ window.SysVar = window.SysVar || {};
 
 const AppManager = {
     loadedApps: new Map(), // { appName: { script, instance, window } }
+    appPaths: {},
+    htmlPaths: {},
+
+    async init() {
+        try {
+            const res = await fetch('system/apps.json');
+            const { apps } = await res.json();
+
+            this.appPaths['syssetup'] = 'system/systemApps/syssetup.js';
+            this.htmlPaths['syssetup'] = 'system/systemApps/syssetup.html';
+
+            apps.forEach(app => {
+                const jsFile = app.jsFile || app.id;
+                const htmlFile = app.htmlFile || app.id;
+                this.appPaths[app.id] = `system/apps/${jsFile}.js`;
+                this.htmlPaths[app.id] = `system/apps/html/${htmlFile}.html`;
+            });
+
+            console.log('Apps loaded from manifest succesfully.');
+        } catch(error) {
+            console.error('Cannot init App Manager. Please check that apps.json exist. Error:'+error);
+        }
+    },
     
-    appPaths: {
+    /*appPaths: {
         syssetup: 'system/systemApps/syssetup.js',
         settings: 'system/apps/settings.js',
         notes: 'system/apps/notes.js',
@@ -27,9 +50,38 @@ const AppManager = {
         eventviewer: 'system/apps/eventviewer.js',
         regedit: 'system/apps/regedit.js',
         virtualenv: 'system/apps/virtualenv.js',
-        vscode: 'system/apps/vscode.js'
+        vscode: 'system/apps/vscode.js',
+        nkbrief: 'system/apps/nkbrief.js',
+        loginhelp: 'system/apps/loginhelp.js'
         
     },
+
+    htmlPaths: {
+        syssetup: 'system/systemApps/syssetup.js',
+        settings: 'system/apps/html/settings.html',
+        notes: 'system/apps/html/notes.html',
+        calc: 'system/apps/html/calc.html',
+        browser: 'system/apps/html/browser.html',
+        files: 'system/apps/html/files.html',
+        calendar: 'system/apps/html/calendar.html',
+        terminal: 'system/apps/html/terminal.html',
+        toybox: 'system/apps/html/toybox.html',
+        nyxvideoplayer: 'system/apps/html/videoplayer.html',
+        nyximageviewer: 'system/apps/html/imgviewer.html',
+        nyxpawstore: 'system/apps/html/nyxpawstore.html',
+        nytclient: 'system/apps/html/ytclient.html',
+        weather: 'system/apps/html/weather.html',
+        arcade: 'system/apps/html/arcade.html',
+        appcenter: 'system/apps/html/appcenter.html',
+        taskmanager: 'system/apps/html/taskmanager.html',
+        vengegame: 'system/apps/html/vengegame.html',
+        eventviewer: 'system/apps/html/eventviewer.html',
+        regedit: 'system/apps/html/regedit.html',
+        virtualenv: 'system/apps/html/virtualenv.html',
+        vscode: 'system/apps/html/vscode.html',
+        nkbrief: 'system/apps/html/nkbrief.html',
+        loginhelp: 'system/apps/html/loginhelp.html'
+    },*/
 
     async checkImageExists(URL) {
         return new Promise((resolve) => {
@@ -38,6 +90,19 @@ const AppManager = {
             img.onerror = () => resolve(false);
             img.src = URL;
         });
+    },
+
+    async loadAppHTML(appName) {
+        const htmlPath = this.htmlPaths[appName];
+        if (!htmlPath) return;
+
+        const windowId = appName === 'settings' ? 'win_config' : `win_${appName}`;
+        if (document.getElementById(windowId)) return;
+
+        const res = await fetch(htmlPath);
+        if (!res.ok) throw new Error(`HTML Not found for ${appName} at directory ${htmlPath}`);
+        const html = await res.text();
+        document.body.insertAdjacentHTML('beforeend', html);
     },
     
     async loadApp(appName) {
@@ -67,6 +132,14 @@ const AppManager = {
         
         document.documentElement.style.cursor = "wait";
         console.log(`Loading ${appName}...`);
+
+        try {
+            await this.loadAppHTML(appName);
+        } catch(error) {
+            console.error(`Cannot inject HTML for ${appName}: ${error}`);
+            document.documentElement.style.cursor = "default";
+            return;
+        }
         
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
@@ -111,6 +184,11 @@ const AppManager = {
                     icon: icon
                 });
 
+                const existingUsage = SysVar.appsUsage.find(u => u.app === appName);
+                if (!existingUsage) {
+                    SysVar.appsUsage.push({app: appName, hours:'0', minutes:'0',secs:'0'});
+                }
+
                 const initFunctionName = `init_${appName}`;
 
                 if (typeof window[initFunctionName] === 'function') {
@@ -119,6 +197,7 @@ const AppManager = {
                 }
                 
                 this.showWindow(appName);
+                startUsageTimer(appName);
                 resolve();
             };
             
@@ -132,6 +211,8 @@ const AppManager = {
     },
 
     showWindow(appName) {
+        translateSystem(SysVar.currentlang);
+
         const windowExceptions = {
             settings: 'win_config'
         };
@@ -142,7 +223,8 @@ const AppManager = {
             calendar: { width: '470px', height: '610px'},
             toybox: { width: '800px', height: '480px'},
             weather: { width: '490px', height: '280px'},
-            arcade: { width: '980px', height: '630px'}
+            arcade: { width: '980px', height: '630px'},
+            nkbrief: { width: '940px', height: '600px'}
         };
         
         const defaultSize = { width: '700px', height: '480px' };
@@ -152,6 +234,12 @@ const AppManager = {
         
         if (!windowEl) {
             console.error(`Window element not found in DOM for: ${windowId}`);
+            showAlertBox('Error','No se encontro el programa solicitado.',{as_win:true,icon:'❌'})
+            return;
+        }
+
+        if (windowEl.dataset.minimized === 'true') {
+            restoreWindow(windowEl);
             return;
         }
         
@@ -161,6 +249,7 @@ const AppManager = {
         windowEl.classList.remove('window_anim_open');
         windowEl.style.removeProperty('opacity');
         windowEl.classList.remove('hidden');
+        windowEl.style.zIndex = ++topZ;
 
         void windowEl.offsetHeight;
 
@@ -195,7 +284,7 @@ const AppManager = {
             windowEl.classList.remove('window_anim_open');
             setTimeout(() => {
                 windowEl.style.removeProperty('opacity');
-                windowEl.classList.add('hidden');
+                windowEl.remove();
             },200); 
         }
         
@@ -203,7 +292,18 @@ const AppManager = {
             appData.script.remove();
         }
         
+        stopUsageTimer(appName);
         this.loadedApps.delete(appName);
+
+        const appBarObj = SysVar.appBarIcons.find(a => a.app === appName);
+        if (appBarObj) {
+            if (!appBarObj.permanent) {
+                appBarRemoveApp(appName);
+            } else {
+                appBarObj.minimized = false;
+                renderAppBar();
+            }
+        }
         
         console.log(`${appName} unloaded from RAM`);
         document.documentElement.style.cursor = "default";
@@ -223,14 +323,14 @@ const AppManager = {
 
         } catch(error) {
             console.warn('Cleanup failed for ' + appname + '. Error: ' + error);
-        }topZ
+        }
 
         const windowExceptions = { settings: 'win_config' };
         const windowId = windowExceptions[appname] || `win_${appname}`;
         const windowEl = document.getElementById(windowId);
         
         if (windowEl) {
-            windowEl.classList.add('hidden');
+            windowEl.remove();
         }
 
         try {
@@ -241,6 +341,7 @@ const AppManager = {
             console.warn('Script unload failed for ' + appname + '. Error: ' + error);
         }
 
+        stopUsageTimer(appname);
         this.loadedApps.delete(appname);
 
         console.log(appname+' force closed succesfully')
@@ -279,5 +380,52 @@ const AppManager = {
     
 
 };
+
+const appUsageTimers = {};
+function startUsageTimer(appName) {
+    if (appUsageTimers[appName]) return;
+
+    appUsageTimers[appName] = setInterval(() => {
+        const windowExceptions = {settings:'win_config'};
+        const windowId = windowExceptions[appName] || `win_${appName}`;
+        const windowEl = document.getElementById(windowId);
+
+        if (!windowEl || windowEl.classList.contains('hidden')) {
+            stopUsageTimer(appName);
+            return;
+        }
+
+        if (!windowEl.classList.contains('win-focused')) return;
+
+        const usageEntry = SysVar.appsUsage.find(u => u.app === appName);
+        if (!usageEntry) return;
+
+        let secs = parseInt(usageEntry.secs);
+        let minutes = parseInt(usageEntry.minutes);
+        let hours = parseInt(usageEntry.hours);
+
+        secs ++;
+
+        if (secs >= 60) {
+            secs = 0;
+            minutes ++;
+        }
+        if (minutes >= 60) {
+            minutes = 0;
+            hours ++;
+        }
+        
+        usageEntry.secs = String(secs);
+        usageEntry.minutes = String(minutes);
+        usageEntry.hours = String(hours);
+    },1000);
+}
+
+function stopUsageTimer(appName) {
+    if (appUsageTimers[appName]) {
+        clearInterval(appUsageTimers[appName]);
+        delete appUsageTimers[appName];
+    }
+}
 
 window.scriptReady('programmanager');

@@ -3,7 +3,7 @@ console.log("Current: FS.js");
 let currentDirectory = '/';
 let selectedItem = null;
 let selectedItemType = null;
-const openNotesModTextarea = document.querySelector('#win_notes textarea');
+//const openNotesModTextarea = document.querySelector('#win_notes textarea');
 window.SysVar = window.SysVar || {};
 
 function initFileSystem() {
@@ -65,6 +65,10 @@ function createFolder(name, path = currentDirectory) {
 }
 
 function createFile(name, content = '', path = currentDirectory) {
+    if (window.fs.fileExistInPath(name, path)) {
+        window.fs.modifyFile(name, content, path);
+        return true;
+    }
     const fs = getFileSystem();
     const normalizedPath = normalizePath(path);
     const fullPath = normalizedPath === '/' ? `/${name}` : `${normalizedPath}/${name}`;
@@ -210,6 +214,13 @@ function setDirectory(name) {
     updateFileList();
 }
 
+function getQuickAccessRoute(item) {
+    if (item._dynamicRoute) {
+        return `/home/${SysVar.currentuser.user}/${item._dynamicRoute}`;
+    }
+    return item.route;
+}
+
 function createCustomElement(newObject) {
     if (newObject === 'files-homegrid') {
         const quickAccessArr = SysVar.filesQuickAccess;
@@ -237,11 +248,12 @@ function createCustomElement(newObject) {
 
             filesHomegridBtn.addEventListener('dblclick', (e) => {
                 e.preventDefault();
+                const resolvedRoute = getQuickAccessRoute(QAitem);
                 if (QAitem.eltype === 'folder') {
-                    setDirectory(QAitem.route);
+                    setDirectory(resolvedRoute);
                 } else if (QAitem.eltype === 'file') {
-                    setDirectory(QAitem.route);
-                    const fileContToOpen = openFile(QAitem.text, QAitem.route);
+                    setDirectory(resolvedRoute);
+                    const fileContToOpen = openFile(QAitem.text, resolvedRoute);
                     if (fileContToOpen) {
                         sysExecApp('notes');
                         setTimeout(() => notesSetTXArea(fileContToOpen), 90);
@@ -265,6 +277,7 @@ function createCustomElement(newObject) {
 function updateFileList() {
     const fs = getFileSystem();
     const fileListDiv = document.getElementById('file-list');
+    if (!fileListDiv) return;
     fileListDiv.innerHTML = '';
 
     const normalizedPath = normalizePath(currentDirectory);
@@ -344,6 +357,7 @@ function updateFileList() {
 
 function setupContextMenu() {
     const fileListDiv = document.getElementById('file-list');
+    if (!fileListDiv) return;
     const contextMenu = document.getElementById("filesaltmenu");
 
     fileListDiv.addEventListener("contextmenu", (e) => {
@@ -390,10 +404,46 @@ function setupContextMenuActions() {
     const deleteBtn = document.getElementById('ctx-delete');
     deleteBtn.addEventListener('click', async () => {
         const itemName = contextMenu.dataset.targetItem;
-        const delFile = await showMsgBox("ℹ️ Informacion",`Eliminar "${itemName}"?`,'Eliminar', 'Cancelar');
-        if (delFile) {
-            window.fs.deleteItem(itemName);
+        const itemType = contextMenu.dataset.targetType;
+
+        const currentDirTCPDel = getCurrentDirectory();
+        if (currentDirTCPDel === null || currentDirTCPDel === undefined) {
+            console.error('Cannot get current directory: '+currentDirTCPDel);
+            showAlertBox('Error', `No se pudo obtener el directorio actual.`, {as_win:true, icon:'❌'});
             contextMenu.classList.add('hidden');
+            return;
+        }
+        if (currentDirTCPDel === '/system/trash') {
+            const delFile = await showMsgBox("ℹ️ Informacion",`Eliminar "${itemName}" permanentemente?\nEsta accion no se puede deshacer.`,'Eliminar', 'Cancelar');
+            if (delFile) {
+                window.fs.deleteItem(itemName);
+                contextMenu.classList.add('hidden');
+            }
+        } else {
+            const delFile = await showMsgBox("ℹ️ Informacion",`Eliminar "${itemName}"?`,'Eliminar', 'Cancelar');
+            if (delFile) {
+                if (itemType === 'folder') {
+                    window.fs.deleteItem(itemName);
+                } else {
+                    const currentDirWFTDel = getCurrentDirectory();
+                    if (currentDirWFTDel === null || currentDirWFTDel === undefined) {
+                        console.error('Cannot get current directory: '+currentDirWFTDel);
+                        showAlertBox('Error', `No se pudo obtener el directorio actual.`, {as_win:true, icon:'❌'});
+                        contextMenu.classList.add('hidden');
+                        return;
+                    }
+                    try {
+                        window.fs.moveItem(itemName, currentDirWFTDel, '/system/trash');
+                    } catch (error) {
+                        console.error('Cannot move to trash: '+error);
+                        const moveFileToTrash = await showMsgBox("ℹ️ Informacion",`No se pudo mover "${itemName}" a la papelera.\nDesea eliminarlo permanentemente?`,'Eliminar', 'Cancelar');
+                        if (moveFileToTrash) {
+                            window.fs.deleteItem(itemName);
+                        }
+                    }
+                }
+                contextMenu.classList.add('hidden');
+            }
         }
     });
     
@@ -441,6 +491,7 @@ function setupContextMenuActions() {
 
 function setupFileSelection() {
     const fileListDiv = document.getElementById('file-list');
+    if (!fileListDiv) return;
 
     fileListDiv.addEventListener('click', (e) => {
         const clickedBtn = e.target.closest('.file-btn, .file-btn-folder, .file-btn-file');
@@ -461,6 +512,10 @@ function setupFileSelection() {
             .replace('📱 ', '')
             .replace('⚡ ', '')
             .trim();
+            
+            if (SysVar.pointerFilesSaveDialogOpen) {
+                document.getElementById('files_savefilebar_filename').value = selectedItem; 
+            }
 
             if (clickedBtn.classList.contains('file-btn-folder')) {
                 selectedItemType = 'folder';
@@ -534,6 +589,42 @@ function isFolder(path) {
     return fs[normalizedPath] && fs[normalizedPath].type === 'folder';
 }
 
+function moveItem(name, sourceDir, destinationDir) {
+    if (!fileExistInPath(name, sourceDir)) {
+        console.error('Source file not found.');
+        showAlertBox('Error', `El archivo especificado no existe.`, {as_win:true, icon:'❌'});
+        return false;
+    }
+    if (!isFolder(destinationDir)) {
+        console.error('Source directory not found/not a folder.');
+        showAlertBox('Error', `El directorio especificado no existe o no es una carpeta.`, {as_win:true, icon:'❌'});
+        return false;
+    }
+
+    if (fileExistInPath(name, destinationDir)) {
+        console.error('File already exists in detination directory.');
+        showAlertBox('Error', `El archivo ya existe en el directorio de destino.`, {as_win:true, icon:'❌'});
+        return false;
+    }
+
+    const fs = getFileSystem();
+    const normalizedSource = normalizePath(sourceDir);
+    const fullSourcePath = normalizedSource === '/' ? `/${name}` : `${normalizedSource}/${name}`;
+    const itemData = fs[fullSourcePath];
+
+    if (itemData.type === 'folder') {
+        console.error('Cannot move folders.');
+        showAlertBox('Error', `No se pueden mover carpetas, vuelva a intentarlo con un archivo.`, {as_win:true, icon:'❌'});
+        return false;
+    }
+
+    const content = openFile(name, sourceDir);
+    createFile(name, content, destinationDir);
+    deleteItem(name, sourceDir);
+    updateFileList();
+    return true;
+}
+
 
 window.createFolder = createFolder;
 window.createFile = createFile;
@@ -550,6 +641,7 @@ window.fileExistInPath = fileExistInPath;
 window.isFile = isFile;
 window.isFolder = isFolder;
 window.setDirectory = setDirectory;
+window.moveItem = moveItem;
 
 window.fs = {
   createFolder: createFolder,
@@ -566,7 +658,8 @@ window.fs = {
   fileExistInPath: fileExistInPath,
   isFile: isFile,
   isFolder: isFolder,
-  setDirectory: setDirectory
+  setDirectory: setDirectory,
+  moveItem: moveItem
 };
 
 console.log("window.fs working:", window.fs);

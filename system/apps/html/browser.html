@@ -1,0 +1,20 @@
+    <div class="window hidden" id="win_browser">
+        <div class="grab">
+            <span class="grab-title">🌎  PawNet</span>
+            <button class="grab-btn" id="btn_browser">X</button>
+        </div>
+
+        <div class="win_content content_browser">
+            <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+                <div id="navbar">
+                    <button onclick="browser_prev()">←</button>
+                    <button onclick="browser_next()">→</button>
+                    <button onclick="browser_reload()">↻</button>
+                    <input type="text" placeholder="www.google.com" id="browserinput">
+                    <button onclick="browser_goto()">▶</button>
+                </div>
+                <iframe id="browseriframe" src="connecting.html"></iframe>
+            </div>  
+        </div>
+        <div class="resize-handle"></div>
+    </div>

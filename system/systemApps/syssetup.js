@@ -12,19 +12,19 @@ const syssetupTextReinpass = document.getElementById('syssetup_text_reinpass');
 
 //-----------------------------------------------------------------------------------------------
 function verifyEnteredUserData() {
-    if (syssetupInputDname.value === '') {
+    if (syssetupInputDname.value.trim() === '') {
         showAlertBox('⚠️ Advertencia','El nombre no puede estar vacio');
         return;
     }
 
-    if (!(syssetupInputPass.value === syssetupInputReinpass.value)) {
-        syssetupTextReinpass.textContent = 'Confirmar contraseña (Las contraseñas no coinciden)';
-        showAlertBox('⚠️ Advertencia','Las contraseñas no coinciden');
+    if (syssetupInputPass.value.length < 4) {
+        showAlertBox('⚠️ Advertencia', 'La contraseña debe tener al menos 4 caracteres');
         return;
     }
 
-    if (syssetupInputPass.value === '') {
-        showAlertBox('⚠️ Advertencia','La contraseña debe tener al menos 4 caracteres');
+    if (syssetupInputPass.value !== syssetupInputReinpass.value) {
+        syssetupTextReinpass.textContent = 'Confirmar contraseña (Las contraseñas no coinciden)';
+        showAlertBox('⚠️ Advertencia', 'Las contraseñas no coinciden');
         return;
     }
 
@@ -36,9 +36,10 @@ function verifyEnteredUserData() {
 function createSystemFiles() {
     //Crear archivos falsos del sistema
     window.fs.createFolder('home');
-    window.fs.createFolder('documents', '/home');
-    window.fs.createFolder('videos', '/home');
-    window.fs.createFolder('images', '/home');
+    window.fs.createFolder('user', '/home');
+    window.fs.createFolder('documents', '/home/user');
+    window.fs.createFolder('videos', '/home/user');
+    window.fs.createFolder('images', '/home/user');
 
 
     window.fs.createFolder('system');
@@ -114,9 +115,14 @@ function createSystemFiles() {
 
 
 
+    window.fs.createFolder('general', '/system');
+    window.fs.createFile('main.conf', 'Null', '/system/general');
+
+
+
     window.fs.createFolder('styledui', '/system');//     /system/styledui/fileshome
     window.fs.createFolder('fileshome', '/system/styledui');
-    window.fs.createFile('styled.css', 'Mj6DoC{display:grid}', '/system/styledui/fileshome');
+    window.fs.createFile('styled.css', 'Mj6DoC{display:grid;}', '/system/styledui/fileshome');
     window.fs.createFile('home.lnkh', '/', '/system/styledui/fileshome');
 
 
@@ -124,12 +130,17 @@ function createSystemFiles() {
     window.fs.createFolder('mnt', '/system');
     window.fs.createFolder('disk0', '/system/mnt');
     //Si se conecta un USB aparece aqui, se crea una carpeta disk1
+
+
+
+    window.fs.createFolder('trash', '/system');
 }
 
 //-----------------------------------------------------------------------------------------------
-function createSystemUser() {
-    changeDisplayName('user', syssetupInputDname.value);
-    changePassword('user','',syssetupInputPass.value);
+async function createSystemUser() {
+    await changeDisplayName('user', syssetupInputDname.value);
+    await changePassword('user','',syssetupInputPass.value);
+    sysUserModifyPerm('user', 'admin');
 }
 
 
@@ -153,16 +164,17 @@ function createSystemUser() {
 
 
 
-function startSystemConfig() {
-    createSystemUser();
+async function startSystemConfig() {
+    await createSystemUser();
     createSystemFiles();
+
     setTimeout(() => {
         localStorage.setItem('used-before', true);
         localStorage.setItem('sys_status', 'off');
         localStorage.setItem('sysStartupConfig', 'NewSystem');
         localStorage.setItem('sessionAutoStart', JSON.stringify(SysVar.sessionAutoStart));
         showSyssetupScr('restart');
-    }, 7000);
+    }, 6000);
 }
 
 function showSyssetupScr(screen) {

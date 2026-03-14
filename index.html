@@ -14,7 +14,7 @@
     <link rel="icon" type="image/x-icon" href="../assets/logow.webp">
 </head>
 <body>
-    <!--Bsod-->
+    <!--Bsod
     <div id="bsod" class="hidden">
         <h1>A fatal system error occurred.<br>Ocurrio un error crítico del sistema</h1>
         <p>- The system cannot continue... Restarting in 10 seconds...<br>- El sistema no puede continuar... Se reiniciara en 10 segundos...<br>- 这个系统无法继续......10秒后重启......<br>- このシステムは続けられない...10秒後に再スタート...<br>- O sistema não pode continuar... Reiniciando em 10 segundos...</p>
@@ -22,15 +22,15 @@
         <p>Error code:<br>Codigo de error:</p>
         <p id="bsodErrorCode">X-XXX-XXX</p>
         <p id="bsodErrorText">Undefined</p>
-    </div>
+    </div>-->
      
     <!--Startup-->
     <div id="startupscr">
         <img style="width: 200px; height: 200px;" src="assets/logow.webp" alt="NyxPaw OS">
-        <p style="color: white;" id="startupscrtext">Failed to startup. Fatal error ocurred!<br>Press F12 key on your keyboard for more information</p>
+        <p style="color: white;" id="startupscrtext" class="hidden">Failed to startup. Fatal error ocurred!<br>Press F12 key on your keyboard for more information</p>
         <div style="display: flex; flex-direction: row; gap: 25px; align-items: center;" class="hidden" id="startupscr_syssetup">
             <img src="assets/loading.gif" style="width: 40px; height: 40px;" alt="[i]">
-            <p style="color: white; font-family: 'JetBrains Mono', monospace;" id="syssetup_specialtext">Cargando...</p>
+            <p style="color: white; font-family: 'JetBrains Mono', monospace;" id="syssetup_specialtext">Starting Up...</p>
             <!--<p style="color: white; font-family: 'JetBrains Mono', monospace;">Preparando sistema...<br>███░░░░░░░░░░░░░</p>-->
         </div>
         <!--<img style="width: 420px; height: 410px;" src="assets/loadingbar.gif" alt="Loading..." class="hidden" id="startupscrimg">-->
@@ -43,7 +43,7 @@
         
     </div>
 
-    <!--System Emergency Menu-->
+    <!--System Emergency Menu
     <div id="sys-emg-menu" class="hidden">
         <p>System Emergency Menu</p>
         <button onclick="document.getElementById('sys-emg-menu').classList.add('hidden')">Close</button>
@@ -55,7 +55,10 @@
         <button >-----------</button>
         <button onclick="window.close()">EMERGENCY SHUTDOWN - WILL CAUSE DATA LOSS</button>
         <button onclick="window.location.href = 'index.html'">EMERGENCY RESTART - WILL CAUSE DATA LOSS</button>
-    </div>
+    </div>-->
+
+    <!--Notificaciones-->
+    <div id="NotificationList" class="hidden"></div>
 
     <!--msgbox-->
     <div class="hidden" id="msg-box-bgoverlay"></div>
@@ -84,19 +87,36 @@
     </div>
 
     <!--Pantalla de inicio de sesion-->
-    <div class="hidden" id="loginscr"></div>
+    <div class="hidden" id="loginscr">
+        <p id="loginscr_time">00:00</p>
+        <div id="loginscr_userlist"></div>
+
+        <div class="hidden" id="loginscr_options_dp">
+            <button onclick="document.getElementById('loginscr_options_dp').classList.add('hidden');sysshutdown();" data-i18n="login_shutdown">Apagar</button>
+            <button onclick="document.getElementById('loginscr_options_dp').classList.add('hidden');sysrestart();" data-i18n="login_reboot">Reiniciar</button>
+            <button onclick="document.getElementById('loginscr_options_dp').classList.add('hidden');loginscrHelpDialog();" data-i18n="login_help">Ayuda</button>
+            <button onclick="document.getElementById('loginscr_options_dp').classList.add('hidden');loginscrAccs();" data-i18n="login_highc">Alto Contraste</button>
+        </div>
+        <button onclick="document.getElementById('loginscr_options_dp').classList.toggle('hidden');" class="loginscr_options">
+            <img src="assets/system/menu.png">
+        </button>
+    </div>
 
     <!--Top Bar-->
     <div id="top_bar">
         <button id="topbar_button" class="left">
             <img src="assets/logow.webp" alt="Start Button">
         </button>
-        <p id="timetext" class="center">Time</p>
+        <p id="timetext" class="center">00:00</p>
         <div class="right" id="topbar_right_el">
+            <button id="topbar_brief">
+                <img src="assets/nekiribrief.webp" alt="Brief">
+            </button>
             <button id="topbar_audio">
                 <img src="assets/system/volume.svg" alt="Audio">
             </button>
             <img id="topbar_battery" src="assets/system/bt-full.svg" alt="Battery">
+            <img id="topbar_network" src="assets/system/wifi.png" alt="Network">
             <button id="topbar_nekiri">
                 <img src="assets/nekiri.png" alt="Nekiri">
             </button>
@@ -105,12 +125,40 @@
 
     <!--Dropdowns de la topbar-->
     <div class="dropdown-menu hidden" id="start-dropdown">
-        <button onclick="sysExecApp('settings')">Preferencias</button>
-        <button onclick="showappinfo()">Informacion de la aplicacion</button>
-        <button onclick="sysshutdown()">Apagar</button>
-        <button onclick="sysrestart()">Reiniciar</button>
-        <button onclick="sysclosesesion()">Cerrar Sesion</button>
-        <button onclick="sysExecApp('settings'); setTimeout(() => openSettingsTab('system'), 70)">NyxPaw OS</button>
+        <button onclick="sysExecApp('settings')" data-i18n="system_pref">Preferencias</button>
+        <button onclick="showappinfo()" data-i18n="system_infoapp">Informacion de la aplicacion</button>
+        <button onclick="sysshutdown()" data-i18n="system_shutdown">Apagar</button>
+        <button onclick="sysrestart()" data-i18n="system_reboot">Reiniciar</button>
+        <button onclick="sysclosesesion()" data-i18n="system_logout">Cerrar Sesion</button>
+        <button onclick="sysExecApp('settings'); setTimeout(() => openSettingsTab('system'), 70)" data-i18n="system_about">Sobre el sistema</button>
+        <button onclick="document.documentElement.requestFullscreen()" class="hidden" id="dropdown-menu-fullscreen">Fullscreen</button>
+    </div>
+
+    <div class="dropdown-menu hidden" id="brief-dropdown">
+        <div id="brief_dp_content">
+            <div id="brief_dp_content_weather">
+                <p id="brief_dp_content_weather_text_place">📍 Ubicacion</p>
+                <div id="brief_dp_content_weather_tempicon">
+                    <img id="brief_dp_content_weather_icon" src="assets/weather/cloud.png">
+                    <p id="brief_dp_content_weather_text_temp">--</p>
+                </div>
+                <p id="brief_dp_content_weather_text_description">Cargando...</p>
+                <p> </p>
+                <p id="brief_dp_content_weather_text_maxmin">↑ -- / ↓ --</p>
+                <p id="brief_dp_content_weather_text_feelslike">Sensacion termica de...</p>
+            </div>
+            <div id="brief_dp_content_verticaldiv"></div>
+            <div id="brief_dp_content_usage">
+                <div class="brief_dp_content_usage_card">
+                    <img class="brief_dp_content_usage_card_img" src="assets/nekiri.png">
+                    <div class="brief_dp_content_usage_card_content">
+                        <p class="brief_dp_content_usage_card_content_appname">No has usado apps :D</p>
+                        <p class="brief_dp_content_usage_card_content_apptimeuse">--</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button id="brief_dp_openbtn" onclick="sysExecApp('nkbrief')">Abrir app</button>
     </div>
 
     <div class="dropdown-menu hidden" id="nekiri-dropdown">
@@ -134,33 +182,14 @@
 
 
     <!--Barra con las apps-->
-    <div id="appbar">
-        <button class="appbar-app" id="appbar-settings">
-            <img class="app-img" src="assets/apps/settings/3.png" alt="Configuracion">
-        </button>
-        <button class="appbar-app" id="appbar-notes">
-            <img class="app-img" src="assets/apps/notes/3.png" alt="Bloc de notas">
-        </button>
-        <button class="appbar-app" id="appbar-calc">
-            <img class="app-img" src="assets/apps/calc/3.png" alt="Calculadora">
-        </button>
-        <button class="appbar-app" id="appbar-browser">
-            <img class="app-img" src="assets/apps/browser/3.png" alt="NyxPaw">
-        </button>
-        <button class="appbar-app" id="appbar-files">
-            <img class="app-img" src="assets/apps/files/3.png" alt="Archivos">
-        </button>
-        <button class="appbar-app" id="appbar-calendar">
-            <img class="app-img" src="assets/apps/calendar/3.png" alt="Calendario">
-        </button>
-        <button class="appbar-app" id="appbar-terminal">
-            <img class="app-img" src="assets/apps/terminal/3.png" alt="Terminal">
-        </button>
-        <button class="appbar-app" id="appbar-appcenter">
-            <img class="app-img" src="assets/apps/Launchpad/3.png" alt="App Center">
-        </button>
-    </div>
+    <div id="appbar"></div>
     <div id="app-labels"></div>
+    <div id="appbar-ctxmenu" class="hidden">
+        <button onclick="sysExecApp(SysVar.tempCurrentAppBarApp)" class="appbar-ctxmenu-btn hidden" id="appbar-ctxmenu-run" data-i18n="appbar_open">Abrir</button>
+        <button onclick="appBarRemoveApp(SysVar.tempCurrentAppBarApp)" class="appbar-ctxmenu-btn hidden" id="appbar-ctxmenu-del" data-i18n="appbar_delete">Eliminar</button>
+        <button onclick="sysExecApp(SysVar.tempCurrentAppBarApp)" class="appbar-ctxmenu-btn hidden" id="appbar-ctxmenu-restore" data-i18n="appbar_open2">Abrir</button>
+        <button onclick="AppManager.unloadApp(SysVar.tempCurrentAppBarApp)" class="appbar-ctxmenu-btn hidden" id="appbar-ctxmenu-quit" data-i18n="appbar_quit">Cerrar</button>
+    </div>
     
     <!--Menu contextual archivos-->
     <div id="filesaltmenu" class="filesaltmenu hidden">
@@ -169,1293 +198,30 @@
         <button id="ctx-addhome">Agregar al inicio</button>
     </div>
 
-    <!--System Apps-->
-    <div class="window hidden fullscreen" id="win_syssetup">
-        <div class="grab">
-            <span class="grab-title">✅  System Setup</span>
-            <button class="grab-btn" id="btn_syssetup">X</button>
-        </div>
-
-        <div class="win_content content_syssetup">
-            <div class="syssetup_screen active" id="syssetup_welcome">
-                <div class="syssetup_container">
-                    <img class="syssetup_img" src="assets/therianb.png" alt="Therian OS Logo">
-                    <h1>Bienvenido a NyxPaw OS</h1>
-                    <h2>Therian Edition ✨</h2>
-                    <div class="syssetup_divider"></div>
-                    <p>Bienvenido, pepararemos tu sistema... Solo tomara un momento.</p>
-                    <button class="syssetup_btn" onclick="showSyssetupScr('language')">Comenzar  →</button>
-                </div>
-            </div>
-
-            <div class="syssetup_screen" id="syssetup_language">
-                <div class="syssetup_container">
-                    <img class="syssetup_img" src="system/systemApps/assets/region.png" alt="Region">
-                    <h1>Idioma y región</h1>
-                    <div class="syssetup_divider"></div>
-                    <p>Idioma:</p>
-                    <select>
-                        <option>Español (Original)</option>
-                        <option>English</option>
-                        <option>Install later...</option>
-                    </select>
-                    <p>Region:</p>
-                    <select>
-                        <option>America Latina</option>
-                        <option>Estados Unidos</option>
-                        <option>Europa</option>
-                        <option>Japón</option>
-                        <option>España</option>
-                        <option>Costa Rica</option>
-                        <option>Reino Unido</option>
-                        <option>Otro...</option>
-                    </select>
-                    <button class="syssetup_btn" onclick="showSyssetupScr('styles')">Continuar</button>
-                </div>
-            </div>
-
-            <div class="syssetup_screen" id="syssetup_styles">
-                <div class="syssetup_container">
-                    <img class="syssetup_img" src="system/systemApps/assets/colors.png" alt="Estilos">
-                    <h1>Personalizacion</h1>
-                    <div class="syssetup_divider"></div>
-                    <p>Tema:</p>
-                    <select>
-                        <option>Oscuro</option>
-                        <option>Claro</option>
-                        <option>Automatico</option>
-                    </select>
-                    <p>Color de acento:</p>
-                    <select>
-                        <option>Rojo</option>
-                        <option>Verde</option>
-                        <option>Azul</option>
-                        <option>Celeste</option>
-                        <option>Rosado</option>
-                        <option>Amarillo</option>
-                        <option>Morado</option>
-                    </select>
-                    <button class="syssetup_btn" onclick="showSyssetupScr('privacy')">Continuar</button>
-                </div>
-            </div>
-
-            <div class="syssetup_screen" id="syssetup_privacy">
-                <div class="syssetup_container">
-                    <img class="syssetup_img" src="system/systemApps/assets/privacy.png" alt="Privacidad">
-                    <h1>Privacidad y seguridad</h1>
-                    <div class="syssetup_divider"></div>
-                    <div style="display: flex; flex-direction: row; gap: 5px;">
-                        <label>Permitir que Nekiri acceda a tus datos basicos</label>
-                        <input type="checkbox">
-                    </div>
-                    <div style="display: flex; flex-direction: row; gap: 5px;">
-                        <label>Activar funciones experimentales (BETA)</label>
-                        <input type="checkbox">
-                    </div>
-                    <div style="display: flex; flex-direction: row; gap: 5px;">
-                        <label>Acceder a ubicacion aproximada para mejorar compatibilidad</label>
-                        <input type="checkbox">
-                    </div>
-                    <div style="display: flex; flex-direction: row; gap: 5px;">
-                        <label>Permitir que Nekiri recuerde patrones sobre el uso del sistema</label>
-                        <input type="checkbox">
-                    </div>
-                    <h3>Tranquilo! No hay nada de anuncios en este sistema!</h3>
-                    <button class="syssetup_btn" onclick="showSyssetupScr('user')">Continuar</button>
-                </div>
-            </div>
-
-            <div class="syssetup_screen" id="syssetup_user">
-                <div class="syssetup_container">
-                    <img class="syssetup_img" src="system/systemApps/assets/user.png" alt="Usuario">
-                    <h1>Usuario y personalidad (1/2)</h1>
-                    <div class="syssetup_divider"></div>
-                    <p>Nombre de usuario:</p>
-                    <input type="text" placeholder="User" id="syssetup_input_dname">
-                    <p>Contraseña</p>
-                    <input type="password" placeholder="1234" autocomplete="new-password" id="syssetup_input_pass">
-                    <p id="syssetup_text_reinpass">Confirmar contraseña</p>
-                    <input type="password" placeholder="1234" autocomplete="new-password" id="syssetup_input_reinpass">
-                    <button class="syssetup_btn" onclick="verifyEnteredUserData()">Continuar</button>
-                </div>
-            </div>
-
-            <div class="syssetup_screen" id="syssetup_personality">
-                <div class="syssetup_container">
-                    <img class="syssetup_img" src="system/systemApps/assets/user.png" alt="Usuario">
-                    <h1>Usuario y personalidad (2/2)</h1>
-                    <h2>Te haremos unas preguntas para mejorar tu experiencia</h2>
-                    <div class="syssetup_divider"></div>
-                    <p>Porque estas usando este sistema operativo?</p>
-                    <select>
-                        <option>Porque soy Therian</option>
-                        <option>No soy Therian pero quiero probarlo</option>
-                        <option>Otro...</option>
-                    </select>
-                    <p>Piensas usar este sistema seguido?</p>
-                    <select>
-                        <option>Si!</option>
-                        <option>Lo probare y si me gusta lo usare</option>
-                        <option>Lo probare pero no creo usarlo</option>
-                        <option>No, pero quiero verlo</option>
-                        <option>No!!</option>
-                        <option>Otro...</option>
-                    </select>
-                    <button class="syssetup_btn" onclick="showSyssetupScr('prepare')">Continuar</button>
-                </div>
-            </div>
-
-            <div class="syssetup_screen" id="syssetup_prepare">
-                <div class="syssetup_container">
-                    <img class="syssetup_img" src="assets/therianb.png" alt="Preparando">
-                    <h1>Ya casi terminamos!</h1>
-                    <h2>Estamos configurando tu sistema...</h2>
-                    <div class="syssetup_divider"></div>
-                    <div style="display: flex; flex-direction: row; gap: 5px;">
-                        <img src="assets/loading.gif" alt="Cargando..." class="syssetup_smallimg">
-                        <p id="syssetup_preptext">Configurando...</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="syssetup_screen" id="syssetup_restart">
-                <div class="syssetup_container">
-                    <img class="syssetup_img" src="system/systemApps/assets/ok.png" alt="Listo">
-                    <h1>Todo listo!</h1>
-                    <h2>El sistema esta listo para usarse!</h2>
-                    <div class="syssetup_divider"></div>
-                    <div style="display: flex; flex-direction: row; gap: 5px;">
-                        <img src="system/systemApps/assets/reset.png" alt="Listo" class="syssetup_smallimg">
-                        <p id="syssetup_preptext">El sistema se debe reiniciar</p>
-                    </div>
-                    <button class="syssetup_btn" onclick="window.location.href = 'index.html'">Reiniciar</button>
-                </div>
-            </div>
-        </div>
-        <div class="resize-handle"></div>
+    <!--Menu contextual app center-->
+    <div id="appcenter_ctxm" class="hidden">
+        <button class="appcenter_ctxm_btn" onclick="sysExecApp(SysVar.tempCurrentAppCenterApp)" data-i18n="appcenter_open">Abrir</button>
+        <button class="appcenter_ctxm_btn" onclick="appcenter_ctxmb_addapp()" data-i18n="appcenter_addappbar">Agregar al AppBar</button>
+        <button class="appcenter_ctxm_btn hidden" id="appcenter_ctxm_delappbtn" onclick="appcenter_ctxmb_delapp()" data-i18n="appcenter_uninstall">Desinstalar</button>
     </div>
+
+    <!--Ventana quick view-->
+    <div id="quickview" class="hidden">
+        <div id="quickview_div_closebtn">
+            <button id="quickview_closebtn" onclick="hidequickview()">X</button>
+        </div>
+        <video id="quickview_vid" class="hidden" controls>
+        <source src="" type="video/mp4">
+        Ocurrio un error al reproducir el video
+        </video>
+        <img id="quickview_img" class="hidden" src="">
+        <p id="quickview_text" class="hidden">Cargando...</p>
+    </div>
+
+    <!--System Apps-->
+    
 
     <!--Ventanas-->
-    <div class="window hidden" id="win_config">
-        <div class="grab">
-            <span class="grab-title">⚙️  Configuracion</span>
-            <button class="grab-btn" id="btn_config">X</button>
-        </div>
-
-        <div class="win_content content_settings">
-            <div class="settings-sidebar">
-                <button class="tab profile" data-tab="profile">
-                    <i class="fi fi-ss-user"></i>
-                    <div style="display: flex; flex-direction: column; gap: 8px;" class="tabprofilet">
-                        <p id="dnametab">DISPLAY_NAME</p>
-                        <p class="tabprofilet2">Perfil ></p>
-                    </div>
-                </button>
-                <div class="sidebar-divider"></div>
-                <button class="tab active" data-tab="wifi">Wi-Fi</button>
-                <button class="tab" data-tab="network">Red</button>
-                <button class="tab" data-tab="bt">Bluetooth</button>
-                <div class="sidebar-divider"></div>
-                <button class="tab" data-tab="displays">Pantallas</button>
-                <button class="tab" data-tab="style">Estilo</button>
-                <button class="tab" data-tab="audio">Audio</button>
-                <button class="tab" data-tab="battery">Bateria</button>
-                <button class="tab" data-tab="keyboard">Teclado</button>
-                <button class="tab" data-tab="pointer">Puntero</button>
-                <button class="tab" data-tab="color">Color</button>
-                <div class="sidebar-divider"></div>
-                <button class="tab" data-tab="datetime">Fecha y Hora</button>
-                <button class="tab" data-tab="privacy">Privacidad</button>
-                <button class="tab" data-tab="users">Usuarios</button>
-                <div class="sidebar-divider"></div>
-                <button class="tab" data-tab="apps">Aplicaciones</button>
-                <button class="tab" data-tab="general">General</button>
-                <button class="tab" data-tab="updates">Actualizaciones</button>
-                <button class="tab" data-tab="system">Sistema</button>
-            </div>
-
-            <div class="settings-content">
-
-                <div class="tab-content" id="profile">
-                    <h3 id="profiletitle">Hola!</h3>
-                    <div class="uisetting userinfogrid">
-                        <div class="userinfodiv">
-                            <p class="userinfotitle">Nombre de usuario:</p>
-                            <p class="userinfosubtitle" id="userinfouserp">user</p>
-                        </div>
-                        <div class="userinfodiv">
-                            <p class="userinfotitle">Nombre:</p>
-                            <p class="userinfosubtitle" id="userinfodnamep">User</p>
-                        </div>
-                        <div class="userinfodiv">
-                            <p class="userinfotitle">Correo Electronico:</p>
-                            <p class="userinfosubtitle">Desconocido</p>
-                        </div>
-                        <div class="userinfodiv">
-                            <p class="userinfotitle">Telefono:</p>
-                            <p class="userinfosubtitle">Desconocido</p>
-                        </div>
-                    </div>
-                    
-                </div>
-
-                <div class="tab-content active" id="wifi">
-                    <h3>Wi-Fi</h3>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Wi-Fi</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Modo Avion</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <h4>Redes Disponibles</h4>
-                    <div class="uisetting">
-                        <p>🛜 Karen Melendez 5G</p>
-                        <p style="color: rgb(153, 153, 153); font-size: small;">Conectado</p>
-                    </div>
-                </div>
-
-
-                <div class="tab-content" id="network">
-                    <h3>Red</h3>
-                    <p>PCI Ethernet</p>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Conectado  -  1,000 Mb/s</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="uisetting">
-                        <label>IP Address</label>
-                        <input class="text-input" type="text" placeholder="192.168.1.1">
-                    </div>
-                    <div class="uisetting">
-                        <label>DNS</label>
-                        <input class="text-input" type="text" placeholder="1.1.1.1">
-                    </div>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Configuracion Manual (DHCP)</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>VPN (No hay aplicacion de VPN)</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="tab-content" id="bt">
-                    <h3>Bluetooth</h3>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Bluetooth</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <h4>Dispositivos</h4>
-                    <div class="uisetting">
-                        <p>No se encontraron dispositivos</p>
-                        <button class="btn primary">Buscar Dispositivos</button>
-                    </div>
-                </div>
-
-
-                <div class="tab-content" id="displays">
-                    <h3>Pantallas</h3>
-                    <div class="uisetting">
-                        <p>Monitores detectados: 1</p>
-                        <div style="display: flex; justify-content: center;">
-                            <div id="screendiv">2560 x 1600</div>
-                        </div>
-                    </div>
-                    <div class="uisetting">
-                        <label>Resolucion</label>
-                        <select class="select">
-                            <option>2560 x 1600</option>
-                            <option>1920 x 1080</option>
-                            <option>1280 x 720</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label>Frecuencia</label>
-                        <select class="select">
-                            <option>165 Hz (Pro Motion)</option>
-                            <option>120 Hz</option>
-                            <option>90 Hz</option>
-                            <option>60 Hz</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label>Escalado (100%)</label>
-                        <input type="range" min="100" max="250" value="100">
-                    </div>
-                    <div class="uisetting">
-                        <label>Brillo</label>
-                        <input type="range" min="10" max="100" value="80">
-                    </div>
-                </div>
-
-                <div class="tab-content" id="style">
-                    <h3>Estilos</h3>
-                    <div class="uisetting">
-                        <label>Tema</label>
-                        <select class="select">
-                            <option>Claro</option>
-                            <option>Oscuro</option>
-                            <option>Automatico</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label>Color de acento</label>
-                        <select class="select">
-                            <option>Rojo</option>
-                            <option>Verde</option>
-                            <option>Azul</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label>Fondo de pantalla</label>
-                        <select class="select">
-                            <option>Predeterminado</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label>Estilo de los iconos</label>
-                        <select class="select">
-                            <option>Predeterminado</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="audio">
-                    <h3>Audio</h3>
-                    <div class="uisetting">
-                        <label>Volumen</label>
-                        <input type="range" min="0" max="100">
-                    </div>
-                    <div class="uisetting">
-                        <label>Salida</label>
-                        <select class="select">
-                            <option>Altavoz</option>
-                            <option>Audifonos</option>
-                            <option>AUX</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label>Entrada</label>
-                        <select class="select">
-                            <option>intel technology Mic</option>
-                            <option>Steren AUD 7630NE Mic</option>
-                            <option>AUX</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label>Balance (Izq - Der)</label>
-                        <input type="range" min="-100" max="100">
-                    </div>
-                </div>
-
-                <div class="tab-content" id="battery">
-                    <h3>Bateria y Portabilidad</h3>
-                    <div class="uisetting">
-                        <p>100% De bateria</p>
-                        <p style="color: rgb(153, 153, 153); font-size: small;">Bateria totalmente cargada</p>
-                    </div>
-                    <div class="uisetting">
-                        <label>Perfil</label>
-                        <select class="select">
-                            <option>Ahorro de energía</option>
-                            <option>Balanceado</option>
-                            <option>Alto rendimiento</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Limitar carga a 90%</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="keyboard">
-                    <h3>Teclado</h3>
-                    <div class="uisetting">
-                        <label>Tipo de teclado</label>
-                        <select class="select">
-                            <option>QWERTY</option>
-                            <option>QWERTZ</option>
-                            <option>AZERTY</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label>Idioma</label>
-                        <select class="select">
-                            <option>ES</option>
-                            <option>US</option>
-                            <option>Mas       ></option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="pointer">
-                    <h3>Puntero</h3>
-                    <h4>Mouse</h4>
-                    <div class="uisetting">
-                        <label>Velocidad del puntero</label>
-                        <input type="range" min="50" max="170" value="110">
-                    </div>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Scroll Natural</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="uisetting">
-                        <label>Velocidad del doble clic</label>
-                        <input type="range" min="0" max="100">
-                    </div>
-                    <h4>Touchpad</h4>
-                    <div class="uisetting">
-                        <label>Velocidad del puntero</label>
-                        <input type="range" min="50" max="170" value="110">
-                    </div>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Scroll Natural</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="uisetting">
-                        <label>
-                            <input type="radio" name="theme"> Presionar con dos dedos para clic derecho
-                        </label>
-                        <br>
-                        <label>
-                            <input type="radio" name="theme"> Presionar en la esquina para clic derecho
-                        </label>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="color">
-                    <h3>Colores</h3>
-                    <div class="uisetting">
-                        <label>Nivel de rojo</label>
-                        <input type="range" min="0" max="100" value="100">
-                    </div>
-                    <div class="uisetting">
-                        <label>Nivel de verde</label>
-                        <input type="range" min="0" max="100" value="100">
-                    </div>
-                    <div class="uisetting">
-                        <label>Nivel de azul</label>
-                        <input type="range" min="0" max="100" value="100">
-                    </div>
-                    <div class="uisetting">
-                        <label>Mejora automatica del texto</label>
-                        <input type="range" min="0" max="100" value="100">
-                    </div>
-                    <div class="uisetting">
-                        <button class="btn primary">Calibrar colores</button>
-                        <button class="btn">Valores predeterminados</button>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="datetime">
-                    <h3>Fecha y hora</h3>
-                    <div class="uisetting">
-                        <label>Formato de hora</label>
-                        <select class="select">
-                            <option>12 horas</option>
-                            <option>24 horas</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label>Formato de fecha</label>
-                        <select class="select">
-                            <option>Día/Mes/Año</option>
-                            <option>Mes/Día/Año</option>
-                            <option>Año/Mes/Día</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label class="checkbox">
-                            <input type="checkbox">
-                            <span>Obtener informacion global del servidor</span>
-                        </label>
-                    </div>
-                    <div class="uisetting">
-                        <label>Hora personalizada</label>
-                        <input class="text-input" type="text" placeholder="10:30 AM">
-                    </div>
-                    <div class="uisetting">
-                        <label>Fecha personalizada</label>
-                        <input class="text-input" type="text" placeholder="Dia/Mes/Año">
-                    </div>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Solucionar el Y2K38</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-content" id="privacy">
-                    <h3>Privacidad</h3>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Enviar informes de errores</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Localizacion</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Permitir acceso a la camara y microfono siempre</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-content" id="users">
-                    <h3>Usuarios y cuentas</h3>
-                    <div class="uisetting">
-                        <button class="btn primary" onclick="sysAskForNewUserData()">✚ Nuevo usuario</button>
-                    </div>
-                    <div id="settings-users-container"></div>
-
-                    <!--<div id="settings_usercard" class="uisetting">
-                        <i class="fi fi-ss-user"></i>
-                        <p>User</p>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <button class="btn">✖</button>
-                            <button class="btn">✐ Contraseña</button>
-                            <button class="btn">✐ Nombre</button>
-                        </div>
-                    </div>-->
-                </div>
-                <div class="tab-content" id="apps">
-                    <h3>Aplicaciones y paquetes</h3>
-                    <div class="uisetting" style="display: flex; flex-direction: column; gap: 5px;">
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/settings/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Configuracion</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/notes/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Notas</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/calc/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Calculadora</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/browser/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">PawNet</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/files/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Archivos</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/calendar/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Calendario</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/Terminal/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Terminal</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/toybox2.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Toybox</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/videoplayer.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Nyx Video Player</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/imageview.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Nyx Image Viewer</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/nyxpawstore.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">NyxPaw Store</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/ytclient.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">NyxPaw Youtube Client</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/taskmanager.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Administrador de tareas</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <h4>Aplicaciones del sistema:</h4>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/desktop.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Escritorio</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Sistema - sys.js</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Filesystem.js</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">init.js</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Window Manager - winmanager.js</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">usermanager.js</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Users</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">App Center</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">programmanager.js</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">boot - sysLoader.js</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                    </div>
-                </div>
-                <div class="tab-content" id="general">
-                    <h3>General</h3>
-                    <div class="uisetting">
-                        <label>Idioma</label>
-                        <select class="select">
-                            <option>Español</option>
-                            <option>English</option>
-                            <option>Otro...</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label>Zona horaria</label>
-                        <select class="select">
-                            <option>GMT -6 Ciudad de Mexico</option>
-                            <option>GMT -5 Nueva York</option>
-                            <option>GMT +1 Madrid</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Mostrar errores de la consola</span>
-                            <label class="switch">
-                                <input type="checkbox" id="showerrorscheckbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="uisetting">
-                        <div class="switch-row">
-                            <span>Modo Desarrollador</span>
-                            <label class="switch">
-                                <input type="checkbox" id="devmodecheckbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-content" id="updates">
-                    <h3>Actualizaciones</h3>
-                    <div class="uisetting">
-                        <button class="btn primary">Buscar actualizaciones</button>
-                        <button class="btn">Historial</button>
-                    </div>
-                    <h4>Actualizar automaticamente</h4>
-                    <div class="uisetting">
-                        <label>
-                            <input type="radio" name="theme"> Sí
-                        </label>
-                        <br>
-                        <label>
-                            <input type="radio" name="theme"> No
-                        </label>
-                    </div>
-                </div>
-                <div class="tab-content" id="system">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <img src="assets/logow.webp" alt="NyxPaw OS Logo" style="width: 100px; height: auto;">
-                        <h3>NyxPaw OS</h3>
-                        <h5>Therian Edition</h5>
-                    </div>
-                    <div class="uisetting">
-                        <p>Version del sistema: 1.0.0</p>
-                        <p>PRIVATE BETA - Beta 26.1.0</p>
-                        <p>Kernel: NekoKS 1.0</p>
-                        <p>CPU: Intel Core i7-11800H</p>
-                        <p>RAM: 16 GB</p>
-                        <p>Almacenamiento: 1 TB SSD</p>
-                        <p>Tipo del OS: 64 bits</p>
-                        <h4>Basado en NyxPaw 1.0</h4>
-                    </div>
-                    <div class="uisetting">
-                        <label>Nombre del dispositivo</label>
-                        <input class="text-input" type="text" placeholder="Mi PC">
-                    </div>
-                    <div class="uisetting">
-                        <button class="btn primary" onclick="formatSystem()">Formatear sistema</button>
-                    </div>
-                </div>
-
-                <!--
-                <div class="tab-content" id="Template">
-                    <h3>Title</h3>
-                    <div class="uisetting">
-                        UI SETTING Here :D
-                    </div>
-                </div>
-                -->
-
-
-
-            </div>
-
-        </div>
-
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_notes">
-        <div class="grab">
-            <span class="grab-title">🗒️  Notas</span>
-            <button class="grab-btn" id="btn_notes">X</button>
-        </div>
-
-        <div class="win_content content_notes">
-            <div class="program_topbar">
-                <button>Guardar</button>
-                <button>Nuevo</button>
-                <button id="sysbtn-files">Abrir</button>
-            </div>
-            <textarea placeholder="Notas..."></textarea>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_calc">
-        <div class="grab">
-            <span class="grab-title">🧮  Calculadora</span>
-            <button class="grab-btn" id="btn_calc">X</button>
-        </div>
-        <div class="win_content content_calc">
-            <input type="text" id="calcdisplay" disabled>
-            <div id="calcbuttons">
-                <button class="calcbutton" onclick="calcinnum('Percent')">%</button>
-                <button class="calcbutton" onclick="calcinnum('Clear')">CE</button>
-                <button class="calcbutton" onclick="calcinnum('Del')">⌫</button>
-                <button class="calcbutton" onclick="calcinnum('/')">÷</button>
-
-                
-                <button class="calcbutton" onclick="calcinnum('1')">1</button>
-                <button class="calcbutton" onclick="calcinnum('2')">2</button>
-                <button class="calcbutton" onclick="calcinnum('3')">3</button>
-                <button class="calcbutton" onclick="calcinnum('*')">×</button>
-
-                <button class="calcbutton" onclick="calcinnum('4')">4</button>
-                <button class="calcbutton" onclick="calcinnum('5')">5</button>
-                <button class="calcbutton" onclick="calcinnum('6')">6</button>
-                <button class="calcbutton" onclick="calcinnum('-')">-</button>
-
-                <button class="calcbutton" onclick="calcinnum('7')">7</button>
-                <button class="calcbutton" onclick="calcinnum('8')">8</button>
-                <button class="calcbutton" onclick="calcinnum('9')">9</button>
-                <button class="calcbutton" onclick="calcinnum('+')">+</button>
-
-                <button class="calcbutton" onclick="calcinnum('0')">0</button>
-                <button class="calcbutton" onclick="calcinnum('.')">.</button>
-                <button class="calcbutton" onclick="calcinnum('00')">00</button>
-                <button class="calcbutton" onclick="calcinnum('=')">=</button>
-            </div>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_browser">
-        <div class="grab">
-            <span class="grab-title">🌎  PawNet</span>
-            <button class="grab-btn" id="btn_browser">X</button>
-        </div>
-
-        <div class="win_content content_browser">
-            <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
-                <div id="navbar">
-                    <button onclick="browser_prev()">←</button>
-                    <button onclick="browser_next()">→</button>
-                    <button onclick="browser_reload()">↻</button>
-                    <input type="text" placeholder="www.google.com" id="browserinput">
-                    <button onclick="browser_goto()">▶</button>
-                </div>
-                <iframe id="browseriframe" src="connecting.html"></iframe>
-            </div>  
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_files">
-        <div class="grab">
-            <span class="grab-title">📁  Archivos</span>
-            <button class="grab-btn" id="btn_files">X</button>
-        </div>
-
-        <div class="win_content content_files">
-            <div id="toolbar">
-                <button onclick="files_goup()">←</button>
-                <button onclick="files_reload()">↻</button>
-                <div id="verticaldivisor"></div>
-                <button onclick="filesCreateNewFileType()">+</button>
-                <button onclick="files_delobj()">🗑</button>
-                <button onclick="files_modobj()">✎</button>
-                <input type="text" autocomplete="off" id="files_toolbar_dirinput">
-            </div>
-            <div id="files_main_workspace">
-                <div id="files_recomended_dirs">
-                    <button class="files-recdir-button" onclick="setDirectory('/system/styledui/fileshome')">🏠 Inicio</button>
-                    <div style="width: 100%; height: 1px; background-color: rgba(255, 255, 255, 0.5);"></div>
-                    <button class="files-recdir-button" onclick="setDirectory('/home/videos')">🎬 Videos</button>
-                    <button class="files-recdir-button" onclick="setDirectory('/home/images')">🖼️ Imagenes</button>
-                    <button class="files-recdir-button" onclick="setDirectory('/home/documents')">📄 Documentos</button>
-                    <div style="width: 100%; height: 1px; background-color: rgba(255, 255, 255, 0.5);"></div>
-                    <button class="files-recdir-button" onclick="setDirectory('/')">🖥️ This PC</button>
-                    <button class="files-recdir-button hidden" onclick="setDirectory('/system/mnt/disk1')">💾 USB</button>
-                </div>
-                <div id="file-list"></div>
-            </div>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_calendar">
-        <div class="grab">
-            <span class="grab-title">📅  Calendario</span>
-            <button class="grab-btn" id="btn_calendar">X</button>
-        </div>
-
-        <div class="win_content content_calendar">
-            <div class="calendar_header">
-                <button class="calendar_nav-btn" onclick="changeMonth(-1)">←</button>
-                <h2 id="calendar_monthYear"></h2>
-                <button class="calendar_nav-btn" onclick="changeMonth(1)">→</button>
-            </div>
-            
-            <div class="calendar_allweekdays">
-                <div class="calendar_weekday">Dom</div>
-                <div class="calendar_weekday">Lun</div>
-                <div class="calendar_weekday">Mar</div>
-                <div class="calendar_weekday">Mié</div>
-                <div class="calendar_weekday">Jue</div>
-                <div class="calendar_weekday">Vie</div>
-                <div class="calendar_weekday">Sáb</div>
-            </div>
-            
-            <div class="calendar_days" id="calendar_daysid"></div>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_terminal">
-        <div class="grab">
-            <span class="grab-title">>_  Terminal</span>
-            <button class="grab-btn" id="btn_terminal">X</button>
-        </div>
-
-        <div class="win_content content_terminal">
-            <div id="terminalprint" class="textShowEvents"></div>
-            <div id="terminalinDiv">
-                <p>></p>
-                <input type="text" placeholder="_" id="terminalin">
-            </div>
-            
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_toybox">
-        <div class="grab">
-            <span class="grab-title">🎲  ToyBox</span>
-            <button class="grab-btn" id="btn_toybox">X</button>
-        </div>
-
-        <div class="win_content content_toybox">
-            <div id="toyboxTab1" class="toyboxTab">
-                <h2>Efectos</h2>
-                <div class="uisetting">
-                    <label>Nivel de blur</label>
-                    <select class="select" id="toyboxBlurLevelSelect">
-                        <option value="0">0%</option>
-                        <option value="50">50%</option>
-                        <option value="100" selected>100% Default</option>
-                        <option value="150">150%</option>
-                        <option value="200">200% Doble</option>
-                    </select>
-                </div>
-                <div class="uisetting">
-                    <div class="switch-row">
-                        <span>Cola del cursor</span>
-                        <label class="switch">
-                            <input type="checkbox" id="toyboxCursorTail">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="uisetting">
-                    <label>Icono de la cola del cursor</label>
-                    <input class="text-input" type="text" placeholder="Icono / Emoji" value="😸" id="toyboxCursorTailIcon">
-                </div>
-                <div class="uisetting">
-                    <label>Tamaño de la cola del cursor</label>
-                    <input type="range" min="10" max="50" value="30" id="toyboxCursorTailSize">
-                </div>
-                <div class="uisetting">
-                    <button class="btn primary" onclick="toyboxFXSet()" style="margin-top: 10px;">Aplicar</button>
-                    <button class="btn" onclick="toyboxFXReset()" style="margin-top: 10px;">Restablecer</button>
-                </div>
-                
-            </div>
-            <div id="toyboxTab2" class="toyboxTab hidden">
-                <iframe src="https://www.youtube.com/embed/iaQBQp5tgcw?autoplay=1&loop=1&playlist=iaQBQp5tgcw&controls=0&mute=1&modestbranding=1&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width: 100%; height: 100%;"></iframe>
-            </div>
-            <div id="toyboxTab3" class="toyboxTab hidden">
-                <h2>Wallpaper Secreto</h2>
-                
-                <div class="uisetting">
-                    <img src="https://i.pinimg.com/originals%2F42%2F73%2Fe5%2F4273e565fa7ad19b4e3ba170bb9a85b2.jpg" alt="Wallpaper" style="width: auto; height: 100px;">
-                    <div class="switch-row">
-                        <span>Activar wallpaper secreto</span>
-                        <label class="switch">
-                            <input type="checkbox" id="toyboxSecretWallpaper">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="uisetting">
-                    <button class="btn primary" onclick="toyboxFXSet()" style="margin-top: 10px;">Aplicar</button>
-                    <button class="btn" onclick="toyboxFXReset()" style="margin-top: 10px;">Restablecer</button>
-                </div>
-            </div>
-
-            <div id="toyboxBtnsDiv">
-                <button onclick="toyboxGotoTab('toyboxTab1')">
-                    <img src="assets/toybox/effects.png" alt="Effects">
-                    <p>Efectos</p>
-                </button>
-                <button onclick="toyboxGotoTab('toyboxTab2')">
-                    <img src="https://i.ytimg.com/vi/iaQBQp5tgcw/hq720.jpg" alt="Fireplace">
-                    <p>Fireplace</p>
-                </button>
-                <button onclick="toyboxGotoTab('toyboxTab3')">
-                    <img src="https://i.pinimg.com/originals%2F42%2F73%2Fe5%2F4273e565fa7ad19b4e3ba170bb9a85b2.jpg" alt="Secret Wallpaper">
-                    <p>Wallpaper Secreto</p>
-                </button>
-            </div>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_nyxvideoplayer">
-        <div class="grab">
-            <span class="grab-title">🎬  Nyx Video Player</span>
-            <button class="grab-btn" id="btn_nyxvideoplayer">X</button>
-        </div>
-
-        <div class="win_content content_nyxvideoplayer">
-            
-            <button onclick="document.getElementById('win_askForVideoFile').style.removeProperty('opacity');document.getElementById('win_askForVideoFile').classList.remove('hidden');setTimeout(() => {document.getElementById('win_askForVideoFile').classList.add('window_anim_open');}, 10);" id="nyxvideoplayer_selectVid">Elegir video</button>
-            <video id="nyxvideoplayer_player" controls>Hubo un problema con la reproduccion del video: Video no soportado - VID-NOWK</video>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_nyximageviewer">
-        <div class="grab">
-            <span class="grab-title">🖼️  Nyx Image Viewer</span>
-            <button class="grab-btn" id="btn_nyximageviewer">X</button>
-        </div>
-
-        <div class="win_content content_nyximageviewer">
-            
-            <button onclick="document.getElementById('win_askForImageFile').style.removeProperty('opacity');document.getElementById('win_askForImageFile').classList.remove('hidden');setTimeout(() => {document.getElementById('win_askForImageFile').classList.add('window_anim_open');}, 10);" id="nyximageviewer_selectVid">Elegir imagen</button>
-            <img id="nyximageviewer_player" controls>Imagen</img>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_nyxpawstore">
-        <div class="grab">
-            <span class="grab-title">📦  NyxPaw Store</span>
-            <button class="grab-btn" id="btn_nyxpawstore">X</button>
-        </div>
-
-        <div class="win_content content_nyxpawstore">
-            <div id="nyxpawstore_mainmenu">
-                <div class="nyxpawstore_app">
-                    <div class="nyxpawstore_imgtextrow">
-                        <img src="assets/apps/weather.png">
-                        <p>Clima</p>
-                    </div>
-                    <div class="horizontal_divider"></div>
-                    <button onclick="nyxPawStoreOpenTab('Clima', 'assets/apps/weather.png')">Ver mas...</button>
-                </div>
-                <div class="nyxpawstore_app">
-                    <div class="nyxpawstore_imgtextrow">
-                        <img src="assets/apps/arcade.png">
-                        <p>Arcade</p>
-                    </div>
-                    <div class="horizontal_divider"></div>
-                    <button onclick="nyxPawStoreOpenTab('Arcade', 'assets/apps/arcade.png')">Ver mas...</button>
-                </div>
-                <div class="nyxpawstore_app">
-                    <div class="nyxpawstore_imgtextrow">
-                        <img src="assets/apps/venge.png">
-                        <p>Venge</p>
-                    </div>
-                    <div class="horizontal_divider"></div>
-                    <button onclick="nyxPawStoreOpenTab('Venge', 'assets/apps/venge.png')">Ver mas...</button>
-                </div>
-                <div class="nyxpawstore_app">
-                    <div class="nyxpawstore_imgtextrow">
-                        <img src="assets/apps/virtualenv.png">
-                        <p>Virtual Environments</p>
-                    </div>
-                    <div class="horizontal_divider"></div>
-                    <button onclick="nyxPawStoreOpenTab('VirtualEnvs', 'assets/apps/virtualenv.png')">Ver mas...</button>
-                </div>
-                <!--<div class="nyxpawstore_app">
-                    <div class="nyxpawstore_imgtextrow">
-                        <img src="assets/apps/vscode.png">
-                        <p>VSCode</p>
-                    </div>
-                    <div class="horizontal_divider"></div>
-                    <button onclick="nyxPawStoreOpenTab('VSCode', 'assets/apps/vscode.png')">Ver mas...</button>
-                </div>-->
-            </div>
-
-            <div id="nyxpawstore_apptab" class="hidden">
-                <button id="nyxpawstore_backbutton" onclick="nyxPawStoreBackToMenu()">Volver</button>
-                <div id="nyxpawstore_apptabappntitle">
-                    <img src="assets/loading.gif" id="nyxpawstore_appicon">
-                    <div id="nyxpawstore_apptabtitlenbtn">
-                        <h3 id="nyxpawstore_appname">Loading...</h3>
-                        <button onclick="nyxPawStoreGetApp()" id="nyxpawstore_getbtn">Descargar</button>
-                    </div>
-                </div>
-                <p id="nyxpawstore_appinfo">Loading...</p>
-                
-            </div>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_nytclient">
-        <div class="grab">
-            <span class="grab-title">📺  NyxPaw Youtube Client</span>
-            <button class="grab-btn" id="btn_nytclient">X</button>
-        </div>
-
-        <div class="win_content content_nytclient">
-            <div id="nytclientnavbar">
-                <button onclick="nytclient_reload()">↻</button>
-                <input type="text" placeholder="dQw4w9WgXcQ" id="nytclienturlin">
-                <button onclick="nytclient_goto()">▶</button>
-            </div>
-            <iframe id="nytclientiframe" src="nytclient.html"></iframe>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_weather">
-        <div class="grab">
-            <span class="grab-title">🌤️  Clima</span>
-            <button class="grab-btn" id="btn_weather">X</button>
-        </div>
-
-        <div class="win_content content_weather">
-            <a style="height: 100%;" class="weatherwidget-io" href="https://forecast7.com/en/40d71n74d01/new-york/" data-label_1="NEW YORK" data-label_2="WEATHER" data-theme="original" >NEW YORK WEATHER</a>
-            <script>
-            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
-            </script>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_arcade">
-        <div class="grab">
-            <span class="grab-title">🕹️  Arcade</span>
-            <button class="grab-btn" id="btn_arcade">X</button>
-        </div>
-
-        <div class="win_content content_arcade">
-            <iframe src="arcade.html" id="arcadeiframe"></iframe>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_taskmanager">
-        <div class="grab">
-            <span class="grab-title">📋  Administrador de tareas</span>
-            <button class="grab-btn" id="btn_taskmanager">X</button>
-        </div>
-
-        <div class="win_content content_taskmanager">
-            <div id="taskmanager_topbar">
-                <button onclick="sysShowRunDialog()">+</button>
-                <button>X</button>
-                <button onclick="refreshTaskList()">↻</button>
-            </div>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_vengegame">
-        <div class="grab">
-            <span class="grab-title">🆅  Venge</span>
-            <button class="grab-btn" id="btn_vengegame">X</button>
-        </div>
-
-        <div class="win_content content_vengegame">
-            <iframe src="connecting.html" id="iframevenge"></iframe>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_eventviewer">
-        <div class="grab">
-            <span class="grab-title">🚩  Event Viewer</span>
-            <button class="grab-btn" id="btn_eventviewer">X</button>
-        </div>
-
-        <div class="win_content content_eventviewer">
-            <div id="eventviewer_leftsidebar">
-                <button class="eventviewer_btn" onclick="updateEventList()">Actualizar</button>
-                <div class="syssetup_divider"></div>
-                <button class="eventviewer_btn">System Events (Seleccionado)</button>
-            </div>
-            <div id="eventviewer_centerdiv">
-                <!--<div class="eventviewer_event">
-                    <label>ℹ️</label>
-                    <p>Title</p>
-                </div>-->
-            </div>
-            <div id="eventviewer_rightsidebar">
-                <h4 class="textShowEvents eventviewer_text" id="sidebarR_EName">Evento</h4>
-                <p class="textShowEvents eventviewer_text" id="sidebarR_EInfo">Selecciona un evento</p>
-            </div>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_regedit">
-        <div class="grab">
-            <span class="grab-title">🎛️  RegEdit</span>
-            <button class="grab-btn" id="btn_regedit">X</button>
-        </div>
-
-        <div class="win_content content_regedit">
-            <div id="regedit_leftsidebar">
-                <button class="regedit_btn" onclick="updateList()">Actualizar</button>
-                <div class="syssetup_divider"></div>
-                <button class="regedit_btn" id="regedit_btn_jsfiles" onclick="regeditSectionGoto('jsfiles')">JAVASCRIPT_FILES 🔘</button>
-                <button class="regedit_btn" id="regedit_btn_gownusr" onclick="regeditSectionGoto('gownusr')">GENERAL_OWN_USER</button>
-            </div>
-            <div id="regedit_list" class="regedit_list">
-            </div>
-            <div id="regedit_listgownusr" class="regedit_list hidden">
-            </div>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_virtualenv">
-        <div class="grab">
-            <span class="grab-title">🖥️  Virtual Environments</span>
-            <button class="grab-btn" id="btn_virtualenv">X</button>
-        </div>
-
-        <div class="win_content content_virtualenv">
-            <iframe src="system_appload.html?img=assets/apps/virtualenv.png" sandbox="allow-scripts allow-same-origin" id="virtualenviframe"></iframe>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-    <div class="window hidden" id="win_vscode">
-        <div class="grab">
-            <span class="grab-title">🔷  VSCode</span>
-            <button class="grab-btn" id="btn_vscode">X</button>
-        </div>
-
-        <div class="win_content content_vscode">
-            <iframe src="system_appload.html?img=assets/apps/vscode.png&avl=0" sandbox="allow-scripts allow-same-origin" id="vscodeiframe"></iframe>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
 
     <!-- Template - _appname deben ser iguales
 
@@ -1549,11 +315,11 @@
         </div>
 
         <div class="win_content content_askforuserspassword">
-            <p>Ingrese la contraseña para user</p>
+            <p data-i18n="loginscr_enterpass">Ingrese su contraseña</p>
             <input type="password" id="loginscr_passwordinput" placeholder="Contraseña..." autocomplete="new-password">
             <div id="loginscr-btnsdiv">
-                <button id="loginscr-btn_login" class="files-btnstyled">Ingresar</button>
-                <button id="loginscr-btn_cancel" class="files-btnstyled">Cancelar</button>
+                <button id="loginscr-btn_login" class="files-btnstyled" data-i18n="loginscr_trylogin">Ingresar</button>
+                <button id="loginscr-btn_cancel" class="files-btnstyled" data-i18n="loginscr_cancel">Cancelar</button>
             </div>
         </div>
         <div class="resize-handle"></div>
@@ -1588,8 +354,11 @@
     <!--Launchpad y App Center:-->
     <div class="hidden" id="win_appcenter">
         <div id="appcentertopbtns">
-            <input type="text" placeholder="Escribe para buscar...">
+            <input type="text" placeholder="Escribe para buscar..." id="appcenter_searchbar">
             <button id="appcenterclose">X</button>
+        </div>
+        <div id="appcenter_nekiriHint" class="hidden">
+            <p>Ctrl+Enter → Nekiri</p>
         </div>
         <div id="appcenterapps">
 
@@ -1677,6 +446,12 @@
                 <p>VSCode</p>
             </div>
 
+            <div class="appcenter_appdiv" id="appcenter-nekiri" onclick="appcenterAskNekiri()">
+                <button class="appcenter-appbtn">
+                    <img class="appcenter-img" src="assets/nekiri.png" alt="Nekiri">
+                </button>
+                <p>Preguntar a Nekiri</p>
+            </div>
         </div>
     </div>
 
@@ -1688,6 +463,29 @@
 
 
     <!--Scripts-->
+    <script>
+        var userNavigatorSupported = true;
+
+        if (!window.fetch) userNavigatorSupported = false;
+        if (!window.Promise) userNavigatorSupported = false;
+        if (!CSS.supports('backdrop-filter', 'blur(1px)')) userNavigatorSupported = false;
+
+        try {
+            new Function('async () => {}')();
+        } catch (e) {
+            userNavigatorSupported = false;
+        }
+
+        if (!userNavigatorSupported) {
+            document.body.innerHTML = `
+                <div style="text-align:center; padding:50px; font-family:sans-serif; background:white; width:700px; height:100px;">
+                    <h2 style="margin:0;">⚠️ Navegador no compatible.</h2>
+                    <p style="margin-top:20px;">Por favor actualiza tu navegador para continuar.</p>
+                </div>
+            `;
+        }
+    </script>
+
     <script>
         console.log('Starting up...');
         
@@ -1721,6 +519,7 @@
             console.error('❌ ScriptLoader did not load!');
         }
     </script>
+
 </body>
 </html>
 

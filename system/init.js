@@ -7,7 +7,7 @@ const mode2 = params2.get('mode');
 let sysScriptIsOK = false;
 
 function initializeLoginScreen() {
-    const loginScreen = document.getElementById('loginscr');
+    const loginScreen = document.getElementById('loginscr_userlist');
 
     loginScreen.innerHTML = '';
 
@@ -19,6 +19,7 @@ function initializeLoginScreen() {
 function startLoading() {
     const loadProgressBar = document.getElementById('startupscr_progressbar');
     const loadProgressText = document.getElementById('startupscr_progresstext');
+    loadProgressText.classList.add('hidden');
     const loginScr = document.getElementById('loginscr');
     let loadProgress = 0;
     let loadIsPaused = false;
@@ -34,7 +35,7 @@ function startLoading() {
             loadPauseTimer = 0;
         } else if (loadIsPaused) {
             loadPauseTimer++;
-            if (loadPauseTimer > 8) { // Ajustar '30' para mas o menos tiempo de espera
+            if (loadPauseTimer > 7) { // Ajustar '30' para mas o menos tiempo de espera
                 loadIsPaused = false;
                 loadProgress += 0.5;
             }
@@ -61,7 +62,7 @@ function startLoading() {
                     startupScr.classList.add('hidden');
                     console.log('script is ok: ' + sysScriptIsOK);
                     if (sysScriptIsOK !== true) {
-                        sysBsod('X-SYS-CRP','The system files are corrupted. Please contact technical support');
+                        sysBsod('X-SYS-CRP','System verification failed. Please reboot the computer.');
                     }
                     setTimeout(() => {
                         loginScr.classList.remove('hidden');
@@ -92,13 +93,13 @@ function startLoading() {
                         startupScr.classList.add('hidden');
                         console.log('script is ok: ' + sysScriptIsOK);
                         if (sysScriptIsOK !== true) {
-                            sysBsod('X-SYS-CRP','The system files are corrupted. Please contact technical support');
+                            sysBsod('X-SYS-CRP','System verification failed. Please reboot the computer.');
                         }
                     }, 3000);
                 }
             }
         }
-    }, 15/*'50' es la velocidad, mayor numero = mas lento*/);
+    }, 11/*'50' es la velocidad, mayor numero = mas lento*/);
 }
 
 window.SysVar = window.SysVar || {};
@@ -106,10 +107,10 @@ window.SysVar = window.SysVar || {};
 function systemIntegrityCheck() {
     try {
         const criticalChecks = {
-            'file-list': document.getElementById('file-list'),
+            /*'file-list': document.getElementById('file-list'),*/
             'top_bar': document.getElementById('top_bar'),
             'appbar': document.getElementById('appbar'),
-            'bsod': document.getElementById('bsod'),
+            /*'bsod': document.getElementById('bsod'),*/
             'msg-box': document.getElementById('msg-box')
         };
         
@@ -122,22 +123,24 @@ function systemIntegrityCheck() {
         const testKey = '__system_test__';
         localStorage.setItem(testKey, 'test');
         if (localStorage.getItem(testKey) !== 'test') {
-            throw new Error('localStorage is not functioning correctly');
+            throw new Error('LocalStorage failed');
         }
         localStorage.removeItem(testKey);
 
         const usedBefore = localStorage.getItem('used-before');
         if (usedBefore) {
             if (mode2 !== 'safe') {
-                loadDataReg();
-                if (!SysVar.sessionAutoStart.includes('UI')) {
-                    throw new Error(`System check failed! SystemUI initialization failed, UI Service not ready.`);
+                if (!SysVar.sessionAutoStart || !SysVar.sessionAutoStart.includes('UI')) {
+                    throw new Error(`UI Service not ready.`);
                     
                 }
             }
         }
 
         if (usedBefore) {
+            if (!window.fs.isFolder('/system')) {
+                throw new Error(`System not found.`);
+            }
             if (!window.fs.isFolder('/system/users/root')) {
                 throw new Error(`System user not found`);
             }
@@ -146,11 +149,12 @@ function systemIntegrityCheck() {
             }
         }
 
+
         //esta variable se establece hasta el final, de esta forma en caso de que algo en el script falle, la variable no se inicializa y eso significa que hay algun error:
         sysScriptIsOK = true;
         
     } catch (e) {
-        sysBsod('X-DOM-CRT','System check failed! SystemUI initialization failed, DOM elements missing: ' + e.message + ' System cannot continue.');
+        sysBsod('X-DOM-CRT','Initialization failed: ' + e.message);
     }
 }
 
@@ -172,35 +176,53 @@ function initSysTheme() {
 
 
 //inicializar todo:
-startLoading(); 
 
-setInterval(updateTime, 1000);
-updateTime();
-initWindowManager();
-hideAppBar();
-hideTopBar();
-initFileSystem();
-if (document.getElementById('file-list')) {
-  updateFileList();
-  setupFileSelection();
-  setupContextMenu();
-  setupContextMenuActions();
+async function bootSystem() {
+    initWindowManager();
+    hideAppBar();
+    hideTopBar();
+    try {
+        await AppManager.init();
+    } catch(e) {
+        console.error('AppManager Error:'+e);
+    }
+    initFileSystem();
+    if (document.getElementById('file-list')) {
+        updateFileList();
+        setupFileSelection();
+        setupContextMenu();
+        setupContextMenuActions();
+    }
+
+    initializeLoginScreen();
+    refreshUserCards();
+    document.getElementById('startupscr').classList.remove('hidden');
+    document.getElementById('startupscrimg').classList.remove('hidden');
+    document.getElementById('startupscrtext').classList.add('hidden');
+
+    //initSysTheme();
+    setupCloseButtons();
+    await waitUntil(() => typeof window.fs !== 'undefined');
+    if (usedBefore && mode2 !== 'safe') {
+        loadDataReg();
+    }
+    renderAppBar();
+
+    translateSystem(SysVar.currentlang || "auto");
+
+    systemIntegrityCheck()
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    window.scriptReady('init');
+    console.log("SYSTEM READY");
 }
 
-initializeLoginScreen();
-refreshUserCards();
-document.getElementById('startupscr').classList.remove('hidden');
-document.getElementById('startupscrimg').classList.remove('hidden');
-document.getElementById('startupscrtext').classList.add('hidden');
-
-initSysTheme();
-setupCloseButtons();
-systemIntegrityCheck()
+startLoading();
+bootSystem();
 
 
 
-window.scriptReady('init');
-console.log("SYSTEM READY");
 
 /*
 X-DOM-CRT: Faltan elementos del DOM

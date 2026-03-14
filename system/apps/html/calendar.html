@@ -1,0 +1,27 @@
+    <div class="window hidden" id="win_calendar">
+        <div class="grab">
+            <span class="grab-title">📅  Calendario</span>
+            <button class="grab-btn" id="btn_calendar">X</button>
+        </div>
+
+        <div class="win_content content_calendar">
+            <div class="calendar_header">
+                <button class="calendar_nav-btn" onclick="changeMonth(-1)">←</button>
+                <h2 id="calendar_monthYear"></h2>
+                <button class="calendar_nav-btn" onclick="changeMonth(1)">→</button>
+            </div>
+            
+            <div class="calendar_allweekdays">
+                <div class="calendar_weekday">Dom</div>
+                <div class="calendar_weekday">Lun</div>
+                <div class="calendar_weekday">Mar</div>
+                <div class="calendar_weekday">Mié</div>
+                <div class="calendar_weekday">Jue</div>
+                <div class="calendar_weekday">Vie</div>
+                <div class="calendar_weekday">Sáb</div>
+            </div>
+            
+            <div class="calendar_days" id="calendar_daysid"></div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>

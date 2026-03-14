@@ -80,10 +80,13 @@ function nyxPawStoreGetApp() {
         console.log('Delete');
         SysVar.appDownloaded = SysVar.appDownloaded.filter(x => x !== nyxpawstoreCurrentApp);
         document.getElementById(nyxpawstoreAppID).classList.add('hidden');
+        
     } else {
         console.log('Get App');
         SysVar.appDownloaded.push(nyxpawstoreCurrentApp);
         document.getElementById(nyxpawstoreAppID).classList.remove('hidden');
+        createNotification('assets/apps/nyxpawstore.png', 'App instalada', `${nyxpawstoreCurrentApp} esta lista para usarse`, { show:true, text:"Abrir", action:"exec", data:nyxpawstoreCurrentApp });
+
     }
 
     

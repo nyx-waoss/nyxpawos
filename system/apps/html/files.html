@@ -1,0 +1,39 @@
+    <div class="window hidden" id="win_files">
+        <div class="grab">
+            <span class="grab-title">📁  Archivos</span>
+            <button class="grab-btn" id="btn_files">X</button>
+        </div>
+
+        <div class="win_content content_files">
+            <div id="toolbar">
+                <button onclick="files_goup()">←</button>
+                <button onclick="files_reload()">↻</button>
+                <div id="verticaldivisor"></div>
+                <button onclick="filesCreateNewFileType()">+</button>
+                <button onclick="files_delobj()">🗑</button>
+                <button onclick="files_modobj()">✎</button>
+                <input type="text" autocomplete="off" id="files_toolbar_dirinput">
+            </div>
+            <div id="files_main_workspace">
+                <div id="files_recomended_dirs">
+                    <button class="files-recdir-button" onclick="setDirectory('/system/styledui/fileshome')" data-i18n="files_home">🏠 Inicio</button>
+                    <div style="width: 100%; height: 1px; background-color: rgba(255, 255, 255, 0.5);"></div> 
+                    <button class="files-recdir-button" onclick="setDirectory(`/home/${SysVar.currentuser.user}/videos`)" data-i18n="files_videos">🎬 Videos</button>
+                    <button class="files-recdir-button" onclick="setDirectory(`/home/${SysVar.currentuser.user}/images`)" data-i18n="files_images">🖼️ Imagenes</button>
+                    <button class="files-recdir-button" onclick="setDirectory(`/home/${SysVar.currentuser.user}/documents`)" data-i18n="files_documents">📄 Documentos</button>
+                    <div style="width: 100%; height: 1px; background-color: rgba(255, 255, 255, 0.5);"></div>
+                    <button class="files-recdir-button" onclick="setDirectory('/')">🖥️ This PC</button>
+                    <button class="files-recdir-button hidden" onclick="setDirectory('/system/mnt/disk1')" data-i18n="files_usb">💾 USB</button>
+                    <div style="width: 100%; height: 1px; background-color: rgba(255, 255, 255, 0.5);"></div>
+                    <button class="files-recdir-button" onclick="setDirectory('/system/trash')" data-i18n="files_trash">🗑️ Basurero</button>
+                </div>
+                <div id="file-list"></div>
+            </div>
+            <div id="savefilebar" class="hidden">
+                <input type="text" autocomplete="off" id="files_savefilebar_filename">
+                <button onclick="files_cancelsave()" class="savefilebar_btn" data-i18n="files_cancel">Cancelar</button>
+                <button onclick="files_execsave()" class="savefilebar_btn" id="savefilebar_savebtn" data-i18n="files_save">Guardar</button>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>

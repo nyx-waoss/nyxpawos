@@ -4,7 +4,39 @@ window.SysVar = window.SysVar || {};
 SysVar.lockedSession = true;
 console.log('session locked')
 
-function sysAskLoginPassword(user) {
+// Codigo de cifrado sacado de IA porque ni idea de como se hace:
+
+async function hashPassword(password, salt = null) {
+    // Si no se provee salt, generar uno nuevo
+    if (!salt) {
+        const saltArray = crypto.getRandomValues(new Uint8Array(16));
+        salt = Array.from(saltArray)
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+    }
+
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password + salt);
+
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+
+    return {
+        hash: hashHex,
+        salt: salt
+    };
+}
+
+async function verifyPassword(inputPassword, storedHash, storedSalt) {
+    const result = await hashPassword(inputPassword, storedSalt);
+    return result.hash === storedHash;
+}
+//==================================================================
+
+async function sysAskLoginPassword(user) {
     loginin_user = user;
     const userData = sysUsers[loginin_user];
     if (!sysUsers[loginin_user]) {
@@ -16,10 +48,28 @@ function sysAskLoginPassword(user) {
     loginText.textContent = 'Iniciando sesion...';
     document.documentElement.requestFullscreen();
 
-    if (userData.password === '') {
+    const hasNoPassword = (userData.passwordHash === undefined && 
+                          (userData.password === undefined || userData.password === ''))
+                       || (userData.passwordHash !== undefined && 
+                          userData.passwordSalt !== undefined &&
+                          await verifyPassword('', userData.passwordHash, userData.passwordSalt));
+
+    if (hasNoPassword) {
+        if (userData.permlevel === undefined) {
+            userData.permlevel = 'user';
+            if (loginin_user === 'user') {
+                userData.permlevel = 'admin';
+            }
+            localStorage.setItem('sysUsers', JSON.stringify(sysUsers));
+        }
         SysVar.currentuser.user = loginin_user;
         SysVar.currentuser.dName = userData.displayName;
-        SysVar.currentuser.permissions = 'user';
+        SysVar.currentuser.permissions = userData.permlevel;
+        if (SysVar.currentuser.permissions === 'dev' || SysVar.currentuser.permissions === 'unsafe' || SysVar.currentuser.permissions === 'system') {
+            SysVar.devMode = true;
+        } else {
+            SysVar.devMode = false;
+        }
         SysVar.lockedSession = false;
         setTimeout(() => {
             loginscr.classList.add('hidden');
@@ -45,6 +95,7 @@ function sysclosesesion() {
     SysVar.currentuser.user = 'system';
     SysVar.currentuser.dName = 'System';
     SysVar.currentuser.permissions = 'system';
+    SysVar.devMode = false;
     setTimeout(() => {
         const allLoginTexts = document.querySelectorAll('.loginscr_logintext');
         allLoginTexts.forEach(text => {
@@ -73,7 +124,7 @@ loginscrBtnCancel.addEventListener('click', () => {
     loginText.textContent = 'Iniciar sesion';
 });
 
-function tryLoginToUser() {
+async function tryLoginToUser() {
     if (!sysUsers[loginin_user]) {
         sysBsod('X-USR-NUL', 'Attempted access to a non-existent user! This error should not occur unless system files have been modified.')
     }
@@ -85,37 +136,82 @@ function tryLoginToUser() {
     }
 
     const userData = sysUsers[loginin_user];
-
     const userDiv = document.querySelector(`[data-username="${loginin_user}"]`);
     const loginText = userDiv.querySelector('.loginscr_logintext');
 
-    if (loginscrPassInput.value === userData.password) {
+    const isLegacyUser = userData.password !== undefined && 
+                         userData.passwordHash === undefined;
+
+    let loginSuccess = false;
+
+    if (isLegacyUser) {
+        loginSuccess = (loginscrPassInput.value === userData.password);
+
+        if (loginSuccess) {
+            console.log(`[Security Warning] ${loginin_user} has old password system! Auto-migrating to hash...`);
+            const { hash, salt } = await hashPassword(loginscrPassInput.value);
+            userData.passwordHash = hash;
+            userData.passwordSalt = salt;
+            delete userData.password;
+            localStorage.setItem('sysUsers', JSON.stringify(sysUsers));
+            console.log(`${loginin_user}'s password successfully migrated to hash.`);
+        }
+    } else {
+        loginSuccess = await verifyPassword(
+            loginscrPassInput.value,
+            userData.passwordHash,
+            userData.passwordSalt
+        );
+    }
+
+    if (loginSuccess) {
+        if (userData.permlevel === undefined) {
+            userData.permlevel = 'user';
+            if (loginin_user === 'user') {
+                userData.permlevel = 'admin';
+            }
+            localStorage.setItem('sysUsers', JSON.stringify(sysUsers));
+        }
         askForPasswordWin.classList.remove('window_anim_open');
         setTimeout(() => {
             askForPasswordWin.classList.add('hidden');
             askForPasswordWin.style.removeProperty('opacity');
         }, 200);
-        SysVar.currentuser.user = loginin_user; //como obtengo el usuario aqui?
+
+        SysVar.currentuser.user = loginin_user;
         SysVar.currentuser.dName = userData.displayName;
-        SysVar.currentuser.permissions = 'user';
+        SysVar.currentuser.permissions = userData.permlevel;
+        if (SysVar.currentuser.permissions === 'dev' || SysVar.currentuser.permissions === 'unsafe' || SysVar.currentuser.permissions === 'system') {
+            SysVar.devMode = true;
+        } else {
+            SysVar.devMode = false;
+        }
         SysVar.lockedSession = false;
+
         setTimeout(() => {
             loginscr.classList.add('hidden');
             showAppBar();
             showTopBar();
             loginText.textContent = 'Iniciar sesion';
             loginscrPassInput.value = '';
+            document.getElementById('loginscr_options_dp').classList.add('hidden');
 
             if (localStorage.getItem('sysStartupConfig') === 'ShowSTAlert') {
                 showAlertBox('⚠️ Advertencia', 'El sistema no se apago correctamente. Esto puede dañar el sistema o la computadora, si lees este mensaje entonces probablemente tu computadora esta bien, pero si esto sucede muy seguido si puede tener consecuencias graves.');
+                setTimeout(() => {
+                    createNotification('assets/warn.webp','Advertencia','El sistema no se apago correctamente.');
+                },400);
                 localStorage.setItem('sysStartupConfig', 'none');
             }
 
             if (localStorage.getItem('sysStartupConfig') === 'NewSystem') {
-                showAlertBox('Bienvenido :3', 'Bienvenido a NyxPaw OS Therian edition, el sistema operativo para therians!');
                 localStorage.setItem('sysStartupConfig', 'none');
+                setTimeout(() => {
+                    createNotification('assets/nekiri.png','Bienvenido!','Bienvenido a InstictOS, el sistema operativo para therians ✨');
+                },400);
             }
         }, 600);
+
     } else {
         askForPasswordWin.classList.add('hidden');
         loginText.textContent = 'Contraseña incorrecta!';
@@ -135,7 +231,7 @@ loginscrPassInput.addEventListener('keydown', (e) => {
 
 
 
-function sysCreateUser(username, displayName, password) {
+async function sysCreateUser(username, displayName, password) {
     if (sysUsers[username]) {
         return {success: false, message: 'El usuario ya existe'};
     }
@@ -144,22 +240,39 @@ function sysCreateUser(username, displayName, password) {
         return {success: false, message: 'Ingrese la contraseña y el usuario!'};
     }
 
+    const { hash, salt } = await hashPassword(password);
+
     sysUsers[username] = {
         displayName: displayName || username,
-        password: password,
-        createdAt: Date.now()
+        passwordHash: hash,
+        passwordSalt: salt,
+        password: undefined,
+        createdAt: Date.now(),
+        permlevel: 'user'
     };
+
+    window.fs.createFolder(username, '/home');
+    window.fs.createFolder('documents', `/home/${username}`);
+    window.fs.createFolder('videos', `/home/${username}`);
+    window.fs.createFolder('images', `/home/${username}`);
 
     addUserToLoginScreen(username);
 
     localStorage.setItem('sysUsers', JSON.stringify(sysUsers));
+    refreshUserCards();
 
     return {success: true, message: 'Usuario creado'};
+}
+
+function sysUserModifyPerm(username, newpermlevel) {
+    sysUsers[username].permlevel = newpermlevel;
+    localStorage.setItem('sysUsers', JSON.stringify(sysUsers));
 }
 
 function addUserToLoginScreen(username) {
     const user = sysUsers[username];
     const loginScreen = document.getElementById('loginscr');
+    const loginDiv = document.getElementById('loginscr_userlist');
 
     const userDiv = document.createElement('div');
     userDiv.className = 'loginscr_account';
@@ -174,7 +287,7 @@ function addUserToLoginScreen(username) {
         </div>
     `;
 
-    loginScreen.appendChild(userDiv);
+    loginDiv.appendChild(userDiv);
 }
 
 function deleteUser(username) {
@@ -187,6 +300,7 @@ function deleteUser(username) {
     }
 
     delete sysUsers[username];
+    window.fs.deleteItem(username, '/home');
 
     const userDiv = document.querySelector(`[data-username="${username}"]`);
     if (userDiv) {
@@ -198,14 +312,22 @@ function deleteUser(username) {
     return {success: true, message: 'Usuario borrado'};
 }
 
-function changePassword(username, oldPassword, newPassword) {
+async function changePassword(username, oldPassword, newPassword) {
     const user = sysUsers[username];
 
     if (!user) {
         return {success: false, message: 'Usuario no encontrado!'};
     }
 
-    if (user.password !== oldPassword) {
+    let oldPassCorrect = false;
+
+    if (user.password !== undefined) {
+        oldPassCorrect = (user.password === oldPassword);
+    } else {
+        oldPassCorrect = await verifyPassword(oldPassword, user.passwordHash, user.passwordSalt);
+    }
+
+    if (!oldPassCorrect) {
         return {success: false, message: 'Contraseña actual incorrecta!'};
     }
 
@@ -213,7 +335,10 @@ function changePassword(username, oldPassword, newPassword) {
         return {success: false, message: 'La contraseña debe tener minimo 4 caracteres!'};
     }
 
-    user.password = newPassword;
+    const { hash, salt } = await hashPassword(newPassword);
+    user.passwordHash = hash;
+    user.passwordSalt = salt;
+    delete user.password;
 
     localStorage.setItem('sysUsers', JSON.stringify(sysUsers));
 
@@ -224,24 +349,24 @@ function changeDisplayName(username, newDisplayName) {
     const user = sysUsers[username];
 
     if (!user) {
-        return {success: false, message: 'Usuario no encontrado!'};
+        return Promise.resolve({success: false, message: 'Usuario no encontrado!'});
     }
 
     if (!newDisplayName || newDisplayName.trim() === '') {
-        return {success: false, message: 'El nombre no puede estar vacio!'};
+        return Promise.resolve({success: false, message: 'El nombre no puede estar vacio!'});v
     }
 
     user.displayName = newDisplayName;
 
     const userDiv = document.querySelector(`[data-username="${username}"]`);
-    if (userDiv) {
+    if (userDiv) {  
         const nameElement = userDiv.querySelector('p:first-child');
         nameElement.textContent = newDisplayName;
     }
 
     localStorage.setItem('sysUsers', JSON.stringify(sysUsers));
 
-    return {success: true, message: 'Nombre cambiado!'};
+    return Promise.resolve({success: true, message: 'Nombre cambiado!'});
 }
 
 function addUserCardToSettings(username) {
@@ -263,10 +388,12 @@ function addUserCardToSettings(username) {
     `;
 
     container.appendChild(userCard);
+    
 }
 
 function refreshUserCards() {
     const container = document.getElementById('settings-users-container');
+    if (!container) return;
     container.innerHTML = '';
 
     for (let username in sysUsers) {
@@ -346,23 +473,25 @@ async function settingsChangeDisplayName(username, newName) {
 }
 
 const usersContainer = document.getElementById('settings-users-container');
-usersContainer.addEventListener('click', (e) => {
-    const target = e.target;
+if (usersContainer) {
+    usersContainer.addEventListener('click', (e) => {
+        const target = e.target;
 
-    if (target.classList.contains('settings-btn-deleteuser')) {
-        const username = target.getAttribute('data-username');
-        settingsDeleteUser(username);
-    }
-    if (target.classList.contains('settings-btn-changepass')) {
-        const username = target.getAttribute('data-username');
-        settingsChangePassword(username);
-    }
-    if (target.classList.contains('settings-btn-changename')) {
-        const username = target.getAttribute('data-username');
-        settingsChangeDisplayName(username);
-    }
+        if (target.classList.contains('settings-btn-deleteuser')) {
+            const username = target.getAttribute('data-username');
+            settingsDeleteUser(username);
+        }
+        if (target.classList.contains('settings-btn-changepass')) {
+            const username = target.getAttribute('data-username');
+            settingsChangePassword(username);
+        }
+        if (target.classList.contains('settings-btn-changename')) {
+            const username = target.getAttribute('data-username');
+            settingsChangeDisplayName(username);
+        }
 
-});
+    });
+}
 
 const sysaskfornewuserdataBtnLogin = document.getElementById('sysaskfornewuserdata-btn_login');
 const sysaskfornewuserdataBtnCancel = document.getElementById('sysaskfornewuserdata-btn_cancel');
@@ -375,7 +504,7 @@ const settingsNewuserPasswordinput = document.getElementById('settings_newuser_p
 function sysAskForNewUserData() {
     winSysAskForNewUserData.style.removeProperty('opacity');
     winSysAskForNewUserData.classList.remove('hidden');
-    setTimeout(() => {
+    setTimeout(() => { 
         winSysAskForNewUserData.classList.add('window_anim_open');
     }, 10);
     winSysAskForNewUserData.style.height = '460px';

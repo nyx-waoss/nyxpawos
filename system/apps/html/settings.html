@@ -1,0 +1,702 @@
+    <div class="window hidden" id="win_config">
+        <div class="grab">
+            <span class="grab-title">⚙️  Configuracion</span>
+            <button class="grab-btn" id="btn_config">X</button>
+        </div>
+
+        <div class="win_content content_settings">
+            <div class="settings-sidebar">
+                <button class="tab profile" data-tab="profile">
+                    <i class="fi fi-ss-user"></i>
+                    <div style="display: flex; flex-direction: column; gap: 8px;" class="tabprofilet">
+                        <p id="dnametab">DISPLAY_NAME</p>
+                        <p class="tabprofilet2">Perfil ></p>
+                    </div>
+                </button>
+                <div class="sidebar-divider"></div>
+                <button class="tab active" data-tab="wifi" data-i18n="settings_tab_wifi">Wi-Fi</button>
+                <button class="tab" data-tab="network" data-i18n="settings_tab_network">Red</button>
+                <button class="tab" data-tab="bt" data-i18n="settings_tab_bt">Bluetooth</button>
+                <div class="sidebar-divider"></div>
+                <button class="tab" data-tab="displays" data-i18n="settings_tab_scr">Pantallas</button>
+                <button class="tab" data-tab="style" data-i18n="settings_tab_style">Estilo</button>
+                <button class="tab" data-tab="audio" data-i18n="settings_tab_audio">Audio</button>
+                <button class="tab" data-tab="battery" data-i18n="settings_tab_battery">Bateria</button>
+                <button class="tab" data-tab="keyboard" data-i18n="settings_tab_keyboard">Teclado</button>
+                <button class="tab" data-tab="pointer" data-i18n="settings_tab_pointer">Puntero</button>
+                <button class="tab" data-tab="color" data-i18n="settings_tab_color">Color</button>
+                <div class="sidebar-divider"></div>
+                <button class="tab" data-tab="datetime" data-i18n="settings_tab_date">Fecha y Hora</button>
+                <button class="tab" data-tab="country" data-i18n="settings_tab_country">Idioma y Region</button>
+                <button class="tab" data-tab="privacy" data-i18n="settings_tab_privacy">Privacidad</button>
+                <button class="tab" data-tab="users" data-i18n="settings_tab_users">Usuarios</button>
+                <div class="sidebar-divider"></div>
+                <button class="tab" data-tab="apps" data-i18n="settings_tab_apps">Aplicaciones</button>
+                <button class="tab" data-tab="general" data-i18n="settings_tab_general">General</button>
+                <button class="tab" data-tab="updates" data-i18n="settings_tab_updates">Actualizaciones</button>
+                <button class="tab" data-tab="system" data-i18n="settings_tab_system">Sistema</button>
+            </div>
+
+            <div class="settings-content">
+
+                <div class="tab-content" id="profile">
+                    <h3 id="profiletitle">Hola!</h3>
+                    <div class="uisetting userinfogrid">
+                        <div class="userinfodiv">
+                            <p class="userinfotitle">Nombre de usuario:</p>
+                            <p class="userinfosubtitle" id="userinfouserp">user</p>
+                        </div>
+                        <div class="userinfodiv">
+                            <p class="userinfotitle">Nombre:</p>
+                            <p class="userinfosubtitle" id="userinfodnamep">User</p>
+                        </div>
+                        <div class="userinfodiv">
+                            <p class="userinfotitle">Correo Electronico:</p>
+                            <p class="userinfosubtitle">Desconocido</p>
+                        </div>
+                        <div class="userinfodiv">
+                            <p class="userinfotitle">Telefono:</p>
+                            <p class="userinfosubtitle">Desconocido</p>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div class="tab-content active" id="wifi">
+                    <h3>Wi-Fi</h3>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Wi-Fi</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Modo Avion</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <h4>Redes Disponibles</h4>
+                    <div class="uisetting">
+                        <p>🛜 Karen Melendez 5G</p>
+                        <p style="color: rgb(153, 153, 153); font-size: small;">Conectado</p>
+                    </div>
+                </div>
+
+
+                <div class="tab-content" id="network">
+                    <h3>Red</h3>
+                    <p>PCI Ethernet</p>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Conectado  -  1,000 Mb/s</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uisetting">
+                        <label>IP Address</label>
+                        <input class="text-input" type="text" placeholder="192.168.1.1">
+                    </div>
+                    <div class="uisetting">
+                        <label>DNS</label>
+                        <input class="text-input" type="text" placeholder="1.1.1.1">
+                    </div>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Configuracion Manual (DHCP)</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>VPN (No hay aplicacion de VPN)</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-content" id="bt">
+                    <h3>Bluetooth</h3>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Bluetooth</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <h4>Dispositivos</h4>
+                    <div class="uisetting">
+                        <p>No se encontraron dispositivos</p>
+                        <button class="btn primary">Buscar Dispositivos</button>
+                    </div>
+                </div>
+
+
+                <div class="tab-content" id="displays">
+                    <h3>Pantallas</h3>
+                    <div class="uisetting">
+                        <p>Monitores detectados: 1</p>
+                        <div style="display: flex; justify-content: center;">
+                            <div id="screendiv">2560 x 1600</div>
+                        </div>
+                    </div>
+                    <div class="uisetting">
+                        <label>Resolucion</label>
+                        <select class="select">
+                            <option>2560 x 1600</option>
+                            <option>1920 x 1080</option>
+                            <option>1280 x 720</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <label>Frecuencia</label>
+                        <select class="select">
+                            <option>165 Hz (Pro Motion)</option>
+                            <option>120 Hz</option>
+                            <option>90 Hz</option>
+                            <option>60 Hz</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <label>Escalado (100%)</label>
+                        <input type="range" min="100" max="250" value="100">
+                    </div>
+                    <div class="uisetting">
+                        <label>Brillo</label>
+                        <input type="range" min="10" max="100" value="80">
+                    </div>
+                </div>
+
+                <div class="tab-content" id="style">
+                    <h3>Estilos</h3>
+                    <div class="uisetting">
+                        <label>Tema</label>
+                        <select class="select">
+                            <option>Claro</option>
+                            <option>Oscuro</option>
+                            <option>Automatico</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <label>Color de acento</label>
+                        <select class="select">
+                            <option>Rojo</option>
+                            <option>Verde</option>
+                            <option>Azul</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <label>Fondo de pantalla</label>
+                        <select class="select">
+                            <option>Predeterminado</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <label>Estilo de los iconos</label>
+                        <select class="select">
+                            <option>Predeterminado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="audio">
+                    <h3>Audio</h3>
+                    <div class="uisetting">
+                        <label>Volumen</label>
+                        <input type="range" min="0" max="100">
+                    </div>
+                    <div class="uisetting">
+                        <label>Salida</label>
+                        <select class="select">
+                            <option>Altavoz</option>
+                            <option>Audifonos</option>
+                            <option>AUX</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <label>Entrada</label>
+                        <select class="select">
+                            <option>intel technology Mic</option>
+                            <option>Steren AUD 7630NE Mic</option>
+                            <option>AUX</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <label>Balance (Izq - Der)</label>
+                        <input type="range" min="-100" max="100">
+                    </div>
+                </div>
+
+                <div class="tab-content" id="battery">
+                    <h3>Bateria y Portabilidad</h3>
+                    <div class="uisetting">
+                        <p>100% De bateria</p>
+                        <p style="color: rgb(153, 153, 153); font-size: small;">Bateria totalmente cargada</p>
+                    </div>
+                    <div class="uisetting">
+                        <label>Perfil</label>
+                        <select class="select">
+                            <option>Ahorro de energía</option>
+                            <option>Balanceado</option>
+                            <option>Alto rendimiento</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Limitar carga a 90%</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="keyboard">
+                    <h3>Teclado</h3>
+                    <div class="uisetting">
+                        <label>Tipo de teclado</label>
+                        <select class="select">
+                            <option>QWERTY</option>
+                            <option>QWERTZ</option>
+                            <option>AZERTY</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <label>Idioma</label>
+                        <select class="select">
+                            <option>ES</option>
+                            <option>US</option>
+                            <option>Mas       ></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="pointer">
+                    <h3>Puntero</h3>
+                    <h4>Mouse</h4>
+                    <div class="uisetting">
+                        <label>Velocidad del puntero</label>
+                        <input type="range" min="50" max="170" value="110">
+                    </div>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Scroll Natural</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uisetting">
+                        <label>Velocidad del doble clic</label>
+                        <input type="range" min="0" max="100">
+                    </div>
+                    <h4>Touchpad</h4>
+                    <div class="uisetting">
+                        <label>Velocidad del puntero</label>
+                        <input type="range" min="50" max="170" value="110">
+                    </div>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Scroll Natural</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uisetting">
+                        <label>
+                            <input type="radio" name="theme"> Presionar con dos dedos para clic derecho
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="theme"> Presionar en la esquina para clic derecho
+                        </label>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="color">
+                    <h3>Colores</h3>
+                    <div class="uisetting">
+                        <label>Nivel de rojo</label>
+                        <input type="range" min="0" max="100" value="100">
+                    </div>
+                    <div class="uisetting">
+                        <label>Nivel de verde</label>
+                        <input type="range" min="0" max="100" value="100">
+                    </div>
+                    <div class="uisetting">
+                        <label>Nivel de azul</label>
+                        <input type="range" min="0" max="100" value="100">
+                    </div>
+                    <div class="uisetting">
+                        <label>Mejora automatica del texto</label>
+                        <input type="range" min="0" max="100" value="100">
+                    </div>
+                    <div class="uisetting">
+                        <button class="btn primary">Calibrar colores</button>
+                        <button class="btn">Valores predeterminados</button>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="datetime">
+                    <h3>Fecha y hora</h3>
+                    <div class="uisetting">
+                        <label>Formato de hora</label>
+                        <select class="select">
+                            <option>12 horas</option>
+                            <option>24 horas</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <label>Formato de fecha</label>
+                        <select class="select">
+                            <option>Día/Mes/Año</option>
+                            <option>Mes/Día/Año</option>
+                            <option>Año/Mes/Día</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <label class="checkbox">
+                            <input type="checkbox">
+                            <span>Obtener informacion global del servidor</span>
+                        </label>
+                    </div>
+                    <div class="uisetting">
+                        <label>Hora personalizada</label>
+                        <input class="text-input" type="text" placeholder="10:30 AM">
+                    </div>
+                    <div class="uisetting">
+                        <label>Fecha personalizada</label>
+                        <input class="text-input" type="text" placeholder="Dia/Mes/Año">
+                    </div>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Solucionar el Y2K38</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" id="privacy">
+                    <h3>Privacidad</h3>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Enviar informes de errores</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Localizacion</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Permitir acceso a la camara y microfono siempre</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" id="users">
+                    <h3>Usuarios y cuentas</h3>
+                    <h4>Permisos</h4>
+                    <div class="uisetting">
+                        <label>Permisos del usuario actual</label>
+                        <select class="select" id="settings_permlevel_select">
+                            <option value="user">Usuario</option>
+                            <option value="admin">Admin</option>
+                            <option value="dev">Desarrollador</option>
+                        </select>
+                    </div>
+                    
+                    <h4>Usuarios</h4>
+                    <div class="uisetting">
+                        <button class="btn primary" onclick="sysAskForNewUserData()">✚ Nuevo usuario</button>
+                    </div>
+                    <div id="settings-users-container"></div>
+
+                    <!--<div id="settings_usercard" class="uisetting">
+                        <i class="fi fi-ss-user"></i>
+                        <p>User</p>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <button class="btn">✖</button>
+                            <button class="btn">✐ Contraseña</button>
+                            <button class="btn">✐ Nombre</button>
+                        </div>
+                    </div>-->
+                </div>
+                <div class="tab-content" id="apps">
+                    <h3>Aplicaciones y paquetes</h3>
+                    <div class="uisetting" style="display: flex; flex-direction: column; gap: 5px;">
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/settings/4.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Configuracion</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/notes/4.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Notas</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/calc/4.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Calculadora</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/browser/4.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">PawNet</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/files/4.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Archivos</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/calendar/4.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Calendario</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/Terminal/4.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Terminal</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/toybox2.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Toybox</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/videoplayer.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Nyx Video Player</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/imageview.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Nyx Image Viewer</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/nyxpawstore.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">NyxPaw Store</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/ytclient.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">NyxPaw Youtube Client</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/taskmanager.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Administrador de tareas</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <h4>Aplicaciones del sistema:</h4>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/desktop.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Escritorio</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Sistema - sys.js</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Filesystem.js</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">init.js</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Window Manager - winmanager.js</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">usermanager.js</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">Users</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">App Center</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">programmanager.js</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                        <div style="display: flex; flex-direction: row; gap: 6px;">
+                            <img src="assets/apps/settings/3.png" alt="Application" style="width: 47px; height: 47px;">
+                            <p style="font-size: 16px;">boot - sysLoader.js</p>
+                        </div>
+                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="general">
+                    <h3>General</h3>
+                    <div class="uisetting">
+                        <label>Zona horaria</label>
+                        <select class="select">
+                            <option>GMT -6 Ciudad de Mexico</option>
+                            <option>GMT -5 Nueva York</option>
+                            <option>GMT +1 Madrid</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <div class="switch-row">
+                            <span>Mostrar errores de la consola</span>
+                            <label class="switch">
+                                <input type="checkbox" id="showerrorscheckbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uisetting hidden">
+                        <div class="switch-row">
+                            <span>Modo Desarrollador</span>
+                            <label class="switch">
+                                <input type="checkbox" id="devmodecheckbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" id="updates">
+                    <h3>Actualizaciones</h3>
+                    <div class="uisetting">
+                        <button class="btn primary" data-i18n="settings_updatesfind">Buscar actualizaciones</button>
+                        <button class="btn" data-i18n="settings_updateshistory">Historial</button>
+                    </div>
+                    <h4>Actualizar automaticamente</h4>
+                    <div class="uisetting">
+                        <label>
+                            <input type="radio" name="theme"> Sí
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="theme"> No
+                        </label>
+                    </div>
+                </div>
+                <div class="tab-content" id="system">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <img src="assets/logow.webp" alt="NyxPaw OS Logo" style="width: 100px; height: auto;">
+                        <h3>NyxPaw OS</h3>
+                        <h5>Therian Edition</h5>
+                    </div>
+                    <div class="uisetting">
+                        <p>Version del sistema: 1.0.0</p>
+                        <p>PRIVATE BETA - Beta 26.1.0</p>
+                        <p>Kernel: NekoKS 1.0</p>
+                        <p>CPU: Intel Core i7-11800H</p>
+                        <p>RAM: 16 GB</p>
+                        <p>Almacenamiento: 1 TB SSD</p>
+                        <p>Tipo del OS: 64 bits</p>
+                        <h4>Basado en NyxPaw 1.0</h4>
+                    </div>
+                    <div class="uisetting">
+                        <label>Nombre del dispositivo</label>
+                        <input class="text-input" type="text" placeholder="Mi PC">
+                    </div>
+                    <div class="uisetting">
+                        <button class="btn primary" onclick="formatSystem()" data-i18n="settings_formatsys">Formatear sistema</button>
+                    </div>
+                </div>
+                <div class="tab-content" id="country">
+                    <h3>Idioma y region</h3>
+                    <h4 data-i18n="settings_languagewarn">⚠️ Aviso: El sistema de traducciones todavia estan el fase Alpha, puede que no sean 100% precisas o completas.</h4>
+                    <div class="uisetting">
+                        <label>Idioma</label>
+                        <select class="select" id="languageSelectionSel">
+                            <option value="es">Español</option>
+                            <option value="en">English</option>
+                            <option value="pt">Português</option>
+                            <option value="fr">Français</option>
+                            <option value="ja">日本語</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </div>
+                    <div class="uisetting">
+                        <label>Region</label>
+                        <select class="select">
+                            <option>Estados Unidos</option>
+                            <option>Chile</option>
+                            <option>Canada</option>
+                            <option>Puerto Rico</option>
+                            <option>Francia</option>
+                            <option>Japon</option>
+                            <option>Nicaragua</option>
+                            <option>Panama</option>
+                            <option>Argentina</option>
+                            <option>Costa Rica</option>
+                            <option>China</option>
+                            <option>Otro...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!--
+                <div class="tab-content" id="Template">
+                    <h3>Title</h3>
+                    <div class="uisetting">
+                        UI SETTING Here :D
+                    </div>
+                </div>
+                -->
+
+
+
+            </div>
+
+        </div>
+
+        <div class="resize-handle"></div>
+    </div>

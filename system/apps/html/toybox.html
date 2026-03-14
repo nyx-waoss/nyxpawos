@@ -1,0 +1,81 @@
+    <div class="window hidden" id="win_toybox">
+        <div class="grab">
+            <span class="grab-title">🎲  ToyBox</span>
+            <button class="grab-btn" id="btn_toybox">X</button>
+        </div>
+
+        <div class="win_content content_toybox">
+            <div id="toyboxTab1" class="toyboxTab">
+                <h2 data-i18n="toybox_effects">Efectos</h2>
+                <div class="uisetting">
+                    <label data-i18n="toybox_blurlevel">Nivel de blur</label>
+                    <select class="select" id="toyboxBlurLevelSelect">
+                        <option value="0">0%</option>
+                        <option value="50">50%</option>
+                        <option value="100" selected>100% Default</option>
+                        <option value="150">150%</option>
+                        <option value="200">200% Doble</option>
+                    </select>
+                </div>
+                <div class="uisetting">
+                    <div class="switch-row">
+                        <span data-i18n="toybox_cursortail">Cola del cursor</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toyboxCursorTail">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="uisetting">
+                    <label data-i18n="toybox_cursortailtext">Icono de la cola del cursor</label>
+                    <input class="text-input" type="text" placeholder="Icono / Emoji" value="😸" id="toyboxCursorTailIcon">
+                </div>
+                <div class="uisetting">
+                    <label data-i18n="toybox_cursortailsize">Tamaño de la cola del cursor</label>
+                    <input type="range" min="10" max="50" value="30" id="toyboxCursorTailSize">
+                </div>
+                <div class="uisetting">
+                    <button class="btn primary" onclick="toyboxFXSet()" style="margin-top: 10px;" data-i18n="toybox_apply">Aplicar</button>
+                    <button class="btn" onclick="toyboxFXReset()" style="margin-top: 10px;" data-i18n="toybox_reset">Restablecer</button>
+                </div>
+                
+            </div>
+            <div id="toyboxTab2" class="toyboxTab hidden">
+                <iframe src="https://www.youtube.com/embed/iaQBQp5tgcw?autoplay=1&loop=1&playlist=iaQBQp5tgcw&controls=0&mute=1&modestbranding=1&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width: 100%; height: 100%;"></iframe>
+            </div>
+            <div id="toyboxTab3" class="toyboxTab hidden">
+                <h2 data-i18n="toybox_secretwallpaper">Wallpaper Secreto</h2>
+                
+                <div class="uisetting">
+                    <img src="https://i.pinimg.com/originals%2F42%2F73%2Fe5%2F4273e565fa7ad19b4e3ba170bb9a85b2.jpg" alt="Wallpaper" style="width: auto; height: 100px;">
+                    <div class="switch-row">
+                        <span data-i18n="toybox_secwalltoggle">Activar wallpaper secreto</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toyboxSecretWallpaper">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="uisetting">
+                    <button class="btn primary" onclick="toyboxFXSet()" style="margin-top: 10px;" data-i18n="toybox_apply">Aplicar</button>
+                    <button class="btn" onclick="toyboxFXReset()" style="margin-top: 10px;" data-i18n="toybox_reset">Restablecer</button>
+                </div>
+            </div>
+
+            <div id="toyboxBtnsDiv">
+                <button onclick="toyboxGotoTab('toyboxTab1')">
+                    <img src="assets/toybox/effects.png" alt="Effects">
+                    <p data-i18n="toybox_tab_fx">Efectos</p>
+                </button>
+                <button onclick="toyboxGotoTab('toyboxTab2')">
+                    <img src="https://i.ytimg.com/vi/iaQBQp5tgcw/hq720.jpg" alt="Fireplace">
+                    <p>Fireplace</p>
+                </button>
+                <button onclick="toyboxGotoTab('toyboxTab3')">
+                    <img src="https://i.pinimg.com/originals%2F42%2F73%2Fe5%2F4273e565fa7ad19b4e3ba170bb9a85b2.jpg" alt="Secret Wallpaper">
+                    <p data-i18n="toybox_tab_secwall">Wallpaper Secreto</p>
+                </button>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>

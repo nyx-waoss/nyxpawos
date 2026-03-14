@@ -1,0 +1,164 @@
+<div class="window hidden fullscreen" id="win_syssetup">
+        <div class="grab">
+            <span class="grab-title">✅  System Setup</span>
+            <button class="grab-btn" id="btn_syssetup">X</button>
+        </div>
+
+        <div class="win_content content_syssetup">
+            <div class="syssetup_screen active" id="syssetup_welcome">
+                <div class="syssetup_container">
+                    <img class="syssetup_img" src="assets/therianb.png" alt="Therian OS Logo">
+                    <h1>Bienvenido a NyxPaw OS</h1>
+                    <h2>Therian Edition ✨</h2>
+                    <div class="syssetup_divider"></div>
+                    <p>Bienvenido, pepararemos tu sistema... Solo tomara un momento.</p>
+                    <button class="syssetup_btn" onclick="showSyssetupScr('language')">Comenzar  →</button>
+                </div>
+            </div>
+
+            <div class="syssetup_screen" id="syssetup_language">
+                <div class="syssetup_container">
+                    <img class="syssetup_img" src="system/systemApps/assets/region.png" alt="Region">
+                    <h1>Idioma y región</h1>
+                    <div class="syssetup_divider"></div>
+                    <p>Idioma:</p>
+                    <select>
+                        <option>Español (Original)</option>
+                        <option>English</option>
+                        <option>Install later...</option>
+                    </select>
+                    <p>Region:</p>
+                    <select>
+                        <option>America Latina</option>
+                        <option>Estados Unidos</option>
+                        <option>Europa</option>
+                        <option>Japón</option>
+                        <option>España</option>
+                        <option>Costa Rica</option>
+                        <option>Reino Unido</option>
+                        <option>Otro...</option>
+                    </select>
+                    <button class="syssetup_btn" onclick="showSyssetupScr('styles')">Continuar</button>
+                </div>
+            </div>
+
+            <div class="syssetup_screen" id="syssetup_styles">
+                <div class="syssetup_container">
+                    <img class="syssetup_img" src="system/systemApps/assets/colors.png" alt="Estilos">
+                    <h1>Personalizacion</h1>
+                    <div class="syssetup_divider"></div>
+                    <p>Tema:</p>
+                    <select>
+                        <option>Oscuro</option>
+                        <option>Claro</option>
+                        <option>Automatico</option>
+                    </select>
+                    <p>Color de acento:</p>
+                    <select>
+                        <option>Rojo</option>
+                        <option>Verde</option>
+                        <option>Azul</option>
+                        <option>Celeste</option>
+                        <option>Rosado</option>
+                        <option>Amarillo</option>
+                        <option>Morado</option>
+                    </select>
+                    <button class="syssetup_btn" onclick="showSyssetupScr('privacy')">Continuar</button>
+                </div>
+            </div>
+
+            <div class="syssetup_screen" id="syssetup_privacy">
+                <div class="syssetup_container">
+                    <img class="syssetup_img" src="system/systemApps/assets/privacy.png" alt="Privacidad">
+                    <h1>Privacidad y seguridad</h1>
+                    <div class="syssetup_divider"></div>
+                    <div style="display: flex; flex-direction: row; gap: 5px;">
+                        <label>Permitir que Nekiri acceda a tus datos basicos</label>
+                        <input type="checkbox">
+                    </div>
+                    <div style="display: flex; flex-direction: row; gap: 5px;">
+                        <label>Activar funciones experimentales (BETA)</label>
+                        <input type="checkbox">
+                    </div>
+                    <div style="display: flex; flex-direction: row; gap: 5px;">
+                        <label>Acceder a ubicacion aproximada para mejorar compatibilidad</label>
+                        <input type="checkbox">
+                    </div>
+                    <div style="display: flex; flex-direction: row; gap: 5px;">
+                        <label>Permitir que Nekiri recuerde patrones sobre el uso del sistema</label>
+                        <input type="checkbox">
+                    </div>
+                    <h3>Tranquilo! No hay nada de anuncios en este sistema!</h3>
+                    <button class="syssetup_btn" onclick="showSyssetupScr('user')">Continuar</button>
+                </div>
+            </div>
+
+            <div class="syssetup_screen" id="syssetup_user">
+                <div class="syssetup_container">
+                    <img class="syssetup_img" src="system/systemApps/assets/user.png" alt="Usuario">
+                    <h1>Usuario y personalidad (1/2)</h1>
+                    <div class="syssetup_divider"></div>
+                    <p>Nombre de usuario:</p>
+                    <input type="text" placeholder="User" id="syssetup_input_dname">
+                    <p>Contraseña</p>
+                    <input type="password" placeholder="1234" autocomplete="new-password" id="syssetup_input_pass">
+                    <p id="syssetup_text_reinpass">Confirmar contraseña</p>
+                    <input type="password" placeholder="1234" autocomplete="new-password" id="syssetup_input_reinpass">
+                    <button class="syssetup_btn" onclick="verifyEnteredUserData()">Continuar</button>
+                </div>
+            </div>
+
+            <div class="syssetup_screen" id="syssetup_personality">
+                <div class="syssetup_container">
+                    <img class="syssetup_img" src="system/systemApps/assets/user.png" alt="Usuario">
+                    <h1>Usuario y personalidad (2/2)</h1>
+                    <h2>Te haremos unas preguntas para mejorar tu experiencia</h2>
+                    <div class="syssetup_divider"></div>
+                    <p>Porque estas usando este sistema operativo?</p>
+                    <select>
+                        <option>Porque soy Therian</option>
+                        <option>No soy Therian pero quiero probarlo</option>
+                        <option>Otro...</option>
+                    </select>
+                    <p>Piensas usar este sistema seguido?</p>
+                    <select>
+                        <option>Si!</option>
+                        <option>Lo probare y si me gusta lo usare</option>
+                        <option>Lo probare pero no creo usarlo</option>
+                        <option>No, pero quiero verlo</option>
+                        <option>No!!</option>
+                        <option>Otro...</option>
+                    </select>
+                    <button class="syssetup_btn" onclick="showSyssetupScr('prepare')">Continuar</button>
+                </div>
+            </div>
+
+            <div class="syssetup_screen" id="syssetup_prepare">
+                <div class="syssetup_container">
+                    <img class="syssetup_img" src="assets/therianb.png" alt="Preparando">
+                    <h1>Ya casi terminamos!</h1>
+                    <h2>Estamos configurando tu sistema...</h2>
+                    <div class="syssetup_divider"></div>
+                    <div style="display: flex; flex-direction: row; gap: 5px;">
+                        <img src="assets/loading.gif" alt="Cargando..." class="syssetup_smallimg">
+                        <p id="syssetup_preptext">Configurando...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="syssetup_screen" id="syssetup_restart">
+                <div class="syssetup_container">
+                    <img class="syssetup_img" src="system/systemApps/assets/ok.png" alt="Listo">
+                    <h1>Todo listo!</h1>
+                    <h2>El sistema esta listo para usarse!</h2>
+                    <div class="syssetup_divider"></div>
+                    <div style="display: flex; flex-direction: row; gap: 5px;">
+                        <img src="system/systemApps/assets/reset.png" alt="Listo" class="syssetup_smallimg">
+                        <p id="syssetup_preptext">El sistema se debe reiniciar</p>
+                    </div>
+                    <button class="syssetup_btn" onclick="window.location.href = 'index.html'">Reiniciar</button>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>

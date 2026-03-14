@@ -1,0 +1,16 @@
+    <div class="window hidden" id="win_nytclient">
+        <div class="grab">
+            <span class="grab-title">📺  NyxPaw Youtube Client</span>
+            <button class="grab-btn" id="btn_nytclient">X</button>
+        </div>
+
+        <div class="win_content content_nytclient">
+            <div id="nytclientnavbar">
+                <button onclick="nytclient_reload()">↻</button>
+                <input type="text" placeholder="dQw4w9WgXcQ" id="nytclienturlin">
+                <button onclick="nytclient_goto()">▶</button>
+            </div>
+            <iframe id="nytclientiframe" src="nytclient.html"></iframe>
+        </div>
+        <div class="resize-handle"></div>
+    </div>

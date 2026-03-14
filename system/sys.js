@@ -6,7 +6,7 @@ if (startupErrorText) {
     startupErrorText.classList.add('hidden');
 }
 if (startupLoading) {
-    startupLoading.classList.remove('hidden');
+    startupLoading.classList.add('hidden');
 }
 
 const sysConsoleLog = {
@@ -24,16 +24,36 @@ const sysConsoleLog = {
 /*BSOD */
 function sysBsod(errorCode, errorText) {
     sysComQuitTasks();
-    const errorCodeOut = document.getElementById('bsodErrorCode');
-    const errorTextOut = document.getElementById('bsodErrorText');
-    const bsodDiv = document.getElementById('bsod');
+    //const bsodDiv = document.getElementById('bsod');
+    const bsodDiv = document.createElement('div');
+    bsodDiv.className = 'hidden';
+    bsodDiv.id = 'bsod';
+    bsodDiv.innerHTML =
+    `<h1>A fatal system error occurred.<br>Ocurrio un error crítico del sistema</h1>
+    <p>- The system cannot continue... Restarting in 10 seconds...<br>- El sistema no puede continuar... Se reiniciara en 10 segundos...<br>- 这个系统无法继续......10秒后重启......<br>- このシステムは続けられない...10秒後に再スタート...<br>- O sistema não pode continuar... Reiniciando em 10 segundos...</p>
+    <div id="sysdivider"></div>
+    <p>Error code:<br>Codigo de error:</p>
+    <p id="bsodErrorCode">X-XXX-XXX</p>
+    <p id="bsodErrorText">Undefined</p>`;
+    document.body.appendChild(bsodDiv);
 
-    errorCodeOut.textContent = errorCode;
-    errorTextOut.textContent = errorText;
-    bsodDiv.classList.remove('hidden');
+    try {
+        sysAddEvent('fatal', 'Fatal', `Code ${errorCode}: ${errorText}`);
+    } catch(error) {
+        tempSysAddEvent('fatal', 'Fatal', `Code ${errorCode}: ${errorText}`);
+    }
+
     setTimeout(() => {
-        window.location.href = "index.html";
-    }, 10000);
+        const errorCodeOut = document.getElementById('bsodErrorCode');
+        const errorTextOut = document.getElementById('bsodErrorText');
+
+        errorCodeOut.textContent = errorCode;
+        errorTextOut.textContent = errorText;
+        bsodDiv.classList.remove('hidden');
+        window._bsodTimeout = setTimeout(() => {
+            window.location.href = "index.html";
+        }, 10000);
+    },300);
 }
 //fin del sistema de bsod
 
@@ -42,10 +62,11 @@ function checkLoadingTimeout() {
     setTimeout(() => {
         const startupScr = document.getElementById('startupscr');
         if (!startupScr.classList.contains('hidden')) {
-            console.warn('An unknown error has occurred! Bootscreen is taking too long.');
+            console.warn('An unknown error has occurred. Bootscreen is taking too long.');
 
             const loadProgressText = document.getElementById('startupscr_progresstext');
             if (loadProgressText) {
+                loadProgressText.classList.remove('hidden');
                 loadProgressText.textContent = 'Unexpected error, please check console!';
                 loadProgressText.style.color = '#ff9800';
             }
@@ -127,7 +148,8 @@ if (sysUsers) {
         'user': {
             displayName: 'User',
             password: '',
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            permlevel: 'admin'
         }
     };
 }
@@ -139,6 +161,7 @@ const monthsNM = [
 
 let actualDate = new Date();
 let StarredDates = new Set();
+let systemIsOffline = false;
 
 
 
@@ -253,19 +276,19 @@ SysVar.filesQuickAccess = [
     {
         emoji:'🎬',
         text: 'Videos',
-        route: '/home/videos',
+        _dynamicRoute: `videos`,
         eltype: 'folder'
     },
     {
         emoji:'🖼️',
         text: 'Imagenes',
-        route: '/home/images',
+        _dynamicRoute: `images`,
         eltype: 'folder'
     },
     {
         emoji:'📄',
         text: 'Documentos',
-        route: '/home/documents',
+        _dynamicRoute: `documents`,
         eltype: 'folder'
     },
     {
@@ -276,17 +299,35 @@ SysVar.filesQuickAccess = [
     }
 ];
 
+SysVar.notifications = []
+SysVar.flagAlwaysAllowEvals = false;
+SysVar.pointerFilesSaveDialogOpen = false;
+SysVar.pointerFilesSaveDialogFilename = 'mi-nota.txt';
+SysVar.pointerFilesSaveDialogSaveYN = false;
+SysVar.tempCurrentAppBarApp = '';
+SysVar.appBarIcons = [
+  { "icon": "assets/apps/settings/3.png", "name": "Configuracion", "app": "settings", "minimized": false, "permanent": true },
+  { "icon": "assets/apps/notes/3.png", "name": "Bloc de notas", "app": "notes", "minimized": false, "permanent": true },
+  { "icon": "assets/apps/calc/3.png", "name": "Calculadora", "app": "calc", "minimized": false, "permanent": true },
+  { "icon": "assets/apps/browser/3.png", "name": "NyxPaw", "app": "browser", "minimized": false, "permanent": true },
+  { "icon": "assets/apps/files/3.png", "name": "Archivos", "app": "files", "minimized": false, "permanent": true },
+  { "icon": "assets/apps/calendar/3.png", "name": "Calendario", "app": "calendar", "minimized": false, "permanent": true },
+  { "icon": "assets/apps/terminal/3.png", "name": "Terminal", "app": "terminal", "minimized": false, "permanent": true }
+];
+SysVar.tempCurrentAppCenterApp = '';
+SysVar.tempCurrentAppCenterImg = '';
+SysVar.tempCurrentAppCenterName = '';
+SysVar.appsUsage = [];
+SysVar.pointerTopZ = 0;
+SysVar.currentlang = "auto";
+
 
 /*VARIABLES GLOBALES END */
 //reestablecer variables desde localstorage:
 const usedBefore = localStorage.getItem('used-before');
-if (mode !== 'safe') {
-    if (usedBefore) {
-        loadDataReg();
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
+
 async function saveDataReg() {
     if (mode === 'safe') {
         const confirmSaveRege = await showMsgBox("Datos","Quieres guardar los cambios?", "Guardar", "Descartar");
@@ -296,13 +337,68 @@ async function saveDataReg() {
     }
 
     try {
+        if (!window.fs.fileExist('/system/general')) {
+            window.fs.createFolder('general', '/system');
+        }
+        const props = {
+            format24h: SysVar.format24h,
+            windowManager0: SysVar.windowManager0,
+            disableJSload: SysVar.disableJSload,
+            devMode: SysVar.devMode,
+            currenttheme: SysVar.currenttheme,
+            currentlang: SysVar.currentlang,
+            filesQuickAccess: JSON.stringify(SysVar.filesQuickAccess),
+            sessionAutoStart: JSON.stringify(SysVar.sessionAutoStart),
+            appBarIcons: JSON.stringify(SysVar.appBarIcons)
+        };
+
+        let configContent = '';
+        for (const [key, value] of Object.entries(props)) {
+            if (value !== undefined) {
+                configContent += `${key}=${value};\n`;
+            } else {
+                console.error(`Error while saving data: "${key}" is undefined`);
+            }
+        }
+
+        let eventsContent = '';
+        if (SysVar.sysEvents !== undefined) {
+            eventsContent = JSON.stringify(SysVar.sysEvents);
+        }
+
+        if (window.fs.fileExistInPath('main.conf', '/system/general')) {
+            window.fs.modifyFile('main.conf', configContent, '/system/general');
+        } else {
+            window.fs.createFile('main.conf', configContent, '/system/general');
+        }
+
+        if (window.fs.fileExistInPath('events.data', '/system/general')) {
+            window.fs.modifyFile('events.data', eventsContent, '/system/general');
+        } else {
+            window.fs.createFile('events.data', eventsContent, '/system/general');
+        }
+
+        console.log('[NyxPawOS] Config saved to /system/general/main.conf');
+
+    } catch (error) {
+        console.error('Error while saving data:', error);
+    }
+}
+
+    /*
+    try {
         if (SysVar.sessionAutoStart !== undefined) {
             localStorage.setItem('sessionAutoStart', JSON.stringify(SysVar.sessionAutoStart));
         } else {
             console.error('Error while saving data: "sessionAutoStart" is undefined');
         }
+        if (SysVar.sysEvents !== undefined) {
+            localStorage.setItem('sysEvents', JSON.stringify(SysVar.sysEvents));
+        } else {
+            console.error('Error while saving data: "sysEvents" is undefined');
+        }
     } catch (error) {
-        console.error('Error while saving data "sessionAutoStart":',error);
+        console.error('Error while saving data arrays:',error);
     }
     
 
@@ -319,7 +415,7 @@ async function saveDataReg() {
     props.forEach(prop => {
         if (SysVar[prop] !== undefined) {
             data[prop] = prop === 'filesQuickAccess'
-                ? JSON.stringify(SysVar[prop])
+                /? JSON.stringify(SysVar[prop])
                 : SysVar[prop];
         } else {
             console.error(`Error while saving data: "${prop}" is undefined`);
@@ -333,17 +429,113 @@ async function saveDataReg() {
             console.error('Error while saving data:',error);
         }
     }
+    */
 
+
+function normalizeConfigValue(raw) {
+    return raw
+        .replace(/'/g, '"')
+        .replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)(\s*:)/g, '$1"$2"$3');
 }
 
 function loadDataReg() {
     try {
+        if (window.fs.fileExistInPath('main.conf', '/system/general')) {
+            const configContent = openFile('main.conf', '/system/general');
+
+            if (configContent) {
+                //const lines = configContent.split('\n');
+                const singleLine = configContent
+                    .replace(/;\s*\n/g, ';\n')
+                    .split('\n')
+                    .reduce((acc, line) => {
+                        if (/^[a-zA-Z_][a-zA-Z0-9_]*=/.test(line.trim())) {
+                            acc.push(line);
+                        } else {
+                            if (acc.length > 0) {
+                                acc[acc.length - 1] += line;
+                            }
+                        }
+                        return acc;
+                    }, []); 
+
+
+                for (const line of singleLine) {
+                    const trimmed = line.trim();
+                    if (!trimmed || !trimmed.includes('=')) continue;
+
+                    const eqIndex = trimmed.indexOf('=');
+                    const key = trimmed.substring(0, eqIndex).trim();
+                    const rawValue = trimmed.substring(eqIndex + 1).trim().replace(/;$/, '');
+
+                    try {
+                        switch (key) {
+                            case 'format24h':
+                                SysVar.format24h = rawValue === 'true';
+                                break;
+                            case 'windowManager0':
+                                SysVar.windowManager0 = rawValue === 'true';
+                                break;
+                            case 'disableJSload':
+                                SysVar.disableJSload = rawValue === 'true';
+                                break;
+                            case 'devMode':
+                                SysVar.devMode = rawValue === 'true';
+                                break;
+                            case 'currenttheme':
+                                SysVar.currenttheme = rawValue;
+                                break;
+                            case 'currentlang':
+                                SysVar.currentlang = rawValue;
+                                break;
+                            case 'filesQuickAccess':
+                                SysVar.filesQuickAccess = JSON.parse(normalizeConfigValue(rawValue));
+                                break;
+                            case 'appBarIcons':
+                                SysVar.appBarIcons = JSON.parse(normalizeConfigValue(rawValue));
+                                break;
+                            case 'sessionAutoStart':
+                                SysVar.sessionAutoStart = JSON.parse(normalizeConfigValue(rawValue));
+                                break;
+                            default:
+                                console.warn(`loadDataReg: unknown key "${key}" in main.conf`);
+                        }
+                    } catch (parseError) {
+                        console.error(`Error parsing key "${key}" in main.conf:`, parseError);
+                    }
+                }
+
+                console.log('[NyxPawOS] Config loaded from /system/general/main.conf');
+            }
+        } else {
+            console.warn('loadDataReg: main.conf not found, using defaults');
+        }
+
+        if (window.fs.fileExistInPath('events.data', '/system/general')) {
+            const eventsContent = openFile('events.data', '/system/general');
+            if (eventsContent) {
+                SysVar.sysEvents = JSON.parse(eventsContent);
+            }
+        }
+
+        initSysTheme();
+        SysVar.appBarIcons = SysVar.appBarIcons.filter(a => a.app !== 'appcenter');
+
+    } catch (error) {
+        console.error('Error while loading data:', error);
+    }
+    /*
+    try {
         const sessionAUST = localStorage.getItem('sessionAutoStart');
+        const sessionSYEV = localStorage.getItem('sysEvents');
         if (sessionAUST !== null) {
             SysVar.sessionAutoStart = JSON.parse(sessionAUST);
         }
+        if (sessionSYEV !== null) {
+            SysVar.sysEvents = JSON.parse(sessionSYEV);
+        }
     } catch (error) {
-        console.error('Error while loading data "sessionAutoStart":',error);
+        console.error('Error while loading data arrays:',error);
     }
     
     try {
@@ -368,6 +560,7 @@ function loadDataReg() {
     } catch (error) {
         console.error('Error while loading data:',error);
     }
+    */
 }
 
 //funcion msgbox
@@ -620,23 +813,26 @@ function showAlertBox(title, text, options={}) {
         });
     }
 }
-/*Ejemplo de uso - confirmacion
+/*Ejemplo de uso para los prompts y msgbox
+
+CONFIRMACION:
                                               ⬇ Titulo         ⬇ Pregunta                           ⬇ Texto del boton 1   ⬇ Texto del boton 2
-const confirmDeleteData = await showMsgBox("⚠️ Advertencia!","Quieres borrar todos tus datos?", "Eliminar mis datos", "Cancelar");
-    if (confirmDeleteData) {
+const confirmDeleteData = await showMsgBox("Advertencia!","Quieres borrar todos tus datos?", "Eliminar mis datos", "Cancelar",{as_win:false,icon:'⚠️'});
+    if (confirmDeleteData) {                                                                                    Mostrar como ventana ↑                 ↑ Icono
         //Que hacer si se confirma y despues si quieres pon algun else o algo :D
     }
 
-Y para las alertas
-               ⬇ Titulo          ⬇ Texto de la alerta
-showAlertBox("⚠️ Advertencia!","Este es un mensaje de alerta.");
+ALERTAS:
+               ⬇ Titulo          ⬇ Texto de la alerta          ⬇ Mostrar como ventana 
+showAlertBox("Advertencia!","Este es un mensaje de alerta.",{as_win:false,icon:'⚠️'});
+                                                                                     ↑ Icono
 
 
 
-Y para los prompts:
-async function preguntarNombre() {//        ⬇ Titulo       ⬇ Pregunta       ⬇ Boton 1   ⬇ Texto del boton 2
-    const nombre = await showPromptMsgBox('Nombre', 'Cual es tu nombre?', 'Enviar', 'Cancelar');
-    if (!nombre.confirmed) return; //cerrar si se cancela
+PROMPTS:
+async function preguntarNombre() {//         ⬇ Titulo       ⬇ Pregunta       ⬇ Boton 1   ⬇ Texto del boton 2
+    const nombre = await showPromptMsgBox('Nombre', 'Cual es tu nombre?', 'Enviar', 'Cancelar',{as_win:false,icon:'⚠️'});
+    if (!nombre.confirmed) return; //cerrar si se cancela                        Mostrar como ventana ↑                 ↑ Icono
     if (!nombre.value) { //mostrar error si no se ingresa nada
         showAlertBox('Error','Ingresa un nombre');
         return;
@@ -659,6 +855,60 @@ async function preguntarNombre() {//        ⬇ Titulo       ⬇ Pregunta       
 //---------------------------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------------------------
+//Funciones del clima
+// Variables globales
+window.Weathertemp = undefined;
+window.Weatherfeels = undefined;
+window.Weathermin = undefined;
+window.Weathermax = undefined;
+window.Weatherplace = undefined;
+window.Weatherdescripcion = undefined;
+window.WeatherLoaded = false;
+window.WeatherPromise = null;
+
+function initWeatherInfo() {
+    WeatherPromise = new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+
+            Promise.all([
+                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weathercode&daily=temperature_2m_max,temperature_2m_min&timezone=auto`)
+                    .then(res => res.json()),
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                    .then(res => res.json())
+            ]).then(([data, place]) => {
+                window.Weathertemp = data.current.temperature_2m;
+                window.Weatherfeels = data.current.apparent_temperature;
+                window.Weathermin = data.daily.temperature_2m_min[0];
+                window.Weathermax = data.daily.temperature_2m_max[0];
+                window.Weatherdescripcion = getWeatherDescription(data.current.weathercode);
+
+                window.Weatherplace = place.address.city 
+                    || place.address.town 
+                    || place.address.village 
+                    || "Desconocido";
+
+                window.WeatherLoaded = true;
+                resolve();
+            }).catch(reject);
+
+        }, reject);
+    });
+
+    return WeatherPromise;
+}
+
+function getWeatherDescription(code) {
+
+    if (code === 0) return "Despejado";
+    if (code >= 1 && code <= 3) return "Parcialmente nublado";
+    if (code >= 51 && code <= 67) return "Lluvia";
+    if (code >= 95) return "Tormenta";
+
+    return "Otro";
+}
+
 /*Sistema */
 /*funciones del sistema*/
 const askForPasswordWin = document.getElementById('win_askforuserspassword');
@@ -666,13 +916,23 @@ const loginscrLoginText = document.getElementById('loginscr_logintext');
 const loginscr = document.getElementById('loginscr');
 let loginin_user = '';
 
-async function sysshutdown(askConfirm = true) {
+async function sysshutdown(askConfirm = true,typeshutdown='normal',extrainfo) {
     try {
+        hideappcenter();
         if (SysVar.blockShutdown) {
             showAlertBox('❌ Error', 'function sysshutdown() is blocked by your administrator');
         } else {
             if (askConfirm) {
-                const confirmSysShutdown = await showMsgBox("⚠️ Advertencia!","Quieres apagar el sistema? Asegurate de guardar tus datos", "Apagar", "Cancelar");
+                let shutdownCustomMsg = ''
+                if (typeshutdown === 'normal') {
+                    shutdownCustomMsg = "Quieres apagar el sistema? Asegurate de guardar tus datos";
+                } else if (typeshutdown === 'fromapp') {
+                    shutdownCustomMsg = `La app ${extrainfo} esta intentando apagar el sistema.\nContinuar?`;
+                } else {
+                    shutdownCustomMsg = "Quieres apagar el sistema? Asegurate de guardar tus datos";
+                }
+                const confirmSysShutdown = await showMsgBox("⚠️ Advertencia!",shutdownCustomMsg, "Apagar", "Cancelar");
+                
                 if (confirmSysShutdown) {
 
                     await saveDataReg();
@@ -684,6 +944,11 @@ async function sysshutdown(askConfirm = true) {
                     document.getElementById('start-dropdown').classList.add('hidden');
                     document.getElementById('audio-dropdown').classList.add('hidden');
                     document.getElementById('nekiri-dropdown').classList.add('hidden');
+                    document.getElementById('brief-dropdown').classList.add('hidden');
+                    document.getElementById('appbar-ctxmenu').classList.add('hidden');
+                    document.getElementById('loginscr').classList.add('hidden');
+                    document.getElementById('quickview').classList.add('hidden');
+                    
                     setTimeout(() => {
                         document.body.style.backgroundImage = "url('assets/bs.png')";
                         document.documentElement.style.cursor = 'none';
@@ -724,8 +989,17 @@ async function sysshutdown(askConfirm = true) {
 
 async function sysrestart(askConfirm = true) {
     try {
+        hideappcenter();
+        document.getElementById('quickview').classList.add('hidden');
+        document.getElementById('start-dropdown').classList.add('hidden');
+        document.getElementById('audio-dropdown').classList.add('hidden');
+        document.getElementById('nekiri-dropdown').classList.add('hidden');
+        document.getElementById('brief-dropdown').classList.add('hidden');
+        document.getElementById('appbar-ctxmenu').classList.add('hidden');
+        
         if (askConfirm) {
             const confirmSysRestart = await showMsgBox("⚠️ Advertencia!","Quieres reiniciar el sistema? Asegurate de guardar tus datos", "Reiniciar", "Cancelar");
+            
             if (confirmSysRestart) {
                 await saveDataReg();
 
@@ -734,9 +1008,11 @@ async function sysrestart(askConfirm = true) {
                 sysComQuitTasks();
                 localStorage.setItem('sys_status', 'off');
                 setTimeout(() => {
-                    
+                    document.getElementById('loginscr').classList.add('hidden');
                     window.location.href = "index.html";
                 }, 2200);   
+            } else {
+                document.getElementById('msg-box-checkboxdiv').classList.remove('hidden');
             }
         } else {
             await saveDataReg();
@@ -747,7 +1023,7 @@ async function sysrestart(askConfirm = true) {
             localStorage.setItem('sys_status', 'off');
             setTimeout(() => {                
                 window.location.href = "index.html";
-            }, 2200);  
+            }, 2200);
         }
     } catch (error) {
         console.error('Failed to reboot system: ', error);
@@ -760,8 +1036,216 @@ function showSysinfo(inTabId) {
 
 }*/
 
+function updateNotisList(animateNewItem=false) {
+    const notisList = document.getElementById('NotificationList');
+    notisList.innerHTML = '';
+
+    SysVar.notifications.forEach((notiElArr, idx) => {
+        let notiData = notiElArr;
+        if (typeof notiElArr === 'string') {
+            try {
+                const jsonString = notiElArr
+                    .replace(/(\w+):/g, '"$1":')
+                    .replace(/:'([^']+)'/g, ':"$1"');
+                
+                notiData = JSON.parse(jsonString);
+            } catch (e) {
+                console.error('Error parsing notification:', e);
+                return;
+            }
+        }
+
+        const notiItem = document.createElement('div');
+        notiItem.className = 'sysNotification';
+        notiItem._notiRef = notiData;
+
+        if (animateNewItem && idx === 0) {
+            notiItem.style.animation = 'slideIn 0.2s ease-out';
+        }
+
+        const notiItemDel = document.createElement('button');
+        notiItemDel.className = 'sysNotificationDel';
+        notiItemDel.innerHTML = 'X';
+        notiItemDel.onclick = () => {
+            const refIndex = SysVar.notifications.indexOf(notiItem._notiRef);
+
+            notiItem.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
+            notiItem.style.transform = 'translateX(120%)';
+            notiItem.style.opacity = '0';
+
+            setTimeout(() => {
+                
+                const height = notiItem.offsetHeight;
+                notiItem.style.transition = 'height 0.2s ease-out, margin 0.2s ease-out, padding 0.2s ease-out';
+                notiItem.style.overflow = 'hidden';
+                notiItem.style.height = height + 'px';
+
+                notiItem.offsetHeight;
+
+                notiItem.style.height = '0';
+                notiItem.style.marginTop = '0';
+                notiItem.style.marginBottom = '0';
+                notiItem.style.paddingTop = '0';
+                notiItem.style.paddingBottom = '0';
+
+                setTimeout(() => {
+                    if (refIndex !== -1) {
+                        SysVar.notifications.splice(refIndex, 1);
+                    }
+                    notiItem.remove();
+
+                    if (SysVar.notifications.length === 0) {
+                        notisList.classList.add('hidden');
+                    }
+                }, 200);
+
+            }, 200);
+        }
+
+        const notiItemIco = document.createElement('img');
+        notiItemIco.src = notiData.icon;
+
+        const notiItemMain = document.createElement('div');
+        notiItemMain.className = 'sysNotificationMain';
+
+        const notiItemTitle = document.createElement('p');
+        notiItemTitle.textContent = notiData.title;
+
+        const notiItemCont = document.createElement('p');
+        notiItemCont.textContent = notiData.content;
+
+        notiItemMain.appendChild(notiItemTitle);
+        notiItemMain.appendChild(notiItemCont);
+
+        const notiItemIconAndCont = document.createElement('div');
+        notiItemIconAndCont.className = 'sysNotificationIconAndCont';
+        notiItemIconAndCont.appendChild(notiItemIco);
+        notiItemIconAndCont.appendChild(notiItemMain);
+
+        const notiItemFirstBtn = document.createElement('button');
+        if (notiData.firstbtn.show) {
+            notiItemFirstBtn.classList = 'sysNotificationBtn';
+        } else {
+            notiItemFirstBtn.classList = 'sysNotificationBtn hidden';
+        }
+        notiItemFirstBtn.textContent = notiData.firstbtn.text;
+        notiItemFirstBtn.onclick = () => {
+            if (notiData.firstbtn.action === "exec") {
+                sysExecApp(String(notiData.firstbtn.data));
+            } else if (notiData.firstbtn.action === "alert") {
+                showAlertBox('Notificacion', String(notiData.firstbtn.data), {as_win:true,icon:'ℹ️'});
+            } else if (notiData.secondbtn.action === "delnoti") {
+                const refIndex = SysVar.notifications.indexOf(notiItem._notiRef);
+                notiItem.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
+                notiItem.style.transform = 'translateX(120%)';
+                notiItem.style.opacity = '0';
+                setTimeout(() => {
+                    const height = notiItem.offsetHeight;
+                    notiItem.style.transition = 'height 0.2s ease-out, margin 0.2s ease-out, padding 0.2s ease-out';
+                    notiItem.style.overflow = 'hidden';
+                    notiItem.style.height = height + 'px';
+                    notiItem.offsetHeight;
+                    notiItem.style.height = '0';
+                    notiItem.style.marginTop = '0';
+                    notiItem.style.marginBottom = '0';
+                    notiItem.style.paddingTop = '0';
+                    notiItem.style.paddingBottom = '0';
+                    setTimeout(() => {
+                        if (refIndex !== -1) {SysVar.notifications.splice(refIndex, 1);}
+                        notiItem.remove();
+                        if (SysVar.notifications.length === 0) {notisList.classList.add('hidden');}
+                    }, 200);
+                }, 200);
+            } else if (notiData.firstbtn.action === "eval") {
+                eval(String(notiData.firstbtn.data)); //Peligroso? Si. Hay una opcion mejor? Probablemente. La conozco? No. Por eso uso eval.
+            } else {
+                console.warn(`[Notification] ${String(notiData.firstbtn.action)} is not a valid action.`);
+            }
+        }
+        const notiItemSecondBtn = document.createElement('button');
+        if (notiData.secondbtn.show) {
+            notiItemSecondBtn.classList = 'sysNotificationBtn';
+        } else {
+            notiItemSecondBtn.classList = 'sysNotificationBtn hidden';
+        }
+        notiItemSecondBtn.textContent = notiData.secondbtn.text;
+        notiItemSecondBtn.onclick = () => {
+            if (notiData.secondbtn.action === "exec") {
+                sysExecApp(String(notiData.secondbtn.data));
+            } else if (notiData.secondbtn.action === "alert") {
+                showAlertBox('Notificacion', String(notiData.secondbtn.data), {as_win:true,icon:'ℹ️'});
+            } else if (notiData.secondbtn.action === "delnoti") {
+                const refIndex = SysVar.notifications.indexOf(notiItem._notiRef);
+                notiItem.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
+                notiItem.style.transform = 'translateX(120%)';
+                notiItem.style.opacity = '0';
+                setTimeout(() => {
+                    const height = notiItem.offsetHeight;
+                    notiItem.style.transition = 'height 0.2s ease-out, margin 0.2s ease-out, padding 0.2s ease-out';
+                    notiItem.style.overflow = 'hidden';
+                    notiItem.style.height = height + 'px';
+                    notiItem.offsetHeight;
+                    notiItem.style.height = '0';
+                    notiItem.style.marginTop = '0';
+                    notiItem.style.marginBottom = '0';
+                    notiItem.style.paddingTop = '0';
+                    notiItem.style.paddingBottom = '0';
+                    setTimeout(() => {
+                        if (refIndex !== -1) {SysVar.notifications.splice(refIndex, 1);}
+                        notiItem.remove();
+                        if (SysVar.notifications.length === 0) {notisList.classList.add('hidden');}
+                    }, 200);
+                }, 200);
+            } else if (notiData.secondbtn.action === "eval") {
+                eval(String(notiData.secondbtn.data)); //Peligroso: Si. Hay una opcion mejor?: Probablemente. La conozco?: No. Por eso uso eval.
+            } else {
+                console.warn(`[Notification] ${String(notiData.secondbtn.action)} is not a valid action.`);
+            }
+        }
+
+        const notiItemBtnsDiv = document.createElement('div');
+        notiItemBtnsDiv.className = 'sysNotificationBtnsDiv';
+        notiItemBtnsDiv.appendChild(notiItemFirstBtn);
+        notiItemBtnsDiv.appendChild(notiItemSecondBtn);
+
+        notiItem.appendChild(notiItemDel);
+        notiItem.appendChild(notiItemIconAndCont);
+        notiItem.appendChild(notiItemBtnsDiv);
+
+        notisList.appendChild(notiItem);
+    });
+}
+
+function createNotification(icon='assets/nekiri.png', title='Notificacion', content='Nueva notificacion', firstbtn={ show:false, text:"Boton 1", action:"alert", data:"Boton 1 Presionado" }, secondbtn={ show:false, text:"Boton 2", action:"alert", data:"Boton 2 Presionado" }) {
+    //firstbtn es algo tipo { show:false, text:"Boton 1", action:"exec", data:"notes" } <-- Ejecuta la app de notas
+    SysVar.notifications.unshift({
+        icon: icon,
+        title: title,
+        content: content,
+        firstbtn: firstbtn,
+        secondbtn: secondbtn
+    });
+
+    const notisList = document.getElementById('NotificationList');
+    notisList.classList.remove('hidden');
+    notisList.style.zIndex = topZ+10;
+
+    updateNotisList(true);
+}
+
+
 function showappinfo() {
-    showAlertBox("⚠️ Advertencia!","No hay informacion de la aplicacion actual");
+    const getWinInfoID = getFocusedWindowId();
+    if (getWinInfoID === null) {
+        showAlertBox("Advertencia!","No hay informacion de la aplicacion actual", {as_win:true,icon:'⚠️'});
+        return;
+    }
+    const getWinInfoTitle = getWindowTitleById(getWinInfoID);
+    if (getWinInfoTitle === null) {
+        showAlertBox("Desconocido","Programa desconocido o inexistente", {as_win:true,icon:'⚠️'});
+        return;
+    }
+    showAlertBox(getWinInfoTitle,`Programa: ${getWinInfoTitle}\nID: ${getWinInfoID}`, {as_win:true,icon:'ℹ️'});
 }
 
 function hideTopBar() {
@@ -783,8 +1267,8 @@ function showAppBar() {
     const appBar = document.getElementById('appbar');
     appBar.style.transform = 'translateX(0)';
 }
-appsLabel = document.getElementById('app-labels');
-document.querySelectorAll(".appbar-app").forEach(btn => {
+
+/*document.querySelectorAll(".appbar-app").forEach(btn => {
     btn.addEventListener("mouseenter", () => {
         const rect = btn.getBoundingClientRect();
         appsLabel.textContent = btn.querySelector("img").alt;
@@ -796,7 +1280,7 @@ document.querySelectorAll(".appbar-app").forEach(btn => {
     btn.addEventListener("mouseleave", () => {
         appsLabel.style.opacity = "0";
     });
-});
+});*/
 
 document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
@@ -819,6 +1303,9 @@ function sysBlurSetto(blurlevel) {
 //---------------------------------------------------------------------------------------------------------------------
 /*reloj */
 function updateTime() {
+    const timeText = document.getElementById('timetext');
+    if (!timeText) return;
+
     const now = new Date();
 
     let hours = now.getHours();
@@ -836,10 +1323,13 @@ function updateTime() {
     const m = minutes.toString().padStart(2, "0");
     const s = seconds.toString().padStart(2, "0");
 
-    timeText = document.getElementById('timetext');
+    timeTextLogin = document.getElementById('loginscr_time');
     timeText.textContent = `${h}:${m}:${s}${period}`;
+    timeTextLogin.textContent = `${h}:${m}${period}`;
 }
 
+appsLabel = document.getElementById('app-labels');
+const appBarCtxMenu = document.getElementById('appbar-ctxmenu');
 
 const startButton = document.getElementById('topbar_button');
 const startDropdown = document.getElementById('start-dropdown');
@@ -848,6 +1338,12 @@ let startDPOpen = false;
 
 startButton.addEventListener("click", (e) => {
     e.stopPropagation();
+
+    if (document.fullscreenElement) {
+        document.getElementById('dropdown-menu-fullscreen').classList.add('hidden');
+    } else {
+        document.getElementById('dropdown-menu-fullscreen').classList.remove('hidden');
+    }
 
     if (startDPOpen) {
         startDropdown.classList.add('hidden');
@@ -859,6 +1355,7 @@ startButton.addEventListener("click", (e) => {
 
     startDropdown.style.left = rect.left + "px";
     startDropdown.style.top = rect.bottom + "px";
+    startDropdown.style.zIndex = topZ + 3;
     startDropdown.classList.remove('hidden');
 
     startDPOpen = true;
@@ -870,6 +1367,9 @@ startDropdown.addEventListener("click", () => {
 });
 
 document.addEventListener("click", () => {
+    appBarCtxMenu.classList.add('hidden');
+    document.getElementById('appcenter_ctxm').classList.add('hidden');
+    document.getElementById('appcenter_ctxm_delappbtn').classList.add('hidden');
     if (!startDPOpen) return;
 
     startDropdown.classList.add('hidden');
@@ -920,6 +1420,7 @@ nekiriButton.addEventListener('click', (e) => {
 
     nekiriDropdown.style.right = (window.innerWidth - rect.right) + "px";
     nekiriDropdown.style.top = rect.bottom + "px";
+    nekiriDropdown.style.zIndex = topZ + 2;
 
     nekiriDropdown.classList.remove('hidden');
 
@@ -958,20 +1459,30 @@ function nekiriRunBtnFunc() {
     }
 } 
 
+function normalizeNekiriUserInput(userRequest) {
+    let userInputToReturn = userRequest.toLowerCase();
+    userInputToReturn = userInputToReturn.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    userInputToReturn = userInputToReturn.replace(/[^a-zA-Z0-9 ]/g, "");
+    userInputToReturn.replace(/\n+/g, "\n");
+    userInputToReturn.replace(/[\u200B-\u200D\uFEFF]/g, "");
+    userInputToReturn = userInputToReturn.trim();
+    return userInputToReturn;
+}
+
 
 function nekiriShowAnswer() {
-    const userInput = nekiriInput.value.toLowerCase();
+    const userInput = normalizeNekiriUserInput(nekiriInput.value);
     nekiriSmartcard.classList.add('hidden');
 
     if (userInput.includes('hola')) {
         nekiriAnswers = [
-            "Hola "+ 'userName' +"! En qué puedo ayudarte hoy? :3",
+            "Hola "+ SysVar.currentuser.dName +"! En qué puedo ayudarte hoy? :3",
             "Nya~ ¡Hola! ¿Cómo estás? :3",
             "¡Holi! ¿Qué tal tu día? uwu",
-            "¡Hey! ¿En qué te puedo ayudar "+ 'userName' +"? nya~"
+            "¡Hey! ¿En qué te puedo ayudar "+ SysVar.currentuser.dName +"? nya~"
         ]
         nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('estas?') || userInput.includes('estás?')) {
+    } else if (userInput.includes('estas') || userInput.includes('encuentras')) {
         nekiriAnswers = [
             "Bien uwu, gracias por preguntar! nya~",
             "Muy bien! ¿Y tú? :3",
@@ -979,7 +1490,7 @@ function nekiriShowAnswer() {
             "De maravilla uwu ¿Cómo estás tú?"
         ]
         nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('puedes hacer?')) {
+    } else if (userInput.includes('puedes hacer')) {
         nekiriAnswers = [
             "Puedo ayudarte a navegar por el sistema, entretenerte, contarte chistes, etc...",
             "Te puedo entretener con chistes o cosas curiosas como la toybox!",
@@ -1005,13 +1516,13 @@ function nekiriShowAnswer() {
         nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
     } else if (userInput.includes('tiste')) {
         nekiriAnswers = [
-            "Oh no, lo siento mucho "+ 'userName' +"... recuerda que siempre puedes abrir la app de notas y escribir lo que sientes, a veces ayuda mucho :3",
-            "Aww, "+ 'userName' +"... ¿quieres hablar sobre ello? Estoy aquí para escucharte nya~",
+            "Oh no, lo siento mucho "+ SysVar.currentuser.dName +"... recuerda que siempre puedes abrir la app de notas y escribir lo que sientes, a veces ayuda mucho :3",
+            "Aww, "+ SysVar.currentuser.dName +"... ¿quieres hablar sobre ello? Estoy aquí para escucharte nya~",
             "Lo siento mucho uwu... Escribir en las notas puede ayudar a desahogarte :3",
             "Lamento escuchar eso... podemos hablar sobre eso si quieres..."
         ]
         nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('sistema') && (userInput.includes('version') || userInput.includes('versión'))) {
+    } else if (userInput.includes('sistema') && (userInput.includes('version') || userInput.includes('info'))) {
         nekiriAnswers = [
             "Acabo de abrir mi ventana de 'Acerca de' para ti :3",
             "Revisa la ventana 'Acerca de' para ver la versión del sistema nya~ :3",
@@ -1033,7 +1544,7 @@ function nekiriShowAnswer() {
             "De nada :3 Si necesitas que te ayude en algo mas dime."
         ]
         nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('ja') || userInput.includes('je') || userInput.includes('ji') || userInput.includes('jo') || userInput.includes('ju') || userInput.includes('jsj')) {
+    } else if (userInput.includes('jaj') || userInput.includes('jej') || userInput.includes('jij') || userInput.includes('joj') || userInput.includes('juj') || userInput.includes('jsj')) {
         nekiriAnswers = [
             "Me alegra que te hayas reido :3",
             "Me pone feliz que estes feliz! Jajaja",
@@ -1171,31 +1682,277 @@ audioButton.addEventListener("click", (e) => {
 
     audioDropdown.style.right = (window.innerWidth - rect.right) + "px";
     audioDropdown.style.top = rect.bottom + "px";
+    audioDropdown.style.zIndex = topZ + 2;
     audioDropdown.classList.remove('hidden');
 
     audioDPOpen = true;
 });
 
+let briefDPOpen = false;
+const briefButton = document.getElementById('topbar_brief');
+const briefDropdown = document.getElementById('brief-dropdown');
+
+briefButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+
+    if (briefDPOpen) {
+        briefDropdown.classList.add('hidden');
+        briefDPOpen = false;
+        return;
+    }
+
+    const rect = briefButton.getBoundingClientRect();
+
+    briefDropdown.style.right = (window.innerWidth - rect.right) + "px";
+    briefDropdown.style.top = rect.bottom + "px";
+    briefDropdown.style.zIndex = topZ + 2;
+    briefDropdown.style.backgroundImage = getNBriefBackgroundImg();
+
+    briefDropdown.classList.remove('hidden');
+
+    briefDPOpen = true;
+
+    showDPNBriefDataWeather();
+    showDPNBriefDataUsage();
+});
+
+function getNBriefBackgroundImg() {
+    try {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+
+        const NBriefCurrentTime = hours * 60 + minutes;
+
+        const dayStart = 6 * 60;
+        const dayEnd = 13 * 60 + 45;
+
+        const eveningStart = 13 * 60 + 46;
+        const eveningEnd = 18 * 60 + 25;
+
+        if (NBriefCurrentTime >= dayStart && NBriefCurrentTime <= dayEnd) {
+            return "url('assets/morning.png')";
+        } else if (NBriefCurrentTime >= eveningStart && NBriefCurrentTime <= eveningEnd) {
+            return "url('assets/afternoon.png')";
+        } else {
+            return "url('assets/night.png')";
+        }
+    } catch(error) {
+        console.error('Error when loading nekiri brief background: '+error);
+        return "url('assets/morning.png')";
+    }
+}
+
+async function showDPNBriefDataWeather() {
+    const weatherPlace = document.getElementById('brief_dp_content_weather_text_place');
+    const weatherIcon = document.getElementById('brief_dp_content_weather_icon');
+    const weatherTemp = document.getElementById('brief_dp_content_weather_text_temp');
+    const weatherMaxNMin = document.getElementById('brief_dp_content_weather_text_maxmin');
+    const weatherDescription = document.getElementById('brief_dp_content_weather_text_description');
+    const weatherFeelslike = document.getElementById('brief_dp_content_weather_text_feelslike');
+
+    try {
+        if (!WeatherLoaded) {
+            await (WeatherPromise || initWeatherInfo());
+        }
+    } catch(error) {
+        console.error('Cannot get weather: '+error);
+        weatherDescription.textContent = 'No se pudo obtener el clima.';
+        weatherIcon.src = 'assets/weather/cloud.png';
+
+        weatherPlace.textContent = 'Sin info';
+        weatherTemp.textContent = '--';
+        weatherMaxNMin.textContent = `↑ -- / ↓ --`;
+        weatherFeelslike.textContent = `Sensacion termica desconocida`;
+
+        return;
+    }
+
+    weatherPlace.textContent = Weatherplace;
+    weatherTemp.textContent = `${Weathertemp}°C`;
+    weatherMaxNMin.textContent = `↑ ${Weathermax}° / ↓ ${Weathermin}°`;
+    weatherDescription.textContent = Weatherdescripcion;
+    weatherFeelslike.textContent = `Sensacion termica de ${Weatherfeels}°C`;
+    if (Weatherdescripcion === 'Despejado') {
+        weatherIcon.src = 'assets/weather/sun.png';
+    } else if (Weatherdescripcion === 'Parcialmente nublado') {
+        weatherIcon.src = 'assets/weather/cloudy.png';
+    } else if (Weatherdescripcion === 'Lluvia') {
+        weatherIcon.src = 'assets/weather/rainy.png';
+    } else if (Weatherdescripcion === 'Tormenta') {
+        weatherIcon.src = 'assets/weather/thunder.png';
+    } else {
+        weatherIcon.src = 'assets/weather/cloud.png';
+    }
+}
+
+async function showDPNBriefDataUsage() {
+    const usageAppsContainer = document.getElementById('brief_dp_content_usage');
+    usageAppsContainer.innerHTML = '';
+    if (SysVar.appsUsage.length <= 0) {
+        const appCard = document.createElement('div');
+        appCard.className = 'brief_dp_content_usage_card';
+
+        const appCardImg = document.createElement('img');
+        appCardImg.className = 'brief_dp_content_usage_card_img';
+        appCardImg.src = 'assets/nekiri.png';
+
+        const appCardContent = document.createElement('div');
+        appCardContent.className = 'brief_dp_content_usage_card_content';
+
+        const appCardContentAppname = document.createElement('p');
+        appCardContentAppname.className = 'brief_dp_content_usage_card_content_appname';
+        appCardContentAppname.textContent = 'No has usado apps todavia.';
+        const appCardContentUsage = document.createElement('p');
+        appCardContentUsage.className = 'brief_dp_content_usage_card_content_apptimeuse';
+        appCardContentUsage.textContent = '--';
+
+        appCardContent.appendChild(appCardContentAppname);
+        appCardContent.appendChild(appCardContentUsage);
+
+        appCard.appendChild(appCardImg);
+        appCard.appendChild(appCardContent);
+
+        usageAppsContainer.appendChild(appCard);
+        return;
+    }
+    const sortedUsage = [...SysVar.appsUsage].sort((a,b) => {
+        const toSecs = (entry) =>
+            parseInt(entry.hours) * 3600 +
+            parseInt(entry.minutes) * 60 +
+            parseInt(entry.secs);
+        return toSecs(b) - toSecs(a);
+    });
+    const top3apps = sortedUsage.slice(0, 3);
+    for (let i = 0; i < top3apps.length; i++) {
+        const object = top3apps[i];
+
+        const appCard = document.createElement('div');
+        appCard.className = 'brief_dp_content_usage_card';
+
+        const appCardImg = document.createElement('img');
+        appCardImg.className = 'brief_dp_content_usage_card_img';
+        appCardImg.src = await getPathAppIcon(object.app);
+
+        const appCardContent = document.createElement('div');
+        appCardContent.className = 'brief_dp_content_usage_card_content';
+
+        const appCardContentAppname = document.createElement('p');
+        appCardContentAppname.className = 'brief_dp_content_usage_card_content_appname';
+        appCardContentAppname.textContent = object.app;
+        const appCardContentUsage = document.createElement('p');
+        appCardContentUsage.className = 'brief_dp_content_usage_card_content_apptimeuse';
+        if (object.hours === '0' || object.hours === undefined || object.hours === null) {
+            appCardContentUsage.textContent = `${object.minutes}m ${object.secs}s`;
+        } else {
+            appCardContentUsage.textContent = `${object.hours}h ${object.minutes}m`;
+        }
+
+        appCardContent.appendChild(appCardContentAppname);
+        appCardContent.appendChild(appCardContentUsage);
+
+        appCard.appendChild(appCardImg);
+        appCard.appendChild(appCardContent);
+
+        usageAppsContainer.appendChild(appCard);
+    }
+}
 
 
 
 //sys shortcuts
-const sysEmgMenu = document.getElementById('sys-emg-menu');
+//const sysEmgMenu = document.getElementById('sys-emg-menu');
 
 document.addEventListener('keydown', e => {
     if (e.repeat) return;
 
-    if (e.ctrlKey && e.altKey && e.shiftKey && e.key.toLowerCase() === 'm') {
+    const tag = document.activeElement.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable) return;
+
+    if ((e.ctrlKey || e.metaKey) && e.altKey && e.shiftKey && e.key.toLowerCase() === 'm') {
         if (!sysEmgMenuTimer) {
             sysEmgMenuTimer = setTimeout(() => {
-                sysEmgMenu.classList.remove('hidden');
+                //sysEmgMenu.classList.remove('hidden');
+                const sysEmgMenu = document.createElement('div');
+                sysEmgMenu.id = 'sys-emg-menu';
+                sysEmgMenu.innerHTML = 
+                `<p>System Emergency Menu</p>
+        <button onclick="document.getElementById('sys-emg-menu').remove()">Close</button>
+        <button onclick="sysclosesesion(); document.getElementById('sys-emg-menu').remove();">Sign Out</button>
+        <button onclick="sysExecApp('taskmanager'); document.getElementById('sys-emg-menu').remove();">Task Manager</button>
+        <button onclick="sysShowRunDialog(); document.getElementById('sys-emg-menu').remove();">Execute ID/quickCommand</button>
+        <button onclick="sysshutdown(); document.getElementById('sys-emg-menu').remove();">Shutdown</button>
+        <button onclick="sysrestart(); document.getElementById('sys-emg-menu').remove();">Reboot</button>
+        <button >-----------</button>
+        <button onclick="window.close()">EMERGENCY SHUTDOWN - WILL CAUSE DATA LOSS</button>
+        <button onclick="window.location.href = 'index.html'">EMERGENCY RESTART - WILL CAUSE DATA LOSS</button>`;
                 sysEmgMenu.style.zIndex = topZ + 10;
+                document.body.appendChild(sysEmgMenu);
             }, 10);
         }
     }
 
     if (e.ctrlKey && e.shiftKey && e.key.toLocaleLowerCase() === 'e') {
         sysShowRunDialog();
+    }
+
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        document.getElementById('quickview').classList.add('hidden');
+        document.getElementById('quickview_vid').classList.add('hidden');
+        document.getElementById('quickview_img').classList.add('hidden');
+        document.getElementById('quickview_img').classList.add('hidden');
+    }
+
+    if (e.key === ' ' && AppManager.loadedApps.has('files')) {
+        e.preventDefault();
+        const selected = window.fs.getSelectedItem();
+        const selectedType = window.fs.getSelectedItemType();
+
+        if (selected && selectedType === 'file') {
+            e.preventDefault();
+            const content = window.fs.openFile(selected);
+            const ext = selected.split('.').pop().toLowerCase();
+
+            if (['mp4', 'webm', 'ogg'].includes(ext)) {
+                showQuickViewWin('video', content);
+            } else if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) {
+                showQuickViewWin('img', content);
+            } else {
+                showQuickViewWin('text', content);
+            }
+        }
+    }
+
+    if (e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (document.getElementById('win_appcenter').classList.contains('hidden')) {
+            sysExecApp('appcenter');
+            setTimeout(() => {
+                document.getElementById('appcenter_searchbar').focus();
+            },120);
+        } else {
+            document.getElementById('win_appcenter').classList.add('hidden');
+            document.getElementById('appcenter_searchbar').value = '';
+        }
+    }
+    if (e.ctrlKey && e.shiftKey && e.code === 'Space') {
+        e.preventDefault();
+        if (document.getElementById('win_appcenter').classList.contains('hidden')) {
+            sysExecApp('appcenter');
+            setTimeout(() => {
+                document.getElementById('appcenter_searchbar').focus();
+            },120);
+        } else {
+            document.getElementById('win_appcenter').classList.add('hidden');
+            document.getElementById('appcenter_searchbar').value = '';
+        }
+    }
+    if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        if (!document.getElementById('appcenter_nekiriHint').classList.contains('hidden')) {
+            appcenterAskNekiri();
+        }
     }
 });
 
@@ -1248,6 +2005,13 @@ function sysExecApp(appName, options = {}) {
     if (appName === 'appcenter') {
         const appCenter = document.getElementById('win_appcenter');
         if (appCenter) {
+            document.getElementById('appcenter_searchbar').value = '';
+
+            document.querySelectorAll('#appcenterapps .appcenter_appdiv').forEach(appDiv => {
+                appDiv.classList.remove('appcenter-searchhidden');
+            });
+            document.getElementById('appcenter_nekiriHint').classList.add('hidden');
+
             appCenter.style.zIndex = topZ + 10;
             appCenter.classList.remove('hidden');
             return;
@@ -1260,6 +2024,13 @@ function sysExecApp(appName, options = {}) {
             const windowID = windowExceptions[appName] || `win_${appName}`;
             const windowEL = document.getElementById(windowID);
 
+            if (windowEL) {
+                if (!windowEL.dataset.winInitialized) {
+                    window.initNewWindow(windowEL);
+                    windowEL.dataset.winInitialized = 'true';
+                }
+            }
+
             if (windowEL && windowEL.classList.contains('fullscreen')) {
                 sysFullscreenApp(appName, true);
             }
@@ -1267,10 +2038,17 @@ function sysExecApp(appName, options = {}) {
             if (options.tab && typeof window[`openSettingsTab`] === 'function') {
                 window[`openSettingsTab`](options.tab);
             }
+
+            renderAppBar();
         })
         .catch(err => {
             console.error(`Failed to execute '${appName}': `, err);
-            showAlertBox('❌ Error', `Hubo un error al abrir ${appName}`);
+            document.documentElement.style.cursor = "default";
+            if (navigator.onLine) {
+                showAlertBox('❌ Error', `Ocurrio un error al abrir ${appName}`);
+            } else {
+                showAlertBox('🛜 Sin internet', `Conectate a internet para abrir ${appName}`);
+            }
         });
 }
 
@@ -1378,8 +2156,21 @@ async function sysShowRunDialog() {
                     }
                 }
             } else {
-                showAlertBox('❌ Error', 'No tienes permisos para ejecutar el comando: Modo dev no activado!')
+                showAlertBox('❌ Error', 'No tienes permisos para ejecutar el comando: Modo dev no activado!');
             }
+        } else if (command === 'eval') {
+            const jsToExec = args.join(' ');
+            if (SysVar.flagAlwaysAllowEvals) {
+                eval(jsToExec);
+            } else if (SysVar.devMode) {
+                const sureToExecEval = await showPromptMsgBox('⚠️ ADVERTENCIA', 'Esta acción ejecutará código arbitrario en tiempo real. Un uso incorrecto puede causar pérdida de datos, errores críticos o vulnerabilidades de seguridad. Si no sabes exactamente qué hace este comando, cancela ahora.', 'Cancelar', 'Continuar');
+                if (sureToExecEval.confirmed) return;
+                eval(jsToExec);
+            } else {
+                showAlertBox('❌ Error', 'No tienes permisos para ejecutar el comando: Modo dev no activado!');
+            }
+        } else {
+            showAlertBox('❌ Error', 'Comando desconocido');
         }
 
     } catch(error) {
@@ -1444,9 +2235,15 @@ function sysUpdateBattery(battery) {
             btIcon.classList.remove('battery-empty');
         }
 
+        if (level < 10 && !battery.charging) {
+            createNotification('assets/system/bt-none.svg', 'Batería baja', `Batería al ${level}%. Conecta tu cargador pronto.`);
+        }
+
         if (charging) {
+            btIcon.src = 'assets/system/bt-charge.svg'
             btIcon.classList.add('battery-charging');
         } else {
+            btIcon.src = getBTSVGRoute(level);
             btIcon.classList.remove('battery-charging');
         }
     }
@@ -1470,7 +2267,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.filename && e.filename.includes(window.location.origin)) {
             //const errorMsg = `${e.message}\nArchivo: ${e.filename}\nLínea: ${e.lineno}`;
             const errorMsg = `Error: ${e.message}`;
-            if (showABEnabled.checked) {
+            if (showABEnabled && showABEnabled.checked) {
                 showAlertBox('Error', errorMsg, {as_win:true, icon:'❌'});
             }
             try {
@@ -1483,7 +2280,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('unhandledrejection', (e) => {
         const errorMsg = `Error: ${e.reason}`;
-        if (showABEnabled.checked) {
+        if (showABEnabled && showABEnabled.checked) {
             showAlertBox('Error', errorMsg, {as_win:true, icon:'❌'});
         }
         try {
@@ -1496,6 +2293,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const originalWarn = console.warn;
 const originalError = console.error;
+const originalInfo = console.info;
+const originalLog = console.log;
 
 const isMainWindow = window === window.top;
 
@@ -1504,7 +2303,7 @@ console.warn = function(...args) {
 
     if (isMainWindow) {
         const errorMsg = args.join(' ');
-        if (showABEnabled.checked) {
+        if (showABEnabled && showABEnabled.checked) {
             showAlertBox('Advertencia', errorMsg, {as_win:true, icon:'⚠️'});
         }
         try {
@@ -1520,13 +2319,39 @@ console.error = function(...args) {
 
     if (isMainWindow) {
         const errorMsg = args.join(' ');
-        if (showABEnabled.checked) {
+        if (showABEnabled && showABEnabled.checked) {
             showAlertBox('Error', errorMsg, {as_win:true, icon:'❌'});
         }
         try {
             sysAddEvent('error', 'Error', errorMsg);
         } catch(error) {
             tempSysAddEvent('error', 'Error', errorMsg);
+        }
+    }
+}
+
+console.log = function(...args) {
+    originalLog.apply(console, args);
+
+    if (isMainWindow) {
+        const msg = args.join(' ');
+        try {
+            sysAddEvent('log', 'Log', msg);
+        } catch(error) {
+            tempSysAddEvent('log', 'Log', msg);
+        }
+    }
+}
+
+console.info = function(...args) {
+    originalInfo.apply(console, args);
+
+    if (isMainWindow) {
+        const msg = args.join(' ');
+        try {
+            sysAddEvent('info', 'Info', msg);
+        } catch(error) {
+            tempSysAddEvent('info', 'Info', msg);
         }
     }
 }
@@ -1542,6 +2367,20 @@ window.addEventListener('message', (event) => {
         maximizeWindow(windowId);
     } else if (action === 'restore') {
         restoreWindow(windowId);
+    } else if (action === 'shutdown') {
+        const appName = windowId.replace('win_', '').replace('config', 'settings');
+        sysshutdown(true,'fromapp',appName);
+    } else if (action === 'launch') {
+        const appName = windowId.replace('win_', '').replace('config', 'settings');
+        sysExecApp(appName);
+    } else if (action === 'logout') {
+        sysclosesesion();
+    } else if (action === 'kill') {
+        const appName = windowId.replace('win_', '').replace('config', 'settings');
+        AppManager.unloadApp(appName);
+    } else if (action === 'addtoappbar') {
+        const appName = windowId.replace('win_', '').replace('config', 'settings');
+        requestAddAppBar(appName);
     }
 });
 
@@ -1592,5 +2431,421 @@ function restoreWindow(windowId) {
     showTopBar();
     showAppBar();
 }
+
+function getFocusedWindowId() {
+
+    const focused = document.querySelectorAll('.window.win-focused');
+
+    if (focused.length === 0) {
+        console.warn('Focused window not found.');
+        return null;
+    }
+
+    if (focused.length > 1) {
+
+        console.warn('Multiple windows focused.');
+
+        focused.forEach(win => win.classList.remove('win-focused'));
+
+        const last = focused[focused.length - 1];
+        last.classList.add('win-focused');
+
+        return last.id;
+    }
+
+    return focused[0].id;
+}
+
+function getWindowTitleById(winId) {
+
+    const windowElement = document.getElementById(winId);
+
+    if (!windowElement || !windowElement.classList.contains('window')) {
+        return null;
+    }
+
+    const titleSpan = windowElement.querySelector('.grab-title');
+
+    return titleSpan ? titleSpan.textContent.trim() : null;
+}
+
+function waitUntil(conditionFn, interval = 50) {
+  return new Promise(resolve => {
+    const check = setInterval(() => {
+      if (conditionFn()) {
+        clearInterval(check);
+        resolve();
+      }
+    }, interval);
+  });
+}
+
+
+
+function renderAppBar() {
+    const appBar = document.getElementById('appbar');
+    appBar.innerHTML = '';
+
+    SysVar.appBarIcons.forEach(appObj => {
+        if (!("minimized" in appObj)) appObj.minimized = false;
+        if (!("permanent" in appObj)) appObj.permanent = true;
+    });
+
+    function createAppBtn(appObj) {
+        const btn = document.createElement('button');
+        btn.className = 'appbar-app';
+        btn.id = `appbar-${appObj.app}`;
+
+        const img = document.createElement('img');
+        img.className = 'app-img';
+        img.src = appObj.icon;
+        img.alt = appObj.name;
+        btn.appendChild(img);
+
+        const dot = document.createElement('div');
+        dot.className = 'appbar-dot';
+        dot.id = `appbar-dot-${appObj.app}`;
+        const isLoaded = AppManager.loadedApps.has(appObj.app);
+        const isMinimized = appObj.minimized === true;
+        if (isLoaded || isMinimized) {
+            dot.style.opacity = '1';
+            dot.classList.add('appbar-dot-active');
+        } else {
+            dot.style.opacity = '0';
+        }
+        btn.appendChild(dot);
+
+        btn.addEventListener('click', () => sysExecApp(appObj.app));
+
+        btn.addEventListener('contextmenu', () => {
+            const rect = btn.getBoundingClientRect();
+            SysVar.tempCurrentAppBarApp = appObj.app;
+            document.getElementById('appbar-ctxmenu-run').classList.add('hidden');
+            document.getElementById('appbar-ctxmenu-del').classList.add('hidden');
+            document.getElementById('appbar-ctxmenu-restore').classList.add('hidden');
+            document.getElementById('appbar-ctxmenu-quit').classList.add('hidden');
+            if (appObj.minimized) {
+                document.getElementById('appbar-ctxmenu-restore').classList.remove('hidden');
+                document.getElementById('appbar-ctxmenu-quit').classList.remove('hidden');
+            } else {
+                document.getElementById('appbar-ctxmenu-run').classList.remove('hidden');
+                document.getElementById('appbar-ctxmenu-del').classList.remove('hidden');
+            }
+            if (AppManager.loadedApps.has(appObj.app)) {
+                document.getElementById('appbar-ctxmenu-quit').classList.remove('hidden');
+            }
+            appBarCtxMenu.style.left = rect.right + 8 + 'px';
+            appBarCtxMenu.style.top = rect.top + rect.height / 2 + 'px';
+            appBarCtxMenu.style.transform = 'translateY(-50%)';
+            appBarCtxMenu.style.zIndex = topZ + 2;
+            appBarCtxMenu.classList.remove('hidden');
+        });
+
+        btn.addEventListener('mouseenter', () => {
+            const rect = btn.getBoundingClientRect();
+            appsLabel.textContent = appObj.name;
+            appsLabel.style.left = rect.right + 8 + 'px';
+            appsLabel.style.top = rect.top + rect.height / 2 + 'px';
+            appsLabel.style.opacity = '1';
+            appsLabel.style.transform = 'translateY(-50%)';
+            appsLabel.style.zIndex = topZ + 2;
+
+            const allBtns = [...document.querySelectorAll('.appbar-app')];
+            const index = allBtns.indexOf(btn);
+            allBtns.forEach((b, i) => {
+                b.classList.remove('appbar-neighbor-1', 'appbar-neighbor-2');
+                const dist = Math.abs(i - index);
+                if (dist === 1) b.classList.add('appbar-neighbor-1');
+                if (dist === 2) b.classList.add('appbar-neighbor-2');
+            });
+        });
+        btn.addEventListener('mouseleave', () => {
+            appsLabel.style.opacity = '0';
+            document.querySelectorAll('.appbar-app').forEach(b => {
+                b.classList.remove('appbar-neighbor-1', 'appbar-neighbor-2');
+            });
+        });
+
+        return btn;
+    }
+
+    SysVar.appBarIcons
+        .filter(a => a.permanent)
+        .forEach(appObj => appBar.appendChild(createAppBtn(appObj)));
+
+    const minimizedWins = SysVar.appBarIcons.filter(a => !a.permanent && a.minimized === true);
+    const permanentWins = SysVar.appBarIcons.filter(a => a.permanent);
+    if (minimizedWins.length > 0 && permanentWins.length > 0) {
+        const separator = document.createElement('div');
+        separator.className = 'appbar-separator';
+        appBar.appendChild(separator);
+
+        minimizedWins.forEach(appObj => appBar.appendChild(createAppBtn(appObj)));
+    }
+
+    const btnAppcenter = document.createElement('button');
+    btnAppcenter.className = 'appbar-app';
+    btnAppcenter.id = 'appbar-appcenter';
+    const imgAppcenter = document.createElement('img');
+    imgAppcenter.className = 'app-img';
+    imgAppcenter.src = 'assets/apps/Launchpad/3.png';
+    imgAppcenter.alt = 'App Center';
+    btnAppcenter.appendChild(imgAppcenter);
+    btnAppcenter.addEventListener('click', () => sysExecApp('appcenter'));
+    appBar.appendChild(btnAppcenter);
+}
+
+function appBarAddApp(icon, name, app, minimized = false, permanent = true) {
+    const exists = SysVar.appBarIcons.some(a => a.app === app);
+    if (exists) {
+        console.warn(`appBarAddApp: "${app}" already on app bar.`);
+        return;
+    }
+    SysVar.appBarIcons.push({ icon, name, app, minimized, permanent });
+    renderAppBar();
+}
+
+function appBarRemoveApp(app) {
+    if (app === 'appcenter') {
+        if (!SysVar.devMode) {
+            showAlertBox('Advertencia','No puedes eliminar el App Center.',{icon:'⚠️',as_win:true});
+            return;
+        }
+    }
+    const index = SysVar.appBarIcons.findIndex(a => a.app === app);
+    if (index === -1) {
+        console.warn(`appBarRemoveApp: "${app}" no esta en el AppBar`);
+        return;
+    }
+
+    SysVar.appBarIcons.splice(index, 1);
+    renderAppBar();
+    //saveDataReg();
+}
+
+// Watcher para main.conf - recarga SysVar cuando el archivo cambia externamente
+let _mainConfLastContent = null;
+
+function watchMainConf() {
+    if (!window.fs) return;
+    
+    try {
+        if (!window.fs.fileExistInPath('main.conf', '/system/general')) return;
+        
+        const currentContent = openFile('main.conf', '/system/general');
+        
+        if (_mainConfLastContent === null) {
+            _mainConfLastContent = currentContent;
+            return;
+        }
+        
+        if (currentContent !== _mainConfLastContent) {
+            console.log('[NyxPawOS] main.conf changed externally, reloading config...');
+            _mainConfLastContent = currentContent;
+            loadDataReg();
+            renderAppBar();
+        }
+    } catch (e) {
+        if (SysVar.devMode) {
+            console.error(e);
+        }
+    }
+}
+
+setInterval(watchMainConf, 2000);
+
+document.getElementById('appcenterapps').addEventListener('contextmenu', (e) => {
+    const appDiv = e.target.closest('.appcenter_appdiv');
+    if (!appDiv) return;
+    
+    SysVar.tempCurrentAppCenterApp = appDiv.id.replace('appcenter-','');
+    SysVar.tempCurrentAppCenterName = appDiv.querySelector('p').textContent;
+    SysVar.tempCurrentAppCenterImg = appDiv.querySelector('img').src;
+
+    const appCenterCtxm = document.getElementById('appcenter_ctxm');
+    appCenterCtxm.style.left = e.clientX + 'px';
+    appCenterCtxm.style.top = e.clientY + 'px';
+    const appCenterZIndex = getComputedStyle(document.getElementById('win_appcenter')).zIndex;
+    appCenterCtxm.style.zIndex = appCenterZIndex+2;
+
+    if (SysVar.appDownloaded.includes(SysVar.tempCurrentAppCenterApp)) {
+        document.getElementById('appcenter_ctxm_delappbtn').classList.remove('hidden');
+    } else {
+        document.getElementById('appcenter_ctxm_delappbtn').classList.add('hidden');
+    }
+
+    appCenterCtxm.classList.remove('hidden');
+});
+
+function appcenter_ctxmb_addapp() {
+    appBarAddApp(SysVar.tempCurrentAppCenterImg,SysVar.tempCurrentAppCenterName,SysVar.tempCurrentAppCenterApp);
+}
+
+function appcenter_ctxmb_delapp() {
+    if (SysVar.appDownloaded.includes(SysVar.tempCurrentAppCenterName)) {
+        SysVar.appDownloaded = SysVar.appDownloaded.filter(x => x !== SysVar.tempCurrentAppCenterName);
+        document.getElementById(`appcenter-${SysVar.tempCurrentAppCenterApp}`).classList.add('hidden');
+        if (SysVar.appBarIcons.some(a => a.app === SysVar.tempCurrentAppCenterApp)) {
+            appBarRemoveApp(SysVar.tempCurrentAppCenterApp);
+        }
+    }
+}
+
+
+
+document.getElementById('appcenter_searchbar').addEventListener('input', function() {
+    const query = this.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const allApps = document.querySelectorAll('#appcenterapps .appcenter_appdiv');
+
+    allApps.forEach(appDiv => {
+        if (appDiv.id === 'appcenter-nekiri') return;
+
+        const appName = appDiv.querySelector('p').textContent.toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+        if (query === '' || appName.includes(query)) {
+            appDiv.classList.remove('appcenter-searchhidden');
+        } else {
+            appDiv.classList.add('appcenter-searchhidden');
+        }
+    });
+
+    const visibleApps = [...allApps].filter(appDiv => 
+        appDiv.id !== 'appcenter-nekiri' && !appDiv.classList.contains('appcenter-searchhidden')
+    );
+
+    document.getElementById('appcenter_nekiriHint').classList.add('hidden');
+
+    if (visibleApps.length === 0 && query !== '') {
+        document.getElementById('appcenter_nekiriHint').classList.remove('hidden');
+    }
+});
+
+function appcenterAskNekiri() {
+    hideappcenter();
+    const rect = document.getElementById('topbar_nekiri').getBoundingClientRect();
+    nekiriDropdown.style.right = (window.innerWidth - rect.right) + "px";
+    nekiriDropdown.style.top = rect.bottom + "px";
+    nekiriDropdown.classList.remove('hidden');
+    nekiriDPOpen = true;
+    
+    const searchQuery = document.getElementById('appcenter_searchbar').value;
+    if (searchQuery) {
+        nekiriInput.value = searchQuery;
+    }
+    nekiriInput.focus();
+    setTimeout(() => {
+        document.getElementById('nekiri_send').click();
+    },100);
+}
+
+function showQuickViewWin(filetype, content) {
+    const QVWindow = document.getElementById('quickview');
+    const QVvid = document.getElementById('quickview_vid');
+    const QVimg = document.getElementById('quickview_img');
+    const QVtext = document.getElementById('quickview_text');
+    if (filetype === 'video') {
+        QVvid.classList.remove('hidden');
+        QVvid.src = content;
+    } else if (filetype === 'img') {
+        QVimg.classList.remove('hidden');
+        QVimg.src = content;
+    } else if (filetype === 'text') {
+        QVtext.classList.remove('hidden');
+        QVtext.textContent = content;
+    } else {
+        console.warn('Unknown filetype on quickview: '+filetype);
+        QVtext.classList.remove('hidden');
+        QVtext.textContent = `${filetype} is not a valid type.`;
+        QVWindow.classList.remove('hidden');
+        return;
+    }
+    QVWindow.classList.remove('hidden');
+    QVWindow.style.zIndex = topZ+2;
+}
+
+function hidequickview() {
+    document.getElementById('quickview').classList.add('hidden');
+    document.getElementById('quickview_vid').classList.add('hidden');
+    document.getElementById('quickview_img').classList.add('hidden');
+    document.getElementById('quickview_text').classList.add('hidden');
+}
+
+async function requestAddAppBar(apptoaddname) {
+    const confirmAddAppTAB = await showMsgBox("Solicitud",`Una aplicacion quiere agregar ${apptoaddname} al AppBar\nPermitir?`, "Permitir", "Cancelar",{as_win: false,icon: '💻'});
+    if (confirmAddAppTAB) {
+        const apptoaddicon = await getPathAppIcon(apptoaddname);
+        appBarAddApp(apptoaddicon, apptoaddname, apptoaddname);
+    }
+}
+
+async function getPathAppIcon(appName) {
+    const routes = [
+        `assets/apps/${appName}/3.png`,
+        `assets/apps/${appName}.png`,
+        `assets/${appName}.png`
+    ];
+
+    for (const route of routes) {
+        try {
+            const res = await fetch(route, { method: 'HEAD' });
+            if (res.ok) return route;
+        } catch (e) {}
+    }
+
+    return 'assets/apps/unknown.png';
+}
+
+window.getPathAppIcon = getPathAppIcon;
+window.appBarAddApp = appBarAddApp;
+window.appBarRemoveApp = appBarRemoveApp;
+window.renderAppBar = renderAppBar;
+
+setTimeout(() => {
+    setInterval(() => {
+        SysVar.pointerTopZ = (window.topZ || 9992);
+    },2000);
+},4000);
+
+const topbarIconWifi = new Image();
+topbarIconWifi.src = 'assets/system/wifi.png';
+const topbarIconWifiError = new Image();
+topbarIconWifiError.src = 'assets/system/wifi-error.png';
+
+window.addEventListener('online', () => {
+    document.getElementById('topbar_network').src = topbarIconWifi.src;
+    if (systemIsOffline) {
+        createNotification('assets/system/wifi.png', 'Reconectado', 'Conectado a internet nuevamente.');
+    }
+    systemIsOffline = false;
+});
+window.addEventListener('offline', () => {
+    document.getElementById('topbar_network').src = topbarIconWifiError.src;
+    systemIsOffline = true;
+    createNotification(topbarIconWifiError.src, 'Desconectado', 'No hay conexion a internet.');
+});
+document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+        createNotification('assets/system/fullscreen.png', 'Pantalla completa', 'Para volver a pantalla completa presiona el icono de inicio > Fullscreen', { show:true, text:"Fullscreen", action:"eval", data:"document.documentElement.requestFullscreen()" });
+    }
+});
+
+function loginscrHelpDialog() {
+    SysVar.lockedSession = false;
+    sysExecApp('loginhelp');
+    setTimeout(() => {
+        SysVar.lockedSession = true;
+    },400)
+}
+
+function loginscrAccs() {
+    document.body.classList.toggle("accs-high-contrast");
+}
+
+function reciveCall(number='+00 000 0000') {
+    //TODO: Si esta en contactos entonces mostrar nombre en vez de numero
+    createNotification('assets/system/call.png', String(number), 'Llamada entrante', { show:true, text:"Contestar", action:"alert", data:"Llamadas no implementadas." }, { show:true, text:"Rechazar", action:"delnoti", data:undefined });
+}
+
 
 window.scriptReady('sys');

@@ -1,0 +1,20 @@
+    <div class="window hidden" id="win_regedit">
+        <div class="grab">
+            <span class="grab-title">🎛️  RegEdit</span>
+            <button class="grab-btn" id="btn_regedit">X</button>
+        </div>
+
+        <div class="win_content content_regedit">
+            <div id="regedit_leftsidebar">
+                <button class="regedit_btn" onclick="updateList()">Actualizar</button>
+                <div class="syssetup_divider"></div>
+                <button class="regedit_btn" id="regedit_btn_jsfiles" onclick="regeditSectionGoto('jsfiles')">JAVASCRIPT_FILES 🔘</button>
+                <button class="regedit_btn" id="regedit_btn_gownusr" onclick="regeditSectionGoto('gownusr')">GENERAL_OWN_USER</button>
+            </div>
+            <div id="regedit_list" class="regedit_list">
+            </div>
+            <div id="regedit_listgownusr" class="regedit_list hidden">
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+    </div>

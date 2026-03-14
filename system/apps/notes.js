@@ -1,29 +1,19 @@
 console.log("Current: apps/notes.js");
 
-const notesTextarea = document.querySelector('#win_notes textarea');
-const notesSaveBtn = document.querySelector('#win_notes .program_topbar button:nth-child(1)');
-const notesNewBtn = document.querySelector('#win_notes .program_topbar button:nth-child(2)');
-const notesOpenBtn = document.querySelector('#win_notes .program_topbar button:nth-child(3)');
+let notesTextarea = null;
+let notesSaveBtn = null;
+let notesNewBtn = null;
+let notesOpenBtn = null;
 
-const saveNoteWindow = document.getElementById('win_savenote');
+/*const saveNoteWindow = document.getElementById('win_savenote');
 const saveNoteInput = document.getElementById('notes-savefilename');
 const saveNoteBtnConfirm = document.getElementById('notes-btn_save');
 const saveNoteBtnCancel = document.getElementById('notes-btn_cancel');
-const saveNoteClose = document.getElementById('btn_savenote');
+const saveNoteClose = document.getElementById('btn_savenote');*/
 
-notesSaveBtn.addEventListener('click', () => {
-    saveNoteWindow.style.width = '400px';
-    saveNoteWindow.style.height = '210px';
-    saveNoteWindow.style.removeProperty('opacity');
-    saveNoteWindow.classList.remove('hidden');
-    setTimeout(() => {
-        saveNoteWindow.classList.add('window_anim_open');
-    }, 10);
-    saveNoteWindow.style.zIndex = ++topZ;
-    saveNoteInput.value = '';
-    saveNoteInput.focus();
-});
 
+
+/*
 saveNoteBtnConfirm.addEventListener('click', () => {
     const filename = saveNoteInput.value.trim();
     
@@ -70,15 +60,9 @@ saveNoteInput.addEventListener('keydown', (e) => {
         e.preventDefault();
         saveNoteBtnConfirm.click();
     }
-});
-
-notesNewBtn.addEventListener('click', () => {
-    notesTextarea.value = '';
-});
-
-/*notesOpenBtn.addEventListener('click', () => {
-    //accion del boton de abrir ya abre files, no hay necesidad de esta funcion xD
 });*/
+
+
 
 window.notesSetTXArea = function(content) {
     if (!AppManager.loadedApps.has('notes')) {
@@ -91,6 +75,77 @@ window.notesSetTXArea = function(content) {
     }
 
     notesTextarea.value = content;
+}
+
+function init_notes() {
+    notesTextarea = document.querySelector('#win_notes textarea');
+    notesSaveBtn = document.querySelector('#win_notes .program_topbar button:nth-child(1)');
+    notesNewBtn = document.querySelector('#win_notes .program_topbar button:nth-child(2)');
+    notesOpenBtn = document.querySelector('#win_notes .program_topbar button:nth-child(3)');
+
+    notesSaveBtn.addEventListener('click', () => {
+        /*
+        El codigo siguiente ya no se ocupa, pero amo dejar codigo viejo asi que aqui esta:
+        saveNoteWindow.style.width = '400px';
+        saveNoteWindow.style.height = '210px';
+        saveNoteWindow.style.removeProperty('opacity');
+        saveNoteWindow.classList.remove('hidden');
+        setTimeout(() => {
+            saveNoteWindow.classList.add('window_anim_open');
+        }, 10);
+        saveNoteWindow.style.zIndex = ++topZ;
+        saveNoteInput.value = '';
+        saveNoteInput.focus();
+        */
+        sysExecApp('files');
+            
+            (async () => {
+                await waitUntil(() => typeof filesOpenSaveDialog === 'function');
+                filesOpenSaveDialog();
+
+                await waitUntil(() => SysVar.pointerFilesSaveDialogOpen === true);
+                await waitUntil(() => SysVar.pointerFilesSaveDialogOpen === false);
+                
+                if (SysVar.pointerFilesSaveDialogSaveYN) {
+                    const filename = SysVar.pointerFilesSaveDialogFilename.trim();
+
+                    if (!filename) {
+                        showAlertBox('⚠️ Advertencia!', 'Ingresa un nombre para el archivo!');
+                        return;
+                    }
+
+                    const finalFilename = filename.includes('.') ? filename : filename + '.txt';
+                    const content = notesTextarea.value;
+                    let success = false;
+                    if (window.fs.fileExistInPath(finalFilename, window.fs.getCurrentDirectory())) {
+                         success = window.fs.modifyFile(finalFilename, content);
+                    } else {
+                         success = window.fs.createFile(finalFilename, content);
+                    }
+                    
+
+                    if (success) {
+                        console.log(`Note saved as: ${finalFilename}`);
+                        
+                    } else {
+                        console.error('Cannot save note');
+                        showAlertBox('❌ Error', 'Error al guardar la nota: Ya existe un archivo con el mismo nombre o no se pudo generar');
+                    }
+                    
+                    SysVar.pointerFilesSaveDialogFilename = 'mi-nota.txt';
+                }
+                
+                SysVar.pointerFilesSaveDialogSaveYN = false;
+            })();
+    });
+
+    notesNewBtn.addEventListener('click', () => {
+        notesTextarea.value = '';
+    });
+
+    notesOpenBtn.addEventListener('click', () => {
+        sysExecApp('files');
+    });
 }
 
 function cleanup_notes() {

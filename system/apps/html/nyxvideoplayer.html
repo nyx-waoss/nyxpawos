@@ -1,0 +1,13 @@
+    <div class="window hidden" id="win_nyxvideoplayer">
+        <div class="grab">
+            <span class="grab-title">🎬  Nyx Video Player</span>
+            <button class="grab-btn" id="btn_nyxvideoplayer">X</button>
+        </div>
+
+        <div class="win_content content_nyxvideoplayer">
+            
+            <button onclick="document.getElementById('win_askForVideoFile').style.removeProperty('opacity');document.getElementById('win_askForVideoFile').classList.remove('hidden');setTimeout(() => {document.getElementById('win_askForVideoFile').classList.add('window_anim_open');}, 10);" id="nyxvideoplayer_selectVid" data-i18n="vidplayer_sel">Elegir video</button>
+            <video id="nyxvideoplayer_player" controls>Hubo un problema con la reproduccion del video: Video no soportado - VID-NOWK</video>
+        </div>
+        <div class="resize-handle"></div>
+    </div>

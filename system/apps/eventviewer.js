@@ -22,6 +22,7 @@ const eventTypes = {
     'info': 'ℹ️',
     'warn': '⚠️',
     'error': '❌',
+    'log': '📝',
     'fatal': '💥'
 };
 
@@ -54,7 +55,7 @@ function updateEventList() {
             const selEvent = SysVar.sysEvents[idx];
 
             sbR_title.textContent = selEvent.title;
-            sbR_info.textContent = selEvent.type + '\n' + selEvent.date + '\n==========' + selEvent.info;
+            sbR_info.textContent = selEvent.type + '\n' + selEvent.date + '\n==============\n' + selEvent.info;
         })
     });
 }

@@ -96,13 +96,13 @@ function confirmDelete() {
             document.getElementById('toptext').textContent = 'Preparing...\n░░░░░░░░░░░░░';
             setTimeout(() => {
                 document.getElementById('toptext').textContent = 'Deleting files...\n█████░░░░░░░░';
-                localStorage.removeItem('SysRegConfig');
-                localStorage.removeItem('sessionAutoStart');
+                /*localStorage.removeItem('SysRegConfig');
+                localStorage.removeItem('sessionAutoStart');*/
                 setTimeout(() => {
                     document.getElementById('toptext').textContent = 'Reinstalling files...\n██████████░░░';
 
-                    localStorage.setItem('SysRegConfig', '{"format24h":false,"lockedSession":false,"windowManager0":true,"disableJSload":false,"devMode":false,"currenttheme":"dark"}');
-                    localStorage.setItem('sessionAutoStart', '["input","UI","audio","programs","session"]');
+                    /*localStorage.setItem('SysRegConfig', '{"format24h":false,"lockedSession":false,"windowManager0":true,"disableJSload":false,"devMode":false,"currenttheme":"dark"}');
+                    localStorage.setItem('sessionAutoStart', '["input","UI","audio","programs","session"]');*/
 
                     setTimeout(() => {
                         document.getElementById('toptext').textContent = 'Restarting...\n█████████████';

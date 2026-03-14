@@ -1,5 +1,17 @@
 console.log('Current: sysLoader.js');
 
+document.getElementById('startupscrtext').classList.add('hidden');
+
+const navigatorConnectionLevel = navigator.connection;
+
+if (navigatorConnectionLevel) {
+    const navConnSpeed = navigatorConnectionLevel.effectiveType;
+
+    if (navConnSpeed === "slow-2g" || navConnSpeed === "2g") {
+        console.warn("Warn: Slow internet");
+    }
+}
+
 const ScriptLoader = {
     scripts: [],
     loadedScripts: new Set(),
@@ -8,14 +20,15 @@ const ScriptLoader = {
     
     config: [
         // Core
-        { path: 'system/sys.js', critical: true, timeout: 3000 },
-        { path: 'system/FS.js', critical: true, timeout: 3000 },
-        { path: 'system/usermanager.js', critical: true, timeout: 3000 },
-        { path: 'system/winmanager.js', critical: true, timeout: 3000 },
+        { path: 'system/sys.js', critical: true, timeout: 15000 },
+        { path: 'system/FS.js', critical: true, timeout: 25000 },
+        { path: 'system/usermanager.js', critical: true, timeout: 15000 },
+        { path: 'system/winmanager.js', critical: true, timeout: 15000 },
         
         // Apps YA NO SE CARGAN DESDE AQUI!! AHORA ES DINAMICOOOOOO
         //Ahora se usa esto:
-        { path: 'system/programmanager.js', critical: true, timeout: 3000 },
+        { path: 'system/programmanager.js', critical: true, timeout: 15000 },
+        { path: 'system/langmanager.js', critical: false, timeout: 15000 },
         //Pero soy un obsesionado con dejar codigo que ya no ocupo, asi que solo lo comentare jeje
         /*
         { path: 'system/apps/settings.js', critical: false },
@@ -35,7 +48,7 @@ const ScriptLoader = {
          */
         
         // Init
-        { path: 'system/init.js', critical: true, timeout: 5000 }
+        { path: 'system/init.js', critical: true, timeout: 15000 }
     ],
     
     loadScript(scriptConfig) {

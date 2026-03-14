@@ -1,14 +1,9 @@
 console.log("Current: apps/terminal.js");
 
-const terminalInput = document.getElementById('terminalin');
-const terminalPrint = document.getElementById('terminalprint');
-window.SysVar = window.SysVar || {};
+let terminalInput = null;
+let terminalPrint = null;
 
-terminalInput.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        _runCommandInternal(terminalInput.value);
-    }
-});
+window.SysVar = window.SysVar || {};
 
 function addLine(line) {
     const newLine = document.createElement('p');
@@ -27,6 +22,8 @@ function addMLines(linesArray) {
 }
 
 let printLines = [];
+let askingToExec = false;
+let evalToExec = '';
 
 function _runCommandInternal(incommand) {
     if (!incommand.includes('jscom')) {
@@ -49,7 +46,20 @@ function _runCommandInternal(incommand) {
     const command = fullCommand[0];
     const args = fullCommand.slice(1);
     addLine(`> ${incommand}`);
-        
+    
+    if (command === 'EXECUTE') {
+        if (askingToExec) {
+            eval(evalToExec);
+            evalToExec = '';
+            askingToExec = false;
+        } else {
+            addLine('No command to execute.');
+        }
+        terminalInput.value = '';
+        return;
+    }
+    askingToExec = false;
+    evalToExec = '';
     if (command === 'runxss') {
         if (SysVar.devMode) {
             const htmlCode = args.slice(1).join(' ');
@@ -85,10 +95,14 @@ function _runCommandInternal(incommand) {
             'devMode --set 1: Activa el modo desarrollador/experimental',
             'devMode --set 0: Desactiva el modo desarrollador/experimental',
             'runxss --args HTML: ejecuta codigo HTML en la terminal',
-            'jscom --args: ejecuta codigo javascript en la terminal',
+            'eval code: ejecuta codigo javascript en la terminal',
+            'notify content: muestra una notificacion del sistema',
+            'export element --type file: Guarda el contenido de un elemento en un archivo en "/"',
+            'request type action windowId enable: Hace una request con la informacion ingresada',
             ''
         ];
         addMLines(printLines);
+        
 
     } else if (command === 'clear') {
         terminalPrint.innerHTML = '';
@@ -170,6 +184,25 @@ function _runCommandInternal(incommand) {
             if (args[1] === 'prop.bypass') {
                 loginscr.classList.add('hidden');
             }
+        } else if (args[0] === 'systemContent') {
+            if (args[1] === '--html') {
+                addLine('Loading...');
+                try {
+                    const contentToReplace = String(window.fs.openFile(args[2], '/'));
+                    if (!contentToReplace) {
+                        throw new Error(`File not found or content invalid. File content: ${contentToReplace}`);
+                        return;
+                    }
+                    document.body.innerHTML = contentToReplace;
+                } catch(error) {
+                    addLine('Failed.');
+                    addLine(error);
+                    return;
+                }
+                addLine('Success.');
+            } else {
+                addLine(args[1] + ' is not valid as a type of importable file.');
+            }
         } else {
             addLine('El elemento "' + args[0] + '" no se encontro como elemento modificable');
         }
@@ -177,7 +210,8 @@ function _runCommandInternal(incommand) {
     } else if (command === 'exec') {
         sysExecApp(args[0]);
     } else if (command === 'jscom') {
-        if (SysVar.devMode) {
+        addLine('Comando bloqueado: jscom ya no es soportado, use eval en su lugar.');
+        /*if (SysVar.devMode) {
             const jsCode = args.join(' ');
             try {
                 const result = eval(jsCode);
@@ -189,7 +223,7 @@ function _runCommandInternal(incommand) {
             }
         } else {
             addLine('Activa el modo desarrollador para ejecutar javascript');
-        }
+        }*/
     } else if (command === 'taskmgr') {
         if (args[0] === '--new') {
             sysExecApp(args[1]);
@@ -289,8 +323,56 @@ function _runCommandInternal(incommand) {
                 '',
             ];
             addMLines(printLines);
+        } else if (args[0] === 'eval') {
+            printLines = [
+                'Ejecuta codigo Javascript:',
+                'ADVERTENCIA! Use este comando solo si sabe lo que esta haciendo, de lo contrario su seguridad y su sistema se vera comprometido.',
+                '',
+                'Muestra "Hola" en la consola:',
+                'eval console.log("Hola");',
+                'codigo JS ^',
+                '',
+            ];
+            addMLines(printLines);
+        } else if (args[0] === 'notify') {
+            printLines = [
+                'Crea y muestra una notificacion:',
+                '',
+                'Muestra "Notificacion prueba":',
+                'notify Notificacion prueba',
+                'contenido ^',
+                '',
+                'El titulo de la notificacion sera el nombre del usuario actual.',
+                'El icono de la notificacion sera el icono de la app de terminal.',
+                ''
+            ];
+            addMLines(printLines);
+        } else if (args[0] === 'export') {
+            printLines = [
+                'Exporta el contenido de un elemento y lu guarda en un archivo:',
+                '',
+                'Guarda el html del sistema:',
+                'export systemContent --html archivo.txt',
+                'elemento ^         tipo ^ filename ^',
+                '',
+                'La ubicacion del archivo siempre sera "/"',
+                ''
+            ];
+            addMLines(printLines);
+        } else if (args[0] === 'request') {
+            printLines = [
+                'Hace una solicitud con los datos ingresados',
+                '',
+                'Intenta agregar la app de toybox al appbar:',
+                'request --local addtoappbar win_toybox true',
+                '       tipo ^  accion ^     app ^ activar ^',
+                '',
+                'Muchas veces se le pedira permiso al usuario primero.',
+                ''
+            ];
+            addMLines(printLines);
         } else {
-            addLine('Comando desconocido');
+            addLine('Unknown command.');
         }
     } else if (command === 'devMode') {
         if (args[0] === '--set') {
@@ -299,13 +381,63 @@ function _runCommandInternal(incommand) {
             } else if (args[1] === '0') {
                 SysVar.devMode = false;
             } else {
-                addLine(args[1] + ' no es valido, ingresa 1 o 0');
+                addLine(args[1] + ' is invalid, type 1 or 0');
             }
         } else {
-            addLine(args[0] + ' no es un argumento valido');
+            addLine(args[0] + ' is not a valid argument.');
+        }
+    } else if (command === 'eval') {
+        evalToExec = args.join(' ');
+        if (SysVar.flagAlwaysAllowEvals) {
+            eval(evalToExec);
+        } else {
+            askingToExec = true;
+            addLine('[ === WARNING === ]');
+            addLine(' ');
+            addLine('You are about to execute arbitrary code.');
+            addLine('This operation may affect system integrity');
+            addLine('Proceed only if you understand the consequences.');
+            addLine(' ');
+            addLine('[ =============== ]');
+            addLine('Type "EXECUTE" to proceed: ');
+        }
+
+    } else if (command === 'notify') {
+        const notifyText = args.join(' ');
+        createNotification('assets/apps/Terminal/4.png',SysVar.currentuser.dName,notifyText);
+    } else if (command === 'export') {
+        if (args[0] === 'systemContent') {
+            if (args[1] === '--html') {
+                addLine('Exporting systemContent as a html file...');
+                try {
+                    window.fs.createFile(args[2], document.body.innerHTML, '/');
+                } catch(error) {
+                    addLine('Failed.');
+                    addLine(error);
+                    return;
+                }
+                addLine('Success.');
+                addLine(`filename: ${args[2]}`);
+                addLine('route: /');
+            } else {
+                addLine(args[1] + ' is not valid as a type of exportable file.');
+            }
+        } else {
+            addLine(args[0] + ' not found as an exportable element.');
+        }
+    } else if (command === 'request') {
+        if (args[0] === '--local') {
+            window.parent.postMessage({
+                action: args[1],
+                windowId: args[2],
+                enable: args[3]
+            }, '*');
+            addLine('Done.');
+        } else {
+            addLine(args[0] + ' not found as a request type.');
         }
     } else {
-        addLine('El comando "' + incommand + '" no existe como comando valido!');
+        addLine('"' + incommand + '" not found.');
     }
     terminalInput.value = '';
     /*terminalPrint.innerHTML += '   <br>';*/
@@ -327,6 +459,17 @@ window.runCommand = function(incommand) {
 
     _runCommandInternal(incommand);
 };
+
+function init_terminal() {
+    terminalInput = document.getElementById('terminalin');
+    terminalPrint = document.getElementById('terminalprint');
+    
+    terminalInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            _runCommandInternal(terminalInput.value);
+        }
+    });
+}
 
 function cleanup_terminal() {
     console.log('Cleaning terminal...');
