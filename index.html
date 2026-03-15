@@ -466,6 +466,15 @@
 
     <!--Scripts-->
     <script>
+        if (window.opener) {
+            console.log("Booting up from launcher...")
+        } else {
+            console.log("Locating to launcher...")
+            window.location.href = "/launcher.html"
+        }
+    </script>
+
+    <script>
         var userNavigatorSupported = true;
 
         if (!window.fetch) userNavigatorSupported = false;
