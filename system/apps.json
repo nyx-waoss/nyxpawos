@@ -21,6 +21,7 @@
     { "id": "virtualenv" },
     { "id": "vscode" },
     { "id": "nkbrief" },
-    { "id": "loginhelp" }
+    { "id": "loginhelp" },
+    { "id": "imagedownloader" }
   ]
 }

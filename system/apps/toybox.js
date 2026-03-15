@@ -99,4 +99,12 @@ async function toyboxFXReset() {
     }
 }
 
+function init_toybox() {
+    document.getElementById('toybox_fireplace_iframe').src = 'https://www.youtube.com/embed/iaQBQp5tgcw?autoplay=1&loop=1&playlist=iaQBQp5tgcw&controls=0&mute=1&modestbranding=1&showinfo=0';
+}
+
+function cleanup_toybox() {
+    document.getElementById('toybox_fireplace_iframe').src = '../../../connecting.html';
+}
+
 window.scriptReady('toybox');

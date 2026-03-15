@@ -106,6 +106,29 @@ function init_settings() {
     userPermlevelSel.value = SysVar.currentuser.permissions;
     updateProfileInfo();
     refreshUserCards();
+
+    document.getElementById('settings_systemversion').textContent = `Version del sistema: ${SysVar.userversion}`;
+
+    const usersContainer = document.getElementById('settings-users-container');
+    if (usersContainer) {
+        usersContainer.addEventListener('click', (e) => {
+            const target = e.target;
+
+            if (target.classList.contains('settings-btn-deleteuser')) {
+                const username = target.getAttribute('data-username');
+                settingsDeleteUser(username);
+            }
+            if (target.classList.contains('settings-btn-changepass')) {
+                const username = target.getAttribute('data-username');
+                settingsChangePassword(username);
+            }
+            if (target.classList.contains('settings-btn-changename')) {
+                const username = target.getAttribute('data-username');
+                settingsChangeDisplayName(username);
+            }
+
+        });
+    }
 }
 
 function cleanup_settings() {

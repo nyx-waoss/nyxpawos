@@ -1,0 +1,45 @@
+.content_imagedownloader {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#imagedownloader_input {
+    height: 30px;
+    width: 100%;
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+}
+
+#imagedownloader_input:active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#imagedownloader_btn {
+    height: 30px;
+    width: 100%;
+    color: white;
+    background-color: rgb(0, 145, 255);
+    border: none;
+    border-radius: 8px;
+}
+
+#imagedownloader_btn:hover {
+    background-color: rgb(54, 168, 255);
+}
+
+#imagedownloader_btn:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#imagedownloader_img {
+    width: auto;
+    height: 300px;
+    object-fit: cover;
+}

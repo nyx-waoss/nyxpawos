@@ -690,9 +690,37 @@ function saveImage(name, path, blob) {
     }));
 }
 
+async function downloadImageToFS(url, name, path = currentDirectory) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const blob = await response.blob();
+        await saveImage(name, path, blob);
+
+        const fs = getFileSystem();
+        const normalizedPath = normalizePath(path);
+        const fullPath = normalizedPath === '/' ? `/${name}` : `${normalizedPath}/${name}`;
+
+        fs[fullPath] = { type: 'file', content: '[media]' };
+        if (!fs[normalizedPath].children.includes(name)) {
+            fs[normalizedPath].children.push(name);
+        }
+        saveFileSystem(fs);
+        updateFileList();
+
+        console.log(`Saving image...: ${fullPath}`);
+        return true;
+    } catch (e) {
+        console.error('Cannot save image:', e);
+        showAlertBox('Error', `No se pudo descargar la imagen.`, { as_win: true, icon: '❌' });
+        return false;
+    }
+}
 
 
 
+window.downloadImageToFS   = downloadImageToFS;
 window.saveImage           = saveImage;
 window.createFolder        = createFolder;
 window.createFile          = createFile;
@@ -728,7 +756,8 @@ window.fs = {
     isFolder,
     setDirectory,
     moveItem,
-    saveImage
+    saveImage,
+    downloadImageToFS
 };
 
 window.initFileSystem = initFileSystem;

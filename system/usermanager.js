@@ -210,6 +210,13 @@ async function tryLoginToUser() {
                     createNotification('assets/nekiri.png','Bienvenido!','Bienvenido a NyxPawOS ✨');
                 },400);
             }
+
+            if (Number(SysVar.userversion) < Number(SysVar.maxversion)) {
+                SysVar.userversion = SysVar.maxversion;
+                setTimeout(() => {
+                    createNotification('assets/update.png','Actualizacion',`Sistema actualizado automaticamente a NyxPawOS ${SysVar.userversion}`);
+                },400);
+            }
         }, 600);
 
     } else {
@@ -440,7 +447,7 @@ async function settingsChangePassword(username) {
         }
 
         const result = changePassword(username, oldPass.value, newPass.value);
-        showAlertBox('ℹ️ Informacion',result.message);
+        showAlertBox('✅ Tarea completada',`Contraseña cambiada.`);
     } catch (error) {
         console.error('Failed to change password: ', error);
         showAlertBox('❌ Error', 'No se pudo cambiar la contraseña');
@@ -462,36 +469,18 @@ async function settingsChangeDisplayName(username, newName) {
                     const nameElement = userCard.querySelector('p');
                     nameElement.textContent = newDSName.value;
                 }
-                showAlertBox('ℹ️ Informacion',result.message);
+                showAlertBox('✅ Tarea completada',`Nombre cambiado.`);
         } else {
-            showAlertBox('ℹ️ Informacion',result.message);
+            showAlertBox('✅ Tarea completada',`Nombre cambiado.`);
         }
+        refreshUserCards();
     } catch (error) {
         console.error('Failed to change name: ', error);
         showAlertBox('❌ Error', 'No se pudo cambiar el nombre');
     }
 }
 
-const usersContainer = document.getElementById('settings-users-container');
-if (usersContainer) {
-    usersContainer.addEventListener('click', (e) => {
-        const target = e.target;
 
-        if (target.classList.contains('settings-btn-deleteuser')) {
-            const username = target.getAttribute('data-username');
-            settingsDeleteUser(username);
-        }
-        if (target.classList.contains('settings-btn-changepass')) {
-            const username = target.getAttribute('data-username');
-            settingsChangePassword(username);
-        }
-        if (target.classList.contains('settings-btn-changename')) {
-            const username = target.getAttribute('data-username');
-            settingsChangeDisplayName(username);
-        }
-
-    });
-}
 
 const sysaskfornewuserdataBtnLogin = document.getElementById('sysaskfornewuserdata-btn_login');
 const sysaskfornewuserdataBtnCancel = document.getElementById('sysaskfornewuserdata-btn_cancel');

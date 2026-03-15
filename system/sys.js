@@ -320,6 +320,8 @@ SysVar.tempCurrentAppCenterName = '';
 SysVar.appsUsage = [];
 SysVar.pointerTopZ = 0;
 SysVar.currentlang = "auto";
+SysVar.userversion = "26.0";
+SysVar.maxversion = "26.0";
 
 
 /*VARIABLES GLOBALES END */
@@ -347,6 +349,7 @@ async function saveDataReg() {
             devMode: SysVar.devMode,
             currenttheme: SysVar.currenttheme,
             currentlang: SysVar.currentlang,
+            userversion: SysVar.userversion,
             filesQuickAccess: JSON.stringify(SysVar.filesQuickAccess),
             sessionAutoStart: JSON.stringify(SysVar.sessionAutoStart),
             appBarIcons: JSON.stringify(SysVar.appBarIcons)
@@ -487,6 +490,9 @@ function loadDataReg() {
                                 break;
                             case 'currentlang':
                                 SysVar.currentlang = rawValue;
+                                break;
+                            case 'userversion':
+                                SysVar.userversion = rawValue;
                                 break;
                             case 'filesQuickAccess':
                                 SysVar.filesQuickAccess = JSON.parse(normalizeConfigValue(rawValue));

@@ -1,7 +1,10 @@
 console.log("Current: apps/browser.js");
 
-const briframe = document.getElementById('browseriframe');
-const brinput = document.getElementById('browserinput');
+let briframe = null;
+let brinput = null;
+
+let _br_onload   = null;
+let _br_onkeydown = null;
 
 let historyStack = [];
 let historyIndex = -1;
@@ -59,18 +62,7 @@ function browser_reload() {
     briframe.src = briframe.src;
 }
 
-briframe.addEventListener("load", () => {
-    if (historyIndex >= 0) {
-        brinput.value = historyStack[historyIndex];
-    }
-});
 
-brinput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        browser_goto();
-    }
-});
 
 window.browserSetWebTo = function(inurl) {
     if (!AppManager.loadedApps.has('browser')) {
@@ -87,12 +79,48 @@ window.browserSetWebTo = function(inurl) {
 
 function init_browser() {
     console.log('Initiating browser...');
+
+    briframe = document.getElementById('browseriframe');
+    brinput = document.getElementById('browserinput');
+
     briframe.src = 'https://www.google.com/search?igu=1';
+
+    _br_onload = () => {
+        if (historyIndex >= 0) {
+            brinput.value = historyStack[historyIndex];
+        }
+    };
+
+    _br_onkeydown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            browser_goto();
+        }
+    };
+
+    briframe.addEventListener("load",    _br_onload);
+    brinput.addEventListener("keydown",  _br_onkeydown);
 }
 
 function cleanup_browser() {
     console.log('Cleaning browser...');
-    briframe.src = '../../connecting.html';
+
+    if (briframe && _br_onload) {
+        briframe.removeEventListener("load", _br_onload);
+        _br_onload = null;
+    }
+
+    if (brinput && _br_onkeydown) {
+        brinput.removeEventListener("keydown", _br_onkeydown);
+        _br_onkeydown = null;
+    }
+
+    briframe.src = 'connecting.html';
+
+    briframe     = null;
+    brinput      = null;
+    historyStack = [];
+    historyIndex = -1;
 }
 
 window.scriptReady('browser');
