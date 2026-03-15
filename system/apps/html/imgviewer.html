@@ -1,13 +1,16 @@
-    <div class="window hidden" id="win_nyximageviewer">
-        <div class="grab">
-            <span class="grab-title">🖼️  Nyx Image Viewer</span>
-            <button class="grab-btn" id="btn_nyximageviewer">X</button>
-        </div>
-
-        <div class="win_content content_nyximageviewer">
-            
-            <button onclick="document.getElementById('win_askForImageFile').style.removeProperty('opacity');document.getElementById('win_askForImageFile').classList.remove('hidden');setTimeout(() => {document.getElementById('win_askForImageFile').classList.add('window_anim_open');}, 10);" id="nyximageviewer_selectVid" data-i18n="imgviewer_sel">Elegir imagen</button>
-            <img id="nyximageviewer_player" controls>Imagen</img>
-        </div>
-        <div class="resize-handle"></div>
+<div class="window hidden" id="win_nyximageviewer">
+    <div class="grab">
+        <span class="grab-title">🖼️  Nyx Image Viewer</span>
+        <button class="grab-btn" id="btn_nyximageviewer">X</button>
     </div>
+    <div class="win_content content_nyximageviewer">
+        <button onclick="document.getElementById('win_askForImageFile').style.removeProperty('opacity');
+                         document.getElementById('win_askForImageFile').classList.remove('hidden');
+                         setTimeout(() => document.getElementById('win_askForImageFile').classList.add('window_anim_open'), 10);"
+                id="nyximageviewer_selectVid" data-i18n="imgviewer_sel">Elegir imagen</button>
+                <button id="nyximageviewer_saveBtn" class="hidden">Guardar en NyxPaw</button>
+        <p id="nyximageviewer_status" style="font-size:11px;opacity:0.5;margin:2px 0 6px;"></p>
+        <img id="nyximageviewer_player" alt="Imagen">
+    </div>
+    <div class="resize-handle"></div>
+</div>

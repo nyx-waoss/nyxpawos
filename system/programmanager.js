@@ -315,7 +315,9 @@ const AppManager = {
         }
 
         let appcss = document.getElementById(`appcss_${appName}`);
-        if (appcss) appcss.remove();
+        setTimeout(() => {
+            if (appcss) appcss.remove();
+        },400);
         
         stopUsageTimer(appName);
         this.loadedApps.delete(appName);
@@ -369,7 +371,9 @@ const AppManager = {
         
         try {
             let appcss = document.getElementById(`appcss_${appname}`);
-            if (appcss) appcss.remove();
+            setTimeout(() => {
+                if (appcss) appcss.remove();
+            },400);
         } catch(error) {
             console.warn('CSS unload failed for ' + appname + '. Error: ' + error);
         }

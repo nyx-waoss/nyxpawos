@@ -692,7 +692,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     font-family: 'Outfit', sans-serif;
     box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.4);
     border-radius: 8px;
-    min-width: 350px;
+    width: 350px;
     width: auto;
     height: fit-content;
     padding: 20px;
@@ -705,10 +705,13 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     color: white;
 }
 
-#quickview image {
-    width: 300px;
-    height: 300px;
-    object-fit: cover;
+#quickview_img {
+    max-width: 500px;
+    max-height: 500px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 6px;
 }
 
 #quickview video {
@@ -1597,14 +1600,14 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     opacity: 1 !important;
 }
 
-.window.win-max {
+/*.window.win-max {
     left: 85px !important;
     top: 4px !important;
     right: 4px !important;
     bottom: 4px !important;
-    width: auto !important;
-    height: auto !important;
-}
+    width: auto;
+    height: auto;
+}*/
 
 .window.win-max .resize-handle {
     display: none;   /* no tiene sentido redimensionar si está maximizada jajajaja */
@@ -1641,6 +1644,12 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     transform: scale(0.9);
     transition: transform 0.1s ease, opacity 0.1s ease;
     opacity: 0;
+}
+
+.window.win-animating {
+    transition: transform 0.1s ease, opacity 0.1s ease,
+                width 0.35s ease, height 0.35s ease,
+                left 0.35s ease, top 0.35s ease;
 }
 
 
@@ -2217,6 +2226,59 @@ Otros:*/
     color: black !important;
 }
 
+/* Nyx Image Viewer */
+#win_askForImageFile {
+    width: 320px;
+    height: auto;
+    min-height: 220px;
+}
+
+.content_askForImageFile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#askForImageFile-btn_fromfs {
+    background-color: rgb(0, 145, 255);
+    color: white;
+    border: none;
+    border-radius: 6px;
+}
+
+#askForImageFile-btn_fromfs:hover {
+    background-color: rgb(54, 168, 255);
+}
+
+#askForImageFile-btn_fromfs:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#askForImageFile-btn_save {
+    background-color: rgb(0, 145, 255);
+    color: white;
+}
+
+#askForImageFile-btn_save:hover {
+    background-color: rgb(54, 168, 255);
+}
+
+#askForImageFile-btn_save:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#askForImageFile-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+}
+
+#askForImageFile-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#askForImageFile-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
 
 /*
 
@@ -2226,7 +2288,7 @@ Otros:*/
 #askForImageFile-btn_save:hover {
     background-color: rgb(54, 168, 255);
 }
-#askForImageFile-btn_save:active {
+#a-btn_save:active {
     background-color: rgb(0, 126, 222);
 }
     

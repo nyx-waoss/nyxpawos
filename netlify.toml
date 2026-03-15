@@ -1,0 +1,9 @@
+[[redirects]]
+  from = "/"
+  to = "/launcher.html"
+  status = 200
+
+[[redirects]]
+  from = "/launcher"
+  to = "/launcher.html"
+  status = 200

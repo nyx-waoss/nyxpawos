@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NyxPawOS</title>
     <link rel="stylesheet" href="launcher.css">
-    <link rel="icon" type="image/x-icon" href="../assets/logow.webp">
+    <link rel="icon" type="image/webp" href="assets/logow.webp">
 </head>
 <body>
     <div class="panels_div">
@@ -13,9 +13,9 @@
             <div class="info_div" id="info_div">
                 <img src="assets/therianb.png">
                 <h1>Bienvenido a NyxPawOS</h1>
-                <h2>Therian Edition ✨</h2>
+                <h2>By Nyx ✨</h2>
                 <div class="divider"></div>
-                <p>Bienvenido a NyxPawOS Therian Edition, el sistema operativo para therians!</p>
+                <p>Bienvenido a NyxPawOS, el sistema operativo web mas astetik!</p>
                 <div class="divider"></div>
                 <h2>Solucion de problemas:</h2>
                 <h4>Si el boton de inicio no funciona:</h4>
@@ -131,6 +131,7 @@
                 winbox.classList.add('hidden');
                 deletingDataPrompt = false;
                 localStorage.clear();
+                indexedDB.deleteDatabase("NeptuneFS");
             } else {
                 try {
                     sysWindow.close();
@@ -197,6 +198,5 @@
         }
     </script>
     
-    <script src="tu-app.js"></script>
 </body>
 </html>

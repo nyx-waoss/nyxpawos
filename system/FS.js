@@ -1,43 +1,115 @@
 console.log("Current: FS.js");
 //file system start --------------------------------------------------------------------------------
+/*
+⚠️ DISCLAMER:
+Este sistema de archivos antes funcionaba con local storage, esa version fue creada 100% por Nyx. Esta nueva version de indexed DB
+ha sido creada con inteligencia artificial, por lo que podrian haber inconsistencias y quiero aclarar que Nyx no sabe NADA de indexed DB, por eso
+se lo pidio a la IA. Sin embargo, hay algunas cosas que el mismo Nyx a modificado y agregado a este archivo, no todo esta creado por pura IA,
+eso si, lo que ha cambiado nyx son cositas pequeñas que solo mejoran un poco la UX como el quick view o nombres de variables, pero nada mas.
+
+TL;DR
+Algunas partes las hizo la IA, otras yo, mas o menos asi:
+80% IA
+15% Yo
+5% Stack Overflow
+
+Muchas gracias, ahora si, puedes continuar leyendo el codigo xD
+*/
 let currentDirectory = '/';
 let selectedItem = null;
 let selectedItemType = null;
-//const openNotesModTextarea = document.querySelector('#win_notes textarea');
 window.SysVar = window.SysVar || {};
 
-function initFileSystem() {
-    try {
-        if (!localStorage.getItem('fileSystem')) {
-            const initialSystem = {
-                '/': {
-                    type: 'folder',
-                    children: []
-                }
-            };
-            localStorage.setItem('fileSystem', JSON.stringify(initialSystem));
-        }
 
-        const savefileTest = JSON.parse(localStorage.getItem('fileSystem'));
-        if (!savefileTest ||  !savefileTest['/']) {
-            throw new Error('File system initialization failed!');
+const DB_NAME    = 'NeptuneFS';
+const DB_VERSION = 2;
+const STORE_NAME = 'filesystem';
+const FS_KEY     = 'root';
+
+let __fsCache = null;
+let __db      = null;
+
+function _openDB() {
+    return new Promise((resolve, reject) => {
+        if (__db) { resolve(__db); return; }
+
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+
+        req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME);
+            }
+            if (!db.objectStoreNames.contains('media')) {
+                db.createObjectStore('media');
+            }
+        };
+
+        req.onsuccess = (e) => {
+            __db = e.target.result;
+            resolve(__db);
+        };
+
+        req.onerror = (e) => {
+            reject(e.target.error);
+        };
+    });
+}
+
+function _dbGet(key) {
+    return _openDB().then(db => new Promise((resolve, reject) => {
+        const tx  = db.transaction(STORE_NAME, 'readonly');
+        const req = tx.objectStore(STORE_NAME).get(key);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror   = (e) => reject(e.target.error);
+    }));
+}
+
+function _dbPut(key, value) {
+    _openDB().then(db => {
+        const tx  = db.transaction(STORE_NAME, 'readwrite');
+        tx.objectStore(STORE_NAME).put(value, key);
+        tx.onerror = (e) => console.error('[FS] IndexedDB write error:', e.target.error);
+    }).catch(e => console.error('[FS] IndexedDB open error:', e));
+}
+
+function _persistCache() {
+    _dbPut(FS_KEY, __fsCache);
+}
+
+async function initFileSystem() {
+    try {
+        const saved = await _dbGet(FS_KEY);
+
+        if (saved && saved['/']) {
+            __fsCache = saved;
+            console.log('[FS] Loaded from IndexedDB.');
+        } else {
+            __fsCache = {
+                '/': { type: 'folder', children: [] }
+            };
+            _persistCache();
+            console.log('[FS] Created fresh filesystem.');
         }
     } catch (e) {
-        sysBsod('X-FSI-FTI','Failed to initialize file system: ' + e.message);
+        sysBsod('X-FSI-FTI', 'Failed to initialize file system: ' + e.message);
     }
 }
 
+
 function getFileSystem() {
-    return JSON.parse(localStorage.getItem('fileSystem'));
+    return JSON.parse(JSON.stringify(__fsCache));
 }
 
 function saveFileSystem(fs) {
-    localStorage.setItem('fileSystem', JSON.stringify(fs));
+    __fsCache = fs;
+    _persistCache();
 }
+
 
 function normalizePath(path) {
     if (path === '/') return '/';
-    return path.endsWith('/') ? path.slice(0, -1) : path
+    return path.endsWith('/') ? path.slice(0, -1) : path;
 }
 
 function createFolder(name, path = currentDirectory) {
@@ -50,10 +122,7 @@ function createFolder(name, path = currentDirectory) {
         return false;
     }
 
-    fs[fullPath] = {
-        type: 'folder',
-        children: []
-    };
+    fs[fullPath] = { type: 'folder', children: [] };
 
     if (!fs[normalizedPath].children.includes(name)) {
         fs[normalizedPath].children.push(name);
@@ -69,6 +138,7 @@ function createFile(name, content = '', path = currentDirectory) {
         window.fs.modifyFile(name, content, path);
         return true;
     }
+
     const fs = getFileSystem();
     const normalizedPath = normalizePath(path);
     const fullPath = normalizedPath === '/' ? `/${name}` : `${normalizedPath}/${name}`;
@@ -78,10 +148,7 @@ function createFile(name, content = '', path = currentDirectory) {
         return false;
     }
 
-    fs[fullPath] = {
-        type: 'file',
-        content: content
-    };
+    fs[fullPath] = { type: 'file', content: content };
 
     if (!fs[normalizedPath].children.includes(name)) {
         fs[normalizedPath].children.push(name);
@@ -110,9 +177,7 @@ function deleteItem(name, path = currentDirectory) {
 
     const parentChildren = fs[normalizedPath].children;
     const index = parentChildren.indexOf(name);
-    if (index > -1) {
-        parentChildren.splice(index, 1);
-    }
+    if (index > -1) parentChildren.splice(index, 1);
 
     saveFileSystem(fs);
     updateFileList();
@@ -135,14 +200,8 @@ function openFile(name, path = currentDirectory) {
     const normalizedPath = normalizePath(path);
     const fullPath = normalizedPath === '/' ? `/${name}` : `${normalizedPath}/${name}`;
 
-    if (!fs[fullPath]) {
-        console.error('El item no existe');
-        return null;
-    }
-    if (fs[fullPath].type !== 'file') {
-        console.error("No es un archivo");
-        return null;
-    }
+    if (!fs[fullPath]) { console.error('El item no existe'); return null; }
+    if (fs[fullPath].type !== 'file') { console.error('No es un archivo'); return null; }
 
     return fs[fullPath].content;
 }
@@ -152,14 +211,8 @@ function modifyFile(name, newContent, path = currentDirectory) {
     const normalizedPath = normalizePath(path);
     const fullPath = normalizedPath === '/' ? `/${name}` : `${normalizedPath}/${name}`;
 
-    if (!fs[fullPath]) {
-        console.error('El item no existe');
-        return false;
-    }
-    if (fs[fullPath].type !== 'file') {
-        console.error("No es un archivo");
-        return false;
-    }
+    if (!fs[fullPath]) { console.error('El item no existe'); return false; }
+    if (fs[fullPath].type !== 'file') { console.error('No es un archivo'); return false; }
 
     fs[fullPath].content = newContent;
     saveFileSystem(fs);
@@ -181,14 +234,8 @@ function changeDirectory(name) {
 
     const newPath = normalizedPath === '/' ? `/${name}` : `${normalizedPath}/${name}`;
 
-    if (!fs[newPath]) {
-        console.error('La carpeta no existe');
-        return;
-    }
-    if (fs[newPath].type !== 'folder') {
-        console.error("No es una carpeta");
-        return;
-    }
+    if (!fs[newPath]) { console.error('La carpeta no existe'); return; }
+    if (fs[newPath].type !== 'folder') { console.error('No es una carpeta'); return; }
 
     currentDirectory = newPath;
     updateFileList();
@@ -199,14 +246,14 @@ function setDirectory(name) {
     const normalizedPath = normalizePath(name);
 
     if (!fs[normalizedPath]) {
-        console.error('Directory not found: '+normalizedPath);
-        showAlertBox('Error', `Dir ${normalizedPath} not found!`, {as_win:true, icon:'❌'});
+        console.error('Directory not found: ' + normalizedPath);
+        showAlertBox('Error', `Dir ${normalizedPath} not found!`, { as_win: true, icon: '❌' });
         return;
     }
 
     if (fs[normalizedPath].type !== 'folder') {
-        console.error('Not a directory: '+normalizedPath);
-        showAlertBox('Error', `${normalizedPath} is not a folder!`, {as_win:true, icon:'❌'});
+        console.error('Not a directory: ' + normalizedPath);
+        showAlertBox('Error', `${normalizedPath} is not a folder!`, { as_win: true, icon: '❌' });
         return;
     }
 
@@ -227,7 +274,7 @@ function createCustomElement(newObject) {
 
         if (!quickAccessArr || quickAccessArr.length === 0) {
             console.error('SysVar.filesQuickAccess is not valid!');
-            showAlertBox('Error', `Ha ocurrido un error! Revisa Event Viewer para mas informacion.`, {as_win:true, icon:'❌'});
+            showAlertBox('Error', `Ha ocurrido un error! Revisa Event Viewer para mas informacion.`, { as_win: true, icon: '❌' });
             return;
         }
 
@@ -258,15 +305,14 @@ function createCustomElement(newObject) {
                         sysExecApp('notes');
                         setTimeout(() => notesSetTXArea(fileContToOpen), 90);
                     } else {
-                        console.error('fileContToOpen is not valid:',fileContToOpen);
-                        showAlertBox('Error', `Ha ocurrido un error! Revisa Event Viewer para mas informacion.`, {as_win:true, icon:'❌'});
+                        console.error('fileContToOpen is not valid:', fileContToOpen);
+                        showAlertBox('Error', `Ha ocurrido un error! Revisa Event Viewer para mas informacion.`, { as_win: true, icon: '❌' });
                     }
                 }
             });
 
             filesHomegridBtn.appendChild(filesHomegridBtnIco);
             filesHomegridBtn.appendChild(filesHomegridBtnTxt);
-
             filesHomegrid.appendChild(filesHomegridBtn);
         }
 
@@ -295,21 +341,6 @@ function updateFileList() {
         return;
     }
 
-    /*const pathDisplay = document.createElement('div');
-    pathDisplay.textContent = `Directorio actual: ${currentDirectory}`;
-    pathDisplay.style.marginBottom = '10px';
-    pathDisplay.style.fontWeight = 'bold';
-    fileListDiv.appendChild(pathDisplay);
-
-    if (currentDirectory !== '/') {
-        const upButton = document.createElement('button');
-        upButton.textContent = '.. (Subir)';
-        upButton.classList.add('file-btn-up');
-        upButton.style.display = 'block';
-        upButton.style.marginBottom = '5px';
-        upButton.addEventListener('dblclick', () => changeDirectory('..'));
-        fileListDiv.appendChild(upButton);
-    }*/
     if (currentDir.children && currentDir.children.length > 0) {
         currentDir.children.forEach(itemName => {
             const itemPath = normalizedPath === '/' ? `/${itemName}` : `${normalizedPath}/${itemName}`;
@@ -328,9 +359,9 @@ function updateFileList() {
             button.dataset.itemPath = itemPath;
 
             if (item.type === 'folder') {
-                button.classList.add('file-btn', 'file-btn-folder'); //clase carpetas
+                button.classList.add('file-btn', 'file-btn-folder');
             } else {
-                button.classList.add('file-btn', 'file-btn-file'); //clase archivos
+                button.classList.add('file-btn', 'file-btn-file');
             }
 
             button.style.display = 'block';
@@ -340,12 +371,24 @@ function updateFileList() {
                 button.addEventListener('dblclick', () => changeDirectory(itemName));
             } else {
                 button.addEventListener('dblclick', () => {
+                    const imageExts = ['png','jpg','jpeg','gif','webp','bmp'];
+                    const ext = itemName.split('.').pop().toLowerCase();
+
+                    if (imageExts.includes(ext)) {
+                        sysExecApp('nyximageviewer');
+                        setTimeout(() => {
+                            imageViewerOpenFromFS(itemPath);
+                        },80);
+                        return;
+                    }
+
                     const content = openFile(itemName);
                     console.log(`Get content of ${itemName}...`);
                     sysExecApp('notes');
                     setTimeout(() => notesSetTXArea(content), 90);
                 });
             }
+
             fileListDiv.appendChild(button);
         });
     } else {
@@ -379,12 +422,10 @@ function setupContextMenu() {
             contextMenu.dataset.targetItem = itemName;
             contextMenu.dataset.targetType = itemType;
             contextMenu.dataset.targetPath = itemPath;
-            
+
             contextMenu.style.left = e.pageX + 'px';
             contextMenu.style.top  = e.pageY + 'px';
-
             contextMenu.style.zIndex = topZ + 2;
-
             contextMenu.classList.remove("hidden");
         }
     });
@@ -400,7 +441,7 @@ function setupContextMenu() {
 
 function setupContextMenuActions() {
     const contextMenu = document.getElementById('filesaltmenu');
-    
+
     const deleteBtn = document.getElementById('ctx-delete');
     deleteBtn.addEventListener('click', async () => {
         const itemName = contextMenu.dataset.targetItem;
@@ -408,35 +449,36 @@ function setupContextMenuActions() {
 
         const currentDirTCPDel = getCurrentDirectory();
         if (currentDirTCPDel === null || currentDirTCPDel === undefined) {
-            console.error('Cannot get current directory: '+currentDirTCPDel);
-            showAlertBox('Error', `No se pudo obtener el directorio actual.`, {as_win:true, icon:'❌'});
+            console.error('Cannot get current directory: ' + currentDirTCPDel);
+            showAlertBox('Error', `No se pudo obtener el directorio actual.`, { as_win: true, icon: '❌' });
             contextMenu.classList.add('hidden');
             return;
         }
+
         if (currentDirTCPDel === '/system/trash') {
-            const delFile = await showMsgBox("ℹ️ Informacion",`Eliminar "${itemName}" permanentemente?\nEsta accion no se puede deshacer.`,'Eliminar', 'Cancelar');
+            const delFile = await showMsgBox("ℹ️ Informacion", `Eliminar "${itemName}" permanentemente?\nEsta accion no se puede deshacer.`, 'Eliminar', 'Cancelar');
             if (delFile) {
                 window.fs.deleteItem(itemName);
                 contextMenu.classList.add('hidden');
             }
         } else {
-            const delFile = await showMsgBox("ℹ️ Informacion",`Eliminar "${itemName}"?`,'Eliminar', 'Cancelar');
+            const delFile = await showMsgBox("ℹ️ Informacion", `Eliminar "${itemName}"?`, 'Eliminar', 'Cancelar');
             if (delFile) {
                 if (itemType === 'folder') {
                     window.fs.deleteItem(itemName);
                 } else {
                     const currentDirWFTDel = getCurrentDirectory();
                     if (currentDirWFTDel === null || currentDirWFTDel === undefined) {
-                        console.error('Cannot get current directory: '+currentDirWFTDel);
-                        showAlertBox('Error', `No se pudo obtener el directorio actual.`, {as_win:true, icon:'❌'});
+                        console.error('Cannot get current directory: ' + currentDirWFTDel);
+                        showAlertBox('Error', `No se pudo obtener el directorio actual.`, { as_win: true, icon: '❌' });
                         contextMenu.classList.add('hidden');
                         return;
                     }
                     try {
                         window.fs.moveItem(itemName, currentDirWFTDel, '/system/trash');
                     } catch (error) {
-                        console.error('Cannot move to trash: '+error);
-                        const moveFileToTrash = await showMsgBox("ℹ️ Informacion",`No se pudo mover "${itemName}" a la papelera.\nDesea eliminarlo permanentemente?`,'Eliminar', 'Cancelar');
+                        console.error('Cannot move to trash: ' + error);
+                        const moveFileToTrash = await showMsgBox("ℹ️ Informacion", `No se pudo mover "${itemName}" a la papelera.\nDesea eliminarlo permanentemente?`, 'Eliminar', 'Cancelar');
                         if (moveFileToTrash) {
                             window.fs.deleteItem(itemName);
                         }
@@ -446,13 +488,12 @@ function setupContextMenuActions() {
             }
         }
     });
-    
-    //Abrir archivo
+
     const openBtn = document.getElementById('ctx-open');
     openBtn.addEventListener('click', () => {
         const itemName = contextMenu.dataset.targetItem;
         const itemType = contextMenu.dataset.targetType;
-        
+
         if (itemType === 'file') {
             const content = window.fs.openFile(itemName);
             console.log('Content:', content);
@@ -469,17 +510,17 @@ function setupContextMenuActions() {
     addhomeBtn.addEventListener('click', () => {
         const itemName = contextMenu.dataset.targetItem;
         const itemType = contextMenu.dataset.targetType;
-        
+
         if (itemType === 'file') {
             SysVar.filesQuickAccess.push({
-                emoji:'📄',
+                emoji: '📄',
                 text: itemName,
                 route: currentDirectory,
                 eltype: 'file'
             });
         } else {
             SysVar.filesQuickAccess.push({
-                emoji:'🗂️',
+                emoji: '🗂️',
                 text: itemName,
                 route: `${currentDirectory}/${itemName}`,
                 eltype: 'folder'
@@ -504,17 +545,19 @@ function setupFileSelection() {
 
             const itemText = clickedBtn.textContent;
             selectedItem = itemText
-            .replace('📁 ', '')
-            .replace('📄 ', '')
-            .replace('📦 ', '')
-            .replace('⚙️ ', '')
-            .replace('🧱 ', '')
-            .replace('📱 ', '')
-            .replace('⚡ ', '')
-            .trim();
-            
+                .replace('📁 ', '')
+                .replace('📄 ', '')
+                .replace('📦 ', '')
+                .replace('⚙️ ', '')
+                .replace('🧱 ', '')
+                .replace('📱 ', '')
+                .replace('⚡ ', '')
+                .replace('🖼️ ', '')
+                .replace(/[\uFE0F\uFE0E\u200D]/g, '')
+                .trim();
+
             if (SysVar.pointerFilesSaveDialogOpen) {
-                document.getElementById('files_savefilebar_filename').value = selectedItem; 
+                document.getElementById('files_savefilebar_filename').value = selectedItem;
             }
 
             if (clickedBtn.classList.contains('file-btn-folder')) {
@@ -537,73 +580,63 @@ function setupFileSelection() {
     });
 }
 
-function getSelectedItem() {
-    return selectedItem;
-}
-
-function getSelectedItemType() {
-    return selectedItemType;
-}
-
-function getCurrentDirectory() {
-    return currentDirectory;
-}
+function getSelectedItem()      { return selectedItem; }
+function getSelectedItemType()  { return selectedItemType; }
+function getCurrentDirectory()  { return currentDirectory; }
 
 function getFileIcon(fileName) {
     const extenc = fileName.split('.').pop().toLowerCase();
-
     const iconMap = {
-        'npss': '📦',
-        'app': '📱',
+        'npss':   '📦',
+        'app':    '📱',
         'system': '🧱',
-        'npcf': '⚙️',
-        'npfr': '⚡',
-        'txt': '📄'
+        'npcf':   '⚙️',
+        'npfr':   '⚡',
+        'txt':    '📄',
+        'png':    '🖼️',
+        'jpg':    '🖼️',
+        'jpeg':   '🖼️',
+        'gif':    '🖼️',
+        'webp':   '🖼️'
     };
-
     return iconMap[extenc] || '📄';
 }
-    
+
 function fileExist(path) {
-    const fs = getFileSystem();
     const normalizedPath = normalizePath(path);
-    return fs[normalizedPath] !== undefined;
+    return __fsCache[normalizedPath] !== undefined;
 }
 
 function fileExistInPath(name, path = currentDirectory) {
-    const fs = getFileSystem();
     const normalizedPath = normalizePath(path);
     const fullPath = normalizedPath === '/' ? `/${name}` : `${normalizedPath}/${name}`;
-    return fs[fullPath] !== undefined;
+    return __fsCache[fullPath] !== undefined;
 }
 
 function isFile(path) {
-    const fs = getFileSystem();
     const normalizedPath = normalizePath(path);
-    return fs[normalizedPath] && fs[normalizedPath].type === 'file';
+    return __fsCache[normalizedPath] && __fsCache[normalizedPath].type === 'file';
 }
 
 function isFolder(path) {
-    const fs = getFileSystem();
     const normalizedPath = normalizePath(path);
-    return fs[normalizedPath] && fs[normalizedPath].type === 'folder';
+    return __fsCache[normalizedPath] && __fsCache[normalizedPath].type === 'folder';
 }
 
 function moveItem(name, sourceDir, destinationDir) {
     if (!fileExistInPath(name, sourceDir)) {
         console.error('Source file not found.');
-        showAlertBox('Error', `El archivo especificado no existe.`, {as_win:true, icon:'❌'});
+        showAlertBox('Error', `El archivo especificado no existe.`, { as_win: true, icon: '❌' });
         return false;
     }
     if (!isFolder(destinationDir)) {
         console.error('Source directory not found/not a folder.');
-        showAlertBox('Error', `El directorio especificado no existe o no es una carpeta.`, {as_win:true, icon:'❌'});
+        showAlertBox('Error', `El directorio especificado no existe o no es una carpeta.`, { as_win: true, icon: '❌' });
         return false;
     }
-
     if (fileExistInPath(name, destinationDir)) {
-        console.error('File already exists in detination directory.');
-        showAlertBox('Error', `El archivo ya existe en el directorio de destino.`, {as_win:true, icon:'❌'});
+        console.error('File already exists in destination directory.');
+        showAlertBox('Error', `El archivo ya existe en el directorio de destino.`, { as_win: true, icon: '❌' });
         return false;
     }
 
@@ -614,7 +647,7 @@ function moveItem(name, sourceDir, destinationDir) {
 
     if (itemData.type === 'folder') {
         console.error('Cannot move folders.');
-        showAlertBox('Error', `No se pueden mover carpetas, vuelva a intentarlo con un archivo.`, {as_win:true, icon:'❌'});
+        showAlertBox('Error', `No se pueden mover carpetas, vuelva a intentarlo con un archivo.`, { as_win: true, icon: '❌' });
         return false;
     }
 
@@ -626,52 +659,99 @@ function moveItem(name, sourceDir, destinationDir) {
 }
 
 
-window.createFolder = createFolder;
-window.createFile = createFile;
-window.deleteItem = deleteItem;
-window.openFile = openFile;
-window.modifyFile = modifyFile;
-window.changeDirectory = changeDirectory;
-window.updateFileList = updateFileList;
+async function _migrateFromLocalStorage() {
+    const old = localStorage.getItem('fileSystem');
+    if (!old) return;
+
+    try {
+        const parsed = JSON.parse(old);
+        if (parsed && parsed['/']) {
+            const existing = await _dbGet(FS_KEY);
+            if (!existing) {
+                await _openDB();
+                _dbPut(FS_KEY, parsed);
+                console.log('[FS] Migrated data from localStorage to IndexedDB.');
+            }
+            localStorage.removeItem('fileSystem');
+            console.log('[FS] Removed old localStorage entry.');
+        }
+    } catch (e) {
+        console.warn('[FS] Migration from localStorage failed:', e);
+    }
+}
+
+function saveImage(name, path, blob) {
+    return _openDB().then(db => new Promise((resolve, reject) => {
+        const key = path === '/' ? `/${name}` : `${path}/${name}`;
+        const tx  = db.transaction('media', 'readwrite');
+        tx.objectStore('media').put(blob, key);
+        tx.oncomplete = () => resolve(true);
+        tx.onerror    = (e) => reject(e.target.error);
+    }));
+}
+
+
+
+
+window.saveImage           = saveImage;
+window.createFolder        = createFolder;
+window.createFile          = createFile;
+window.deleteItem          = deleteItem;
+window.openFile            = openFile;
+window.modifyFile          = modifyFile;
+window.changeDirectory     = changeDirectory;
+window.updateFileList      = updateFileList;
 window.getCurrentDirectory = getCurrentDirectory;
-window.getSelectedItem = getSelectedItem;
+window.getSelectedItem     = getSelectedItem;
 window.getSelectedItemType = getSelectedItemType;
-window.fileExist = fileExist;
-window.fileExistInPath = fileExistInPath;
-window.isFile = isFile;
-window.isFolder = isFolder;
-window.setDirectory = setDirectory;
-window.moveItem = moveItem;
+window.fileExist           = fileExist;
+window.fileExistInPath     = fileExistInPath;
+window.isFile              = isFile;
+window.isFolder            = isFolder;
+window.setDirectory        = setDirectory;
+window.moveItem            = moveItem;
 
 window.fs = {
-  createFolder: createFolder,
-  createFile: createFile,
-  deleteItem: deleteItem,
-  openFile: openFile,
-  modifyFile: modifyFile,
-  changeDirectory: changeDirectory,
-  updateFileList: updateFileList,
-  getCurrentDirectory: getCurrentDirectory,
-  getSelectedItem: getSelectedItem,
-  getSelectedItemType: getSelectedItemType,
-  fileExist: fileExist,
-  fileExistInPath: fileExistInPath,
-  isFile: isFile,
-  isFolder: isFolder,
-  setDirectory: setDirectory,
-  moveItem: moveItem
+    createFolder,
+    createFile,
+    deleteItem,
+    openFile,
+    modifyFile,
+    changeDirectory,
+    updateFileList,
+    getCurrentDirectory,
+    getSelectedItem,
+    getSelectedItemType,
+    fileExist,
+    fileExistInPath,
+    isFile,
+    isFolder,
+    setDirectory,
+    moveItem,
+    saveImage
 };
 
+window.initFileSystem = initFileSystem;
+window._openDB = _openDB;
+
+
 console.log("window.fs working:", window.fs);
-/*window.fs = {
-  createFolder,
-  createFile,
-  deleteItem,
-  openFile,
-  modifyFile,
-  changeDirectory,
-  updateFileList,
-  getCurrentDirectory
-};*/
+
+_migrateFromLocalStorage()
+    .then(() => initFileSystem())
+    .then(() => {
+        console.log('[FS] Ready. Cache loaded:', Object.keys(__fsCache).length, 'entries.');
+        window.scriptReady('FS');
+    })
+    .catch(e => {
+        sysBsod('X-FSI-BOOT', 'FS boot failed: ' + e.message);
+    });
+
 //file system ends --------------------------------------------------------------------------------
-window.scriptReady('FS');
+/*
+
+NeptuneFS: Created by Claude AI
+Idea by Nyx_waoss
+Old version by nyx :D
+
+*/

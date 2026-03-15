@@ -207,7 +207,7 @@ async function tryLoginToUser() {
             if (localStorage.getItem('sysStartupConfig') === 'NewSystem') {
                 localStorage.setItem('sysStartupConfig', 'none');
                 setTimeout(() => {
-                    createNotification('assets/nekiri.png','Bienvenido!','Bienvenido a InstictOS, el sistema operativo para therians ✨');
+                    createNotification('assets/nekiri.png','Bienvenido!','Bienvenido a NyxPawOS ✨');
                 },400);
             }
         }, 600);

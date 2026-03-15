@@ -197,29 +197,41 @@ function initWindowBehavior(win) {
 
         maximizeBtn.addEventListener('click', () => {
             if (SysVar.windowManager0) {
+                win.classList.add('win-animating');
                 if (win.classList.contains('win-max')) {
                     win.classList.remove('win-max');
                     maximizeBtn.textContent = '□';
 
-                    if (savedWidth) win.style.width = savedWidth;
-                    if (savedHeight) win.style.height = savedHeight;
-                    if (savedLeft) win.style.left = savedLeft;
-                    if (savedTop) win.style.top = savedTop;
+                    win.style.width = savedWidth;
+                    win.style.height = savedHeight;
+                    win.style.left = savedLeft;
+                    win.style.top = savedTop;
+                    win.style.right = '';
+                    win.style.bottom = '';
                     showTopBar();   
                 } else {
-                    savedWidth = win.style.width || window.getComputedStyle(win).width;
-                    savedHeight = win.style.height || window.getComputedStyle(win).height;
-                    savedLeft = win.style.left || window.getComputedStyle(win).left;
-                    savedTop = win.style.top || window.getComputedStyle(win).top;
+                    savedWidth = window.getComputedStyle(win).width;
+                    savedHeight = window.getComputedStyle(win).height;
+                    savedLeft = window.getComputedStyle(win).left;
+                    savedTop = window.getComputedStyle(win).top;
 
+                    const targetLeft = 85;
+                    const targetTop = 4;
+                    const targetWidth = window.innerWidth - targetLeft - 4;
+                    const targetHeight = window.innerHeight - targetTop - 4;
+
+                    win.style.left = targetLeft + 'px';
+                    win.style.top = targetTop + 'px';
+                    win.style.right = '';
+                    win.style.bottom = '';
+                    win.style.width = targetWidth + 'px';
+                    win.style.height = targetHeight + 'px';
                     win.classList.add('win-max');
-                    win.style.width = '';
-                    win.style.height = '';
-                    win.style.left = '';
-                    win.style.top = '';
                     maximizeBtn.textContent = '❐';
                     hideTopBar();
                 }
+
+                setTimeout(() => win.classList.remove('win-animating'), 400);
             }
         });
 
@@ -256,6 +268,7 @@ function initWindowBehavior(win) {
     if (resizeHandle && !win.classList.contains('no-resize')) {
         resizeHandle.addEventListener("mousedown", (e) => {
             if (SysVar.windowManager0) {
+                win.classList.remove('win-animating');
                 resizing = true;
                 startX = e.clientX;
                 startY = e.clientY;

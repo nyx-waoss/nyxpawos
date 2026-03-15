@@ -82,6 +82,7 @@ function confirmDelete() {
             setTimeout(() => {
                 document.getElementById('toptext').textContent = 'Deleting files...\n█████░░░░░░░░';
                 localStorage.clear();
+                indexedDB.deleteDatabase("NeptuneFS");
                 setTimeout(() => {
                     document.getElementById('toptext').textContent = 'Reinstalling files...\n██████████░░░';
                     setTimeout(() => {

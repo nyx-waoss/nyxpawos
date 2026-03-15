@@ -1906,6 +1906,11 @@ document.addEventListener('keydown', e => {
 
     if (e.key === ' ' && AppManager.loadedApps.has('files')) {
         e.preventDefault();
+        
+        if (!(document.getElementById('quickview').classList.contains('hidden'))) {
+            hidequickview();
+        }
+
         const selected = window.fs.getSelectedItem();
         const selectedType = window.fs.getSelectedItemType();
 
@@ -1917,7 +1922,21 @@ document.addEventListener('keydown', e => {
             if (['mp4', 'webm', 'ogg'].includes(ext)) {
                 showQuickViewWin('video', content);
             } else if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) {
-                showQuickViewWin('img', content);
+                const fullPath = window.fs.getCurrentDirectory();
+                const cleanSelected = selected.replace(/[\uFE0F\uFE0E\u200D]/g, '').trim();
+                const imgPath = fullPath === '/' ? `/${cleanSelected}` : `${fullPath}/${cleanSelected}`;
+                _openDB().then(db => {
+                    const tx = db.transaction('media', 'readonly');
+                    const req = tx.objectStore('media').get(imgPath);
+                    req.onsuccess = () => {
+                        if (req.result) {
+                            const url = URL.createObjectURL(req.result);
+                            showQuickViewWin('img', url);
+                        } else {
+                            showAlertBox('Error', 'Imagen no encontrada.', {as_win:true, icon:'❌'});
+                        }
+                    };
+                });
             } else {
                 showQuickViewWin('text', content);
             }
@@ -2194,6 +2213,7 @@ async function formatSystem() {
         hideTopBar();
 
         localStorage.clear();
+        indexedDB.deleteDatabase("NeptuneFS");
 
         setTimeout(() => {
             window.close();
@@ -2765,10 +2785,16 @@ function showQuickViewWin(filetype, content) {
 }
 
 function hidequickview() {
+    const QVimg = document.getElementById('quickview_img');
+    if (QVimg.src && QVimg.src.startsWith('blob:')) {
+        URL.revokeObjectURL(QVimg.src);
+    }
     document.getElementById('quickview').classList.add('hidden');
     document.getElementById('quickview_vid').classList.add('hidden');
-    document.getElementById('quickview_img').classList.add('hidden');
+    QVimg.src = '';
+    QVimg.classList.add('hidden');
     document.getElementById('quickview_text').classList.add('hidden');
+    document.getElementById('quickview_text').textContent = '';
 }
 
 async function requestAddAppBar(apptoaddname) {
