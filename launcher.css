@@ -226,11 +226,12 @@ button:hover {
     font-size: 14px; 
     margin-left: auto; 
     background: linear-gradient(to top, rgb(0, 145, 255), rgb(0, 128, 255));
-    width: auto;
-    height: 25px;
+    width: 130px;
+    height: 28px;
     transition: transform 0.3s ease;    
     border: none;
     border-radius: 8px;
+    margin-top: 10px;
 }
 
 .version_div {

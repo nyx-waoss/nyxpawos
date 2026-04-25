@@ -1,0 +1,20 @@
+Hi nyx! I'm nyx!
+So, you probably forgot how to deploy your project right? Well, i'll show you how!
+
+For small changes:
+git add .
+git commit -m "change description"
+git push origin main
+
+
+
+For big updates (26.0 --> 26.1):
+git checkout -b v26.1 #current version
+git push origin v26.1 #current version
+git commit --allow-empty -m "trigger deploy"
+git push origin v26.1
+
+git checkout main
+git add .
+git commit -m "v26.2 Public Alpha" #new version
+git push origin main
