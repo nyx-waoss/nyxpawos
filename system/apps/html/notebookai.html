@@ -1,0 +1,36 @@
+<!-- Template - _appname deben ser iguales-->
+
+<div class="window hidden" id="win_notebookai">
+    <div class="grab">
+        <span class="grab-title">📓  NotebookAI</span>
+        <button class="grab-btn" id="btn_notebookai">X</button>
+    </div>
+    <div class="win_content content_notebookai">
+        
+        <div id="noboai_sidebar">
+            <p>Cargando...</p>
+        </div>
+        <div class="noboai_mainarea">
+            <div class="mainarea_header">
+                <h3 id="noboai_notebooktitle">Elige un cuaderno</h3>
+                <button class="modifyname">✏️</button>
+                <button class="deletenb">🗑️</button>
+            </div>
+            <div class="divider"></div>
+            <textarea id="noboai_textarea" class="hidden"></textarea>
+        </div>
+        <div class="noboai_aichat">
+            <div class="conversation" id="noboai_conversation">
+                <div class="msg-ai">
+                    <span>Hola! Si necesitas ayuda con algo solo dime! Estoy para ayudarte :D</span>
+                </div>
+            </div>
+            <div class="sendinput">
+                <input type="text" placeholder="Pregunta algo..." id="noboai_userinput">
+                <button class="send" onclick="NBAISendMessage()" id="noboai_sendbtn">↑</button>
+            </div>
+        </div>
+
+    </div>
+    <div class="resize-handle"></div>
+</div>

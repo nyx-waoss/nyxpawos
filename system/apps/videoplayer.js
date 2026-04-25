@@ -1,4 +1,11 @@
 console.log("Current: apps/videoplayer.js");
+window.AppMetadata = window.AppMetadata || {};
+window.AppMetadata.videoplayer = {
+    displayName: 'Video Player',
+    icon: '../../assets/apps/videoplayer.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
 
 const videoPlayerAskBtnConfirm = document.getElementById('askForVideoFile-btn_save');
 const videoPlayerAskBtnCancel = document.getElementById('askForVideoFile-btn_cancel');

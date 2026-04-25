@@ -1,0 +1,60 @@
+
+<div class="window hidden" id="win_nyxpawslides">
+    <div class="grab">
+        <button onclick="NPSSaveCurrent()" class="nyxpawslides_grabcustombtn">💾</button>
+        <button onclick="sysExecApp('files')" class="nyxpawslides_grabcustombtn">📥</button>
+        <button onclick="NPSPresent()" class="nyxpawslides_grabcustombtn">▶️</button>
+        <span class="grab-title">📈  NyxPaw Slides</span>
+        <button class="grab-btn" id="btn_nyxpawslides">X</button>
+    </div>
+    <div class="win_content content_nyxpawslides">
+
+        <div class="slides-topbar">
+            <button id="slides-btn-add-slide">＋ Slide</button>
+            <button id="slides-btn-del-slide">🗑 Slide</button>
+            <div class="slides-separator"></div>
+
+            
+            
+
+            <button class="slides-tool-btn active" data-tool="select"data-i18n="npslides_select">↖ Selec.</button>
+            <button class="slides-tool-btn" data-tool="text"data-i18n="npslides_text">T Texto</button>
+            <button class="slides-tool-btn" data-tool="rect">▭ Rect.</button>
+            <button class="slides-tool-btn" data-tool="rounded">▢ Redon.</button>
+            <button class="slides-tool-btn" data-tool="circle">◯ Círculo</button>
+            <button class="slides-tool-btn" data-tool="triangle">△ Triang.</button>
+            <div class="slides-separator"></div>
+
+            <button id="slides-btn-del-el"data-i18n="npslides_delete">✕ Borrar</button>
+            <button id="slides-btn-up">↑</button>
+            <button id="slides-btn-down">↓</button>
+
+            <div class="slides-separator"></div>
+            <button onclick="NPSPresent()">▶️</button>
+
+        </div>
+
+        <div class="slides-body">
+
+            <div class="slides-panel" id="slides-panel"></div>
+
+            <div class="slides-canvas-area">
+                <div id="slides-canvas-wrap">
+                    <canvas id="slides-canvas"></canvas>
+                </div>
+            </div>
+
+            <div class="slides-props" id="slides-props-panel">
+                <p class="props-empty">Selecciona un elemento</p>
+            </div>
+
+        </div>
+
+        <div id="slides-statusbar">
+            <span id="slides-status-left">Slide 1 / 1</span>
+            <span id="slides-status-right">Sin selección</span>
+        </div>
+
+    </div>
+    <div class="resize-handle"></div>
+</div>

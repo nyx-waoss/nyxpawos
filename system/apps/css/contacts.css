@@ -1,0 +1,223 @@
+.contacts_grabcustombtn {
+    border: none;
+    border-radius: 999em;
+    width: 35px;
+    height: 20px;
+    font-size: 10px;
+    margin-right: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.contacts_grabcustombtn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.contacts_grabcustombtn:active {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.content_contacts {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 10px;
+    overflow: hidden;
+}
+
+#contacts_sidebar {
+    height: 100%;
+    width: 260px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    margin-top: 24px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#contacts_fullinfo {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    flex-shrink: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#contacts_newcontact {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    flex-shrink: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/*Page Sidebar*/
+
+#contacts_sidebar .contacts_sidebar_item {
+    width: 100%;
+    height: 55px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    padding: 10px;
+
+    border: none;
+}
+#contacts_sidebar .contacts_sidebar_item span {
+    color: white;
+    font-size: 15px;
+}
+
+#contacts_sidebar .contacts_sidebar_item:active {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+#contacts_sidebar .contacts_sidebar_item.ct_selected {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+#contacts_sidebar .contacts_sidebar_item img {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/*Page Info*/
+#contacts_fullinfo img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+#contacts_fullinfo button {
+    width: 93%;
+    height: 30px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgb(227, 40, 40);
+    margin-top: 12px;
+}
+#contacts_fullinfo button:active {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+#contacts_fullinfo #contacts_cntdata {
+    width: 90%;
+    height: auto;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+#contacts_fullinfo #contacts_cntdata .contacts_cntdata_divider {
+    width: 100%;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.06);
+}
+#contacts_fullinfo #contacts_cntdata .contacts_cntdata_item {
+    width: 100%;
+    height: 40px;
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+#contacts_fullinfo #contacts_cntdata .contacts_cntdata_item img {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 0;
+    background: transparent;
+
+    filter: brightness(0) invert(1);
+}
+
+#contacts_fullinfo #contacts_cntdata .contacts_cntdata_item .contacts_cntdata_item_data {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#contacts_fullinfo #contacts_cntdata .contacts_cntdata_item .contacts_cntdata_item_data .data_title {
+    font-size: 12px;
+    color: rgb(180, 180, 180);
+}
+
+/*Page Create*/
+#contacts_newcontact img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 26px;
+}
+#contacts_newcontact button {
+    width: 93%;
+    height: 30px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgb(255, 255, 255);
+    margin-top: 12px;
+}
+#contacts_newcontact button:active {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+#contacts_newcontact .contacts_newcontact_item input {
+    width: 50%;
+    height: 26px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgb(255, 255, 255);
+    margin-top: 8px;
+}
+
+#contacts_newcontact .contacts_newcontact_item span {
+    text-align: right;
+    width: 80px;
+}
+
+#contacts_newcontact .contacts_newcontact_item {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}

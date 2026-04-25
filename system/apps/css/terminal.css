@@ -4,10 +4,12 @@
     font-size: 12px;
     overflow-y: scroll;
     line-height: 1.2;
+    white-space: pre;
 }
 
 .content_terminal p {
     margin: 0;
+    white-space: pre;
 }
 
 #terminalin {
@@ -17,10 +19,29 @@
     font-size: 12px;
     color: white;
     width: 100%;
+    white-space: pre;
 }
 
 #terminalinDiv {
     display: flex;
     flex-direction: row;
     gap: 1px;
+    white-space: pre;
+}
+
+#terminalprint {
+    white-space: pre;
+}
+
+#terminalprint::selection {
+    background-color: white;
+    color: black;
+}
+#terminalin::selection {
+    background-color: white;
+    color: black;
+}
+.content_terminal p::selection {
+    background-color: white;
+    color: black;
 }

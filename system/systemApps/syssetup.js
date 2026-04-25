@@ -5,10 +5,16 @@ window.SysVar = window.SysVar || {};
 
 let currentScreen = 'welcome';
 
+
+document.getElementById('syssetup_erroricon').src = 'assets/warn.webp';
+
 const syssetupInputDname = document.getElementById('syssetup_input_dname');
 const syssetupInputPass = document.getElementById('syssetup_input_pass');
 const syssetupInputReinpass = document.getElementById('syssetup_input_reinpass');
 const syssetupTextReinpass = document.getElementById('syssetup_text_reinpass');
+const syssetupLanguageSelect = document.getElementById('syssetup_languageSelectionSel');
+
+const syssetupUserPrivacyPreferences = [];
 
 //-----------------------------------------------------------------------------------------------
 function verifyEnteredUserData() {
@@ -34,12 +40,13 @@ function verifyEnteredUserData() {
 
 //-----------------------------------------------------------------------------------------------
 function createSystemFiles() {
-    //Crear archivos falsos del sistema
+    //Crear archivos del sistema
     window.fs.createFolder('home');
     window.fs.createFolder('user', '/home');
     window.fs.createFolder('documents', '/home/user');
     window.fs.createFolder('videos', '/home/user');
     window.fs.createFolder('images', '/home/user');
+    window.fs.createFolder('downloads', '/home/user');
 
 
     window.fs.createFolder('system');
@@ -134,6 +141,7 @@ function createSystemFiles() {
 
 
     window.fs.createFolder('trash', '/system');
+    window.fs.modifyFile('main.conf', `currentlang=${SysVar.currentlang};\n`, '/system/general');
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -173,12 +181,24 @@ async function startSystemConfig() {
         localStorage.setItem('sys_status', 'off');
         localStorage.setItem('sysStartupConfig', 'NewSystem');
         localStorage.setItem('sessionAutoStart', JSON.stringify(SysVar.sessionAutoStart));
+        localStorage.setItem('sysSetupLang', SysVar.currentlang);
         showSyssetupScr('restart');
     }, 6000);
 }
 
 function showSyssetupScr(screen) {
+    if (!navigator.onLine && (screen !== 'prepare' || screen !== 'restart')) {
+        const screenEl = document.getElementById('syssetup_error');
+        const oldScreenEl = document.getElementById('syssetup_' + currentScreen);
+        const allScreenDivs = document.querySelectorAll('.syssetup_screen');
 
+
+        oldScreenEl.classList.remove('active');
+        oldScreenEl.classList.add('exit-left');
+        screenEl.classList.add('active');
+
+        currentScreen = screen;
+    }
     if (currentScreen === screen) return;
 
     const screenEl = document.getElementById('syssetup_' + screen);
@@ -205,6 +225,12 @@ function showSyssetupScr(screen) {
 
 function init_syssetup() {
     console.log('Initiating syssetup...');
+
+    syssetupLanguageSelect.addEventListener('change', () => {
+        translateSystem(String(syssetupLanguageSelect.value));
+    });
+
+    syssetupLanguageSelect.value = String(SysVar.currentlang);
 }
 
 function cleanup_syssetup() {

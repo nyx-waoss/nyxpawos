@@ -1,80 +1,77 @@
 console.log("Current: apps/calc.js");
+window.AppMetadata = window.AppMetadata || {};
+window.AppMetadata.calc = {
+    displayName: 'Calculadora',
+    icon: '../../assets/apps/calc/2.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
 
-let currentInput = '';
-let previousInput = '';
-let operation = null;
+// Evitar redeclaración al reabrir la app
+if (typeof window._calc_vars === 'undefined') {
+    window._calc_vars = { currentInput: '', previousInput: '', operation: null };
+}
 
 function calcinnum(value) {
+    const vars = window._calc_vars;
     const display = document.getElementById('calcdisplay');
     if (value >= '0' && value <= '9' || value === '00' || value === '.') {
-        if (value === '.' && currentInput.includes('.')) return;
-        currentInput += value;
-        display.value = currentInput;
+        if (value === '.' && vars.currentInput.includes('.')) return;
+        vars.currentInput += value;
+        display.value = vars.currentInput;
         adjustRSize();
     } else if (value === '+' || value === '-' || value === '*' || value === '/') {
-        if (currentInput === '') return;
-        if (previousInput !== '') {
-            calculate();
-        }
-        operation = value;
-        previousInput = currentInput;
-        currentInput = '';
+        if (vars.currentInput === '') return;
+        if (vars.previousInput !== '') calculate();
+        vars.operation = value;
+        vars.previousInput = vars.currentInput;
+        vars.currentInput = '';
     } else if (value === '=') {
-        if (currentInput === '' || previousInput === '' || operation === null) return;
+        if (vars.currentInput === '' || vars.previousInput === '' || vars.operation === null) return;
         calculate();
-        operation = null
-        previousInput = '';
+        vars.operation = null;
+        vars.previousInput = '';
     } else if (value === 'Clear') {
-        currentInput = '';
-        previousInput = '';
-        operation = null;
+        vars.currentInput = '';
+        vars.previousInput = '';
+        vars.operation = null;
         display.value = '';
         adjustRSize();
     } else if (value === 'Del') {
-        currentInput = currentInput.slice(0, -1);
-        display.value = currentInput;
+        vars.currentInput = vars.currentInput.slice(0, -1);
+        display.value = vars.currentInput;
         adjustRSize();
     } else if (value === 'Percent') {
-        if (currentInput === '') return;
-        currentInput = (parseFloat(currentInput) / 100).toString();
-        display.value = currentInput;
+        if (vars.currentInput === '') return;
+        vars.currentInput = (parseFloat(vars.currentInput) / 100).toString();
+        display.value = vars.currentInput;
         adjustRSize();
     }
 }
 
 function calculate() {
+    const vars = window._calc_vars;
     const display = document.getElementById('calcdisplay');
-    const prev = parseFloat(previousInput);
-    const current = parseFloat(currentInput);
+    const prev = parseFloat(vars.previousInput);
+    const current = parseFloat(vars.currentInput);
     let result = 0;
 
-    switch(operation) {
-        case '+':
-            result = prev + current;
-            break;
-        case '-':
-            result = prev - current;
-            break;
-        case '*':
-            result = prev * current;
-            break;
-        case '/':
-            result = current !== 0 ? prev / current : "Cannot divide!";
-            break;
+    switch(vars.operation) {
+        case '+': result = prev + current; break;
+        case '-': result = prev - current; break;
+        case '*': result = prev * current; break;
+        case '/': result = current !== 0 ? prev / current : "Cannot divide!"; break;
     }
 
-    currentInput = result.toString();
-    display.value = currentInput;
+    vars.currentInput = result.toString();
+    display.value = vars.currentInput;
     adjustRSize();
-
 }
 
 function adjustRSize() {
     const display = document.getElementById('calcdisplay');
     let fontSize = 34;
-
     display.style.fontSize = fontSize + 'px';
-
     while (display.scrollWidth > display.clientWidth && fontSize > 10) {
         fontSize--;
         display.style.fontSize = fontSize + 'px';
@@ -83,13 +80,9 @@ function adjustRSize() {
 
 function cleanup_calc() {
     console.log('Cleaning calc...');
-    
+    window._calc_vars = { currentInput: '', previousInput: '', operation: null };
     const display = document.getElementById('calcdisplay');
-
-    display.value = '';
-    currentInput = '';
-    previousInput = '';
-    operation = null;
+    if (display) display.value = '';
     adjustRSize();
 }
 

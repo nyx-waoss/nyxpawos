@@ -1,4 +1,12 @@
 console.log('Current: apps/nkbrief.js');
+window.AppMetadata = window.AppMetadata || {};
+
+window.AppMetadata.nkbrief = {
+    displayName: 'Nekiri Brief',
+    icon: '../../assets/nekiri.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
 
 //Codigo aqui:
 
@@ -64,8 +72,9 @@ async function renderNews() {
             const newsItemBtn = document.createElement('button');
             newsItemBtn.className = 'nkbrief_card_btn';
             newsItemBtn.textContent = 'Mas informacion...'
-            newsItemBtn.addEventListener('click', () => {
+            newsItemBtn.addEventListener('click', async () => {
                 sysExecApp('browser');
+                await waitUntil(() => typeof browserSetWebTo === 'function');
                 setTimeout(() => browserSetWebTo(newsItem.link), 90);
             });
 

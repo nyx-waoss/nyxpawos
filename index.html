@@ -4,14 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NyxPaw OS</title>
-    <link rel="stylesheet" href="styles.css" id="main-style">
+    <link rel="stylesheet" href="layout.css">
+
+    <link rel="stylesheet" href="default_theme.css" id="main-style">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" 
+        rel="stylesheet" 
+        media="print"  
+        onload="this.media='all'">
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit..." rel="stylesheet">
+    </noscript>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-straight/css/uicons-solid-straight.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="icon" type="image/x-icon" href="../assets/logow.webp">
+
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+    <meta name="referrer" content="no-referrer">
 </head>
 <body>
     <!--Bsod
@@ -26,7 +40,7 @@
      
     <!--Startup-->
     <div id="startupscr">
-        <img style="width: 200px; height: 200px;" src="assets/logow.webp" alt="NyxPaw OS">
+        <img style="width: 200px; height: 200px; cursor: none !important;" src="assets/logow.webp" alt="Loading...">
         <p style="color: white;" id="startupscrtext" class="hidden">Failed to startup. Fatal error ocurred!<br>Press F12 key on your keyboard for more information</p>
         <div style="display: flex; flex-direction: row; gap: 25px; align-items: center;" class="hidden" id="startupscr_syssetup">
             <img src="assets/loading.gif" style="width: 40px; height: 40px;" alt="[i]">
@@ -104,16 +118,20 @@
 
     <!--Top Bar-->
     <div id="top_bar">
-        <button id="topbar_button" class="left">
-            <img src="assets/logow.webp" alt="Start Button">
-        </button>
+        <div class="left" style="display:flex; align-items:center; gap:0;">
+            <button id="topbar_button">
+                <img src="assets/logow.webp" alt="O">
+            </button>
+            <button class="hidden" id="topbar_program">Programa</button>
+        </div>
         <p id="timetext" class="center">00:00</p>
         <div class="right" id="topbar_right_el">
+            <img id="topbar_loadingsys" src="assets/loading.gif" alt="Loading" class="hidden">
             <button id="topbar_brief">
                 <img src="assets/nekiribrief.webp" alt="Brief">
             </button>
-            <button id="topbar_audio">
-                <img src="assets/system/volume.svg" alt="Audio">
+            <button id="topbar_control">
+                <img src="assets/system/control.png" alt="Control">
             </button>
             <img id="topbar_battery" src="assets/system/bt-full.svg" alt="Battery">
             <img id="topbar_network" src="assets/system/wifi.png" alt="Network">
@@ -126,12 +144,19 @@
     <!--Dropdowns de la topbar-->
     <div class="dropdown-menu hidden" id="start-dropdown">
         <button onclick="sysExecApp('settings')" data-i18n="system_pref">Preferencias</button>
-        <button onclick="showappinfo()" data-i18n="system_infoapp">Informacion de la aplicacion</button>
+        <!--<button onclick="showappinfo()" data-i18n="system_infoapp">Informacion de la aplicacion</button>-->
         <button onclick="sysshutdown()" data-i18n="system_shutdown">Apagar</button>
         <button onclick="sysrestart()" data-i18n="system_reboot">Reiniciar</button>
         <button onclick="sysclosesesion()" data-i18n="system_logout">Cerrar Sesion</button>
-        <button onclick="sysExecApp('settings'); setTimeout(() => openSettingsTab('system'), 70)" data-i18n="system_about">Sobre el sistema</button>
+        <button onclick="syslockscr()" data-i18n="system_lockscr">Bloquear Pantalla</button>
+        <button onclick="(async () => { sysExecApp('settings'); await waitUntil(() => typeof openSettingsTab === 'function'); setTimeout(() => openSettingsTab('system'), 70) })()" data-i18n="system_about">Sobre el sistema</button>
         <button onclick="document.documentElement.requestFullscreen()" class="hidden" id="dropdown-menu-fullscreen">Fullscreen</button>
+    </div>
+
+    <div class="dropdown-menu hidden" id="program-dropdown">
+        <button onclick="showappinfo()" data-i18n="system_infoapp">Informacion de la aplicacion</button>
+        <button onclick="toggleFocusedFullscreen()">Fullscreen</button>
+        <button onclick="closeFocusedApp()">Cerrar</button>
     </div>
 
     <div class="dropdown-menu hidden" id="brief-dropdown">
@@ -173,10 +198,30 @@
         </div>
     </div>
 
-    <div class="dropdown-menu hidden" id="audio-dropdown">
-        <div class="uisetting">
-            <label>Volumen</label>
+    <div class="dropdown-menu hidden" id="control-dropdown">
+        <div class="controlpanel_twowrapper">
+            <div class="controlpanel_smallsetting">
+                <img src="assets/system/wifi.png">
+                <label>WiFi<br>Activado</label>
+            </div>
+            <div class="controlpanel_smallsetting">
+                <img src="assets/system/bluetooth.svg">
+                <label>Bluetooth<br>Activado</label>
+            </div>
+        </div>
+        <div class="controlpanel_setting">
+            <div class="ctrlpanel_stng_label">
+                <img src="assets/system/volume.svg">
+                <label>Volumen</label>
+            </div>
             <input type="range" min="0" max="100" id="sysaudio_el">
+        </div>
+        <div class="controlpanel_setting">
+            <div class="ctrlpanel_stng_label">
+                <img src="assets/system/brightness.png">
+                <label>Brillo</label>
+            </div>
+            <input type="range" min="0" max="100">
         </div>
     </div>
 
@@ -196,6 +241,9 @@
         <button id="ctx-open">Abrir</button>
         <button id="ctx-delete">Eliminar</button>
         <button id="ctx-addhome">Agregar al inicio</button>
+        <button id="ctx-rename">Renombrar</button>
+        <button id="ctx-trust" onclick="sysExecApp('safefilesmanager');document.getElementById('filesaltmenu').classList.add('hidden');">Confiar</button>
+        <!--<button id="ctx-addhome">Copiar</button>-->
     </div>
 
     <!--Menu contextual app center-->
@@ -354,7 +402,7 @@
 
 
     <!--Launchpad y App Center:-->
-    <div class="hidden" id="win_appcenter">
+    <div id="win_appcenter" class="appcenter-hidden">
         <div id="appcentertopbtns">
             <input type="text" placeholder="Escribe para buscar..." id="appcenter_searchbar">
             <button id="appcenterclose">X</button>
@@ -424,6 +472,18 @@
                 <button class="appcenter-appbtn"> <img class="appcenter-img" src="assets/apps/regedit.png" alt="RegEdit"> </button>
                 <p>RegEdit</p>
             </div>
+            <div class="appcenter_appdiv" id="appcenter-nyxpawworkspace" onclick="hideappcenter()">
+                <button class="appcenter-appbtn"> <img class="appcenter-img" src="assets/apps/nyxpawworkspace.png" alt="NyxPaw Workspace"> </button>
+                <p>NyxPaw Workspace</p>
+            </div>
+            <div class="appcenter_appdiv" id="appcenter-contacts" onclick="hideappcenter()">
+                <button class="appcenter-appbtn"> <img class="appcenter-img" src="assets/apps/contacts.png" alt="Contactos"> </button>
+                <p>Contactos</p>
+            </div>
+            <div class="appcenter_appdiv" id="appcenter-startupapps" onclick="hideappcenter()">
+                <button class="appcenter-appbtn"> <img class="appcenter-img" src="assets/apps/startupapps.png" alt="Startup Apps"> </button>
+                <p>Startup Apps</p>
+            </div>
 
 
 
@@ -448,6 +508,8 @@
                 <p>VSCode</p>
             </div>
 
+
+
             <div class="appcenter_appdiv" id="appcenter-nekiri" onclick="appcenterAskNekiri()">
                 <button class="appcenter-appbtn">
                     <img class="appcenter-img" src="assets/nekiri.png" alt="Nekiri">
@@ -465,6 +527,7 @@
 
 
     <!--Scripts-->
+    <!--<script src="script.js"></script>-->
     <script>
         if (window.opener) {
             console.log("Booting up from launcher...")
@@ -522,7 +585,6 @@
 
     <script src="system/sysLoader.js"></script>
     
-    <!--Init-->
     <script>
         if (typeof ScriptLoader !== 'undefined') {
             ScriptLoader.loadAll();

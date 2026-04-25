@@ -1,4 +1,11 @@
 console.log("Current: apps/nyxpawstore.js");
+window.AppMetadata = window.AppMetadata || {};
+window.AppMetadata.nyxpawstore = {
+    displayName: 'NyxPaw Store',
+    icon: '../../assets/apps/nyxpawstore.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
 
 //nyxpawstore
 /*function nyxPawStoreOpenTab(tabid) {

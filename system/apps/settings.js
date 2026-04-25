@@ -1,7 +1,14 @@
 console.log("Current: apps/settings.js");
+window.AppMetadata = window.AppMetadata || {};
+window.AppMetadata.settings = {
+    displayName: 'Configuracion',
+    icon: '../../assets/apps/settings.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
 
 //config
-window.SysVar = window.SysVar || {}; //inicializar variables globales
+window.SysVar = window.SysVar || {};
 
 let devModeCheckbox = null;
 let userPermlevelSel = null;
@@ -56,6 +63,17 @@ function updateProfileInfo() {
     tabname.textContent = SysVar.currentuser.dName;
 }
 
+async function promptcustomwallpaper() {
+    const customwallpaper = await showPromptMsgBox('Agregar', 'Ingresa URL de la imagen', 'Agregar', 'Cancelar',{as_win:true,icon:'🏞️'});
+    if (!customwallpaper.confirmed) return;
+    if (!customwallpaper.value) return;
+    if (isValidUrl(customwallpaper.value)) {
+        syssetwallpaperto(customwallpaper.value);
+    } else {
+        showAlertBox("Invalido!","Ingresa una URL valida.",{as_win:true,icon:'⚠️'});
+    }
+}
+
 
 
 
@@ -97,7 +115,11 @@ function init_settings() {
         SysVar.currentuser.permissions = userPermlevelSel.value;
     });
     langSelect.addEventListener('change', () => {
-        translateSystem(String(langSelect.value));
+        if (navigator.onLine) {
+            translateSystem(String(langSelect.value));
+        } else {
+            showAlertBox('msgbox_err','No se puede cambiar el idioma sin conexión a internet',{as_win:true,icon:'🛜'});
+        }
     });
 
     langSelect.value = String(SysVar.currentlang);
@@ -129,6 +151,13 @@ function init_settings() {
 
         });
     }
+
+    if (navigator.onLine) {
+        document.getElementById('settings_connectednetwork').textContent =`🛜 ${SysVar.userDataCollection.internetProvider}`;
+    } else {
+        document.getElementById('settings_connectednetwork').textContent =`🚫 No internet`;
+    }
+    document.getElementById('settings_ipaddress').value = SysVar.userDataCollection.ip;
 }
 
 function cleanup_settings() {

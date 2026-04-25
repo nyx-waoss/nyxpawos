@@ -1,4 +1,12 @@
 console.log("Current: apps/notes.js");
+window.AppMetadata = window.AppMetadata || {};
+
+window.AppMetadata.notes = {
+    displayName: 'Notas',
+    icon: '../../assets/apps/notes/2.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
 
 let notesTextarea = null;
 let notesSaveBtn = null;

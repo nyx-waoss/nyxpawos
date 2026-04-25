@@ -1,3 +1,4 @@
+//Unused code
 console.log("System startup initiated!");
 let sysScriptIsOK = false;
 let formato24h = false;

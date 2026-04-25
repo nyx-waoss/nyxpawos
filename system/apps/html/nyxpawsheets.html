@@ -1,0 +1,32 @@
+<!-- Template - _appname deben ser iguales-->
+
+<div class="window hidden" id="win_nyxpawsheets">
+    <div class="grab">
+        <span class="grab-title">📊  NyxPaw Sheets</span>
+        <button class="grab-btn" id="btn_nyxpawsheets">X</button>
+    </div>
+    <div class="win_content content_nyxpawsheets">
+        <input type="color" id="npsht_colorpicker" class="hidden">
+        <div id="npsht_toolbar">
+            <button onclick="npshtSaveCurrent()"data-i18n="files_save">Guardar</button>
+            <button onclick="sysExecApp('files')"data-i18n="appbar_open">Abrir</button>
+            <div class="divider"></div>
+            <span id="npsht_span_currentcell">[--]</span>
+            <span id="npsht_span_currentfx">[Fx]</span>
+            <div class="divider"></div>
+            <button onclick="npshtOpenColorDP('bg')"data-i18n="npdocs_color">Color ↓</button>
+            <button onclick="npshtOpenColorDP('tx')"data-i18n="npdocs_text">Texto ↓</button>
+        </div>
+        <div id="npsht_workspace">
+            <div id="npsht_sheet_container">
+                <table id="npsht_sheet">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <input type="text" id="npsht_cell_input">
+        </div>
+
+    </div>
+    <div class="resize-handle"></div>
+</div>

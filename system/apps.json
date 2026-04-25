@@ -1,5 +1,6 @@
 {
   "apps": [
+    { "id": "sysshutdown" },
     { "id": "settings" },
     { "id": "notes" },
     { "id": "calc" },
@@ -22,6 +23,17 @@
     { "id": "vscode" },
     { "id": "nkbrief" },
     { "id": "loginhelp" },
-    { "id": "imagedownloader" }
+    { "id": "imagedownloader" },
+    { "id": "focustimer" },
+
+    { "id": "pdfviewer" },
+    { "id": "nyxpawdocs" },
+    { "id": "nyxpawslides" },
+    { "id": "notebookai" },
+    { "id": "nyxpawsheets" },
+    { "id": "nyxpawworkspace" },
+    { "id": "contacts" },
+    { "id": "safefilesmanager" },
+    { "id": "startupapps" }
   ]
 }

@@ -1,0 +1,77 @@
+<!-- Template - _focustimer deben ser iguales-->
+
+<div class="window hidden" id="win_focustimer">
+    <div class="grab">
+        <span class="grab-title">🍅  Focus Timer (Made by AI)</span>
+        <button class="grab-btn" id="btn_focustimer">X</button>
+    </div>
+    <div class="win_content content_focustimer">
+
+        <div class="ft-container">
+
+            <!-- MODE TABS -->
+            <div class="ft-tabs">
+                <button class="ft-tab active" data-mode="pomodoro">Pomodoro</button>
+                <button class="ft-tab" data-mode="short">Descanso</button>
+                <button class="ft-tab" data-mode="long">Descanso largo</button>
+            </div>
+
+            <!-- CLOCK DISPLAY -->
+            <div class="ft-clock-wrap">
+                <svg class="ft-ring" viewBox="0 0 200 200">
+                    <circle class="ft-ring-bg" cx="100" cy="100" r="88"/>
+                    <circle class="ft-ring-progress" id="ft-ring-prog" cx="100" cy="100" r="88"
+                        stroke-dasharray="553" stroke-dashoffset="0"/>
+                </svg>
+                <div class="ft-clock-inner">
+                    <div class="ft-time" id="ft-display">25:00</div>
+                    <div class="ft-label" id="ft-status-label">LISTO</div>
+                </div>
+            </div>
+
+            <!-- CONTROLS -->
+            <div class="ft-controls">
+                <button class="ft-btn ft-btn-secondary" id="ft-reset-btn" title="Reiniciar">↺</button>
+                <button class="ft-btn ft-btn-primary" id="ft-start-btn">INICIAR</button>
+                <button class="ft-btn ft-btn-secondary" id="ft-skip-btn" title="Saltar">⏭</button>
+            </div>
+
+            <!-- TASK INPUT -->
+            <div class="ft-task-wrap">
+                <input class="ft-task-input" id="ft-task-input" type="text" placeholder="¿En qué estás trabajando?..." maxlength="60"/>
+            </div>
+
+            <!-- STATS BAR -->
+            <div class="ft-stats">
+                <div class="ft-stat">
+                    <span class="ft-stat-val" id="ft-stat-today">0</span>
+                    <span class="ft-stat-lbl">hoy</span>
+                </div>
+                <div class="ft-stat-divider"></div>
+                <div class="ft-stat">
+                    <span class="ft-stat-val" id="ft-stat-streak">0</span>
+                    <span class="ft-stat-lbl">racha</span>
+                </div>
+                <div class="ft-stat-divider"></div>
+                <div class="ft-stat">
+                    <span class="ft-stat-val" id="ft-stat-total">0</span>
+                    <span class="ft-stat-lbl">total</span>
+                </div>
+            </div>
+
+            <!-- SESSION LOG -->
+            <div class="ft-log-wrap">
+                <div class="ft-log-header">
+                    <span class="ft-log-title">// LOG DE SESIONES</span>
+                    <button class="ft-log-clear" id="ft-clear-log">limpiar</button>
+                </div>
+                <div class="ft-log" id="ft-log">
+                    <div class="ft-log-empty">Sin sesiones aún...</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="resize-handle"></div>
+</div>

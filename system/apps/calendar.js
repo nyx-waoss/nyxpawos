@@ -1,4 +1,12 @@
 console.log("Current: apps/calendar.js");
+window.AppMetadata = window.AppMetadata || {};
+
+window.AppMetadata.calendar = {
+    displayName: 'Calendario',
+    icon: '../../assets/apps/calendar/2.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
 
 function renderCalendar() {
     const monthYear = document.getElementById('calendar_monthYear');

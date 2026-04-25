@@ -1,4 +1,12 @@
 console.log("Current: apps/files.js");
+window.AppMetadata = window.AppMetadata || {};
+
+window.AppMetadata.files = {
+    displayName: 'Archivos',
+    icon: '../../assets/apps/files/2.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
 
 window.SysVar = window.SysVar || {};
 
@@ -89,41 +97,53 @@ async function files_delobj() {
         return;
     }
     if (currentDirTCPDel === '/system/trash') {
-        const delFile = await showMsgBox("ℹ️ Informacion",`Eliminar "${selectedItemDel}" permanentemente?\nEsta accion no se puede deshacer.`,'Eliminar', 'Cancelar');
+        const delFile = await showMsgBox("msgbox_info_icon",`Eliminar "${selectedItemDel}" permanentemente?\nEsta accion no se puede deshacer.`,'Eliminar', 'Cancelar');
         if (delFile) {
             window.fs.deleteItem(selectedItemDel);
         }
     } else {
-
         if (selectedItemDel) {
-            if (selectedTypeDel === 'folder') {
-                window.fs.deleteItem(selectedItemDel);
-            } else {
-                const currentDirWFTDel = getCurrentDirectory();
-                if (currentDirWFTDel === null || currentDirWFTDel === undefined) {
-                    console.error('Cannot get current directory: '+currentDirWFTDel);
-                    showAlertBox('Error', `No se pudo obtener el directorio actual.`, {as_win:true, icon:'❌'});
-                    return;
-                }
-                try {
-                    window.fs.moveItem(selectedItemDel, currentDirWFTDel, '/system/trash');
-                } catch (error) {
-                    console.error('Cannot move to trash: '+error);
-                    const moveFileToTrash = await showMsgBox("ℹ️ Informacion",`No se pudo mover "${selectedItemDel}" a la papelera.\nDesea eliminarlo permanentemente?`,'Eliminar', 'Cancelar');
-                    if (moveFileToTrash) {
-                        window.fs.deleteItem(selectedItemDel);
-                    }
+            const currentDirWFTDel = getCurrentDirectory();
+            if (currentDirWFTDel === null || currentDirWFTDel === undefined) {
+                console.error('Cannot get current directory: '+currentDirWFTDel);
+                showAlertBox('Error', `No se pudo obtener el directorio actual.`, {as_win:true, icon:'❌'});
+                return;
+            }
+            try {
+                window.fs.moveItem(selectedItemDel, currentDirWFTDel, '/system/trash');
+            } catch (error) {
+                console.error('Cannot move to trash: '+error);
+                const moveFileToTrash = await showMsgBox("msgbox_info_icon",`No se pudo mover "${selectedItemDel}" a la papelera.\nDesea eliminarlo permanentemente?`,'Eliminar', 'Cancelar');
+                if (moveFileToTrash) {
+                    window.fs.deleteItem(selectedItemDel);
                 }
             }
         }
     }
 }
 
-function files_modobj() {
-    //preguntar nombre
+async function files_modobj() {
+    const selectedItemDel = window.fs.getSelectedItem();
+    const newFileName = await showPromptMsgBox('Nuevo nombre', 'Ingresa el nuevo nombre', 'Renombrar', 'Cancelar',{as_win:true,icon:'⚠️'});
+    if (!newFileName.confirmed) return;
+    if (!newFileName.value) {
+        showAlertBox('msgbox_err','Ingresa un nombre',{as_win:true,icon:'⚠️'});
+        return;
+    }
+    if (/\.[a-zA-Z0-9]+$/.test(newFileName.value)) {
+        const confirmModExtns = await showMsgBox("msgbox_warning",`Se cambiara la extencion original del archivo (${getFileExtension(selectedItemDel)}) por ${getFileExtension(newFileName.value)} . Continuar?`, "Renombrar", "Cancelar",{as_win:false,icon:'⚠️'});
+        if (confirmModExtns) {
+            window.fs.renameItem(selectedItemDel, newFileName.value);
+        }
+        return;
+    }
+    window.fs.renameItem(selectedItemDel, `${newFileName.value}${getFileExtension(selectedItemDel)}`);
 }
 
-
+function getFileExtension(filename) {
+    const i = filename.lastIndexOf('.');
+    return i !== -1 ? filename.slice(i) : '';
+}
 
 async function filesCreateNewFileType() {
     try {
@@ -213,7 +233,7 @@ function init_files() {
     topDirInput.value = getCurrentDirectory();
     saveFileBar.classList.add('hidden');
     SysVar.pointerFilesSaveDialogOpen = false;
-    SysVar.pointerFilesSaveDialogFilename = 'file.txt';
+    SysVar.pointerFilesSaveDialogFilename = 'file';
 
     setupFileSelection();
     setupContextMenu();

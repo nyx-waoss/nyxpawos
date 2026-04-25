@@ -1,4 +1,8 @@
 console.log('Current: sysLoader.js');
+/*
+Sys Loader es el archivo maestro de NyxPawOS. Este archivo es necesario para inicializar el sistema, ya que carga todos los administradores de cada funcion del sistema.
+Sin este archivo, solo tendrias una pantalla en negro
+*/
 
 document.getElementById('startupscrtext').classList.add('hidden');
 
@@ -24,11 +28,15 @@ const ScriptLoader = {
         { path: 'system/FS.js', critical: true, timeout: 25000 },
         { path: 'system/usermanager.js', critical: true, timeout: 15000 },
         { path: 'system/winmanager.js', critical: true, timeout: 15000 },
+        { path: 'system/programmanager.js', critical: true, timeout: 15000 },
+        { path: 'system/langmanager.js', critical: false, timeout: 15000 },
+        { path: 'system/upgradeservice.js', critical: true, timeout: 20000 },
+        { path: 'system/aiservice.js', critical: false, timeout: 20000 },
+        { path: 'system/componentsmanager.js', critical: true, timeout: 20000 },
         
         // Apps YA NO SE CARGAN DESDE AQUI!! AHORA ES DINAMICOOOOOO
         //Ahora se usa esto:
-        { path: 'system/programmanager.js', critical: true, timeout: 15000 },
-        { path: 'system/langmanager.js', critical: false, timeout: 15000 },
+        
         //Pero soy un obsesionado con dejar codigo que ya no ocupo, asi que solo lo comentare jeje
         /*
         { path: 'system/apps/settings.js', critical: false },
@@ -115,6 +123,7 @@ const ScriptLoader = {
     
     markReady(scriptName) {
         this.loadedScripts.add(scriptName);
+        localStorage.setItem('sys_boot_heartbeat', Date.now());
         console.log(`Ready: ${scriptName}`);
     },
     
@@ -208,7 +217,7 @@ Press F12 to open Developer Tools.
                     padding: 40px;
                     overflow: auto;
                 ">
-                    <h1 style="color: #f44336;">CRITICAL SYSTEM ERROR - FILES ARE CORRUPTED</h1>
+                    <h1 style="color: #f44336;">CRITICAL SYSTEM ERROR</h1>
                     <h2>Script Loading Failed</h2>
                     <p><strong>Failed Script:</strong> ${errorInfo.script}</p>
                     <p><strong>Reason:</strong> ${errorInfo.error}</p>

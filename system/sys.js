@@ -1,4 +1,9 @@
 console.log("[NyxPawOS] Current: sys.js");
+/*
+sys.js es el archivo principal de NyxPawOS, no confundir con el maestro!! El maestro carga todo y luego "muere", el principal (este) maneja todo el sistema pero no lo carga.
+
+*/
+
 const startupErrorText = document.getElementById('startupscrtext');
 const startupLoading = document.getElementById('startupscrimg');
 
@@ -21,27 +26,77 @@ const sysConsoleLog = {
     }
 };
 
+setTimeout(() => {
+    if (navigator.onLine) {
+        sysPreloadApp('sysshutdown', true);
+        SysVar.sysshutdownUIAvailable = true;
+    } else {
+        SysVar.sysshutdownUIAvailable = false;
+    }
+},1000);
+
+let system_crashed = false;
 /*BSOD */
-function sysBsod(errorCode, errorText) {
+function sysBsod(errorCode, errorText, type='normal') {
+    document.documentElement.style.cursor = 'none';
+    
+
+    const _crashStack = new Error().stack;
+    
+    window.crashInfo = {
+        causedby: _crashStack?.split('\n')[2]?.trim() || 'Unknown',
+        stack: _crashStack,
+        errorCode: errorCode,
+        errorText: errorText,
+        type: type,
+        timestamp: new Date().toISOString(),
+        url: window.location.href,
+        loadedApps: [...(AppManager?.loadedApps?.keys() || [])],
+        memory: performance?.memory?.usedJSHeapSize || null,
+    };
+
+    try {
+        localStorage.setItem('sys_last_crash', JSON.stringify({
+            type: 'fatal',
+            title: 'System Crash',
+            info: `Code: ${errorCode} | ${errorText} | Caused by: ${crashInfo.causedby}`,
+            date: new Date(),
+            stack: crashInfo.stack
+        }));
+    } catch(e) {}
+
+    const crashLogText = `Code: ${errorCode} | ${errorText} | Caused by: ${crashInfo.causedby}`;
+    tempSysAddEvent('fatal', 'System Crash', crashLogText);
+    localStorage.setItem('sysStartupConfig', 'ShowBSODAlert');
+
+    system_crashed = true;
+
+    console.log('🔴 BSOD called:', errorCode, errorText, type);
+    console.trace();
+    if (document.getElementById('bsod')) return;
     sysComQuitTasks();
     //const bsodDiv = document.getElementById('bsod');
+    document.querySelectorAll("body *:not(script)").forEach(el => el.remove());
     const bsodDiv = document.createElement('div');
     bsodDiv.className = 'hidden';
     bsodDiv.id = 'bsod';
-    bsodDiv.innerHTML =
-    `<h1>A fatal system error occurred.<br>Ocurrio un error crítico del sistema</h1>
-    <p>- The system cannot continue... Restarting in 10 seconds...<br>- El sistema no puede continuar... Se reiniciara en 10 segundos...<br>- 这个系统无法继续......10秒后重启......<br>- このシステムは続けられない...10秒後に再スタート...<br>- O sistema não pode continuar... Reiniciando em 10 segundos...</p>
-    <div id="sysdivider"></div>
-    <p>Error code:<br>Codigo de error:</p>
-    <p id="bsodErrorCode">X-XXX-XXX</p>
-    <p id="bsodErrorText">Undefined</p>`;
+    if (type === 'booting') {
+        bsodDiv.innerHTML =
+        `<h1>❌</h1>
+        <p id="bsodErrorCode" class='hidden'></p>
+        <p id="bsodErrorText" class='hidden'></p>
+        <p>0 0 0 0 0 F<br>0 0 0 0 0 D</p>`;
+    } else {
+        bsodDiv.innerHTML =
+        `<h1>❌</h1>
+        <h3>An unexpected system error has occurred.</h3>
+        <p>It will restart automatically to continue.</p>
+        <div id="sysdivider"></div>
+        <p id="bsodErrorCode" class='hidden'>X-XXX-XXX</p>
+        <p id="bsodErrorText">Unknown error.</p>`;
+    }
     document.body.appendChild(bsodDiv);
 
-    try {
-        sysAddEvent('fatal', 'Fatal', `Code ${errorCode}: ${errorText}`);
-    } catch(error) {
-        tempSysAddEvent('fatal', 'Fatal', `Code ${errorCode}: ${errorText}`);
-    }
 
     setTimeout(() => {
         const errorCodeOut = document.getElementById('bsodErrorCode');
@@ -50,6 +105,7 @@ function sysBsod(errorCode, errorText) {
         errorCodeOut.textContent = errorCode;
         errorTextOut.textContent = errorText;
         bsodDiv.classList.remove('hidden');
+        localStorage.setItem('sys_status', 'shutdown');
         window._bsodTimeout = setTimeout(() => {
             window.location.href = "index.html";
         }, 10000);
@@ -61,6 +117,7 @@ function sysBsod(errorCode, errorText) {
 function checkLoadingTimeout() {
     setTimeout(() => {
         const startupScr = document.getElementById('startupscr');
+        if (!startupScr) return;
         if (!startupScr.classList.contains('hidden')) {
             console.warn('An unknown error has occurred. Bootscreen is taking too long.');
 
@@ -74,6 +131,7 @@ function checkLoadingTimeout() {
     }, 15000); // espera 15 segundos a ver si ya se quito la pinchi pantalla de carga o no
 }
 checkLoadingTimeout();
+localStorage.removeItem('sys_boot_heartbeat');
 
 const params = new URLSearchParams(window.location.search);
 const mode = params.get('mode');
@@ -292,6 +350,12 @@ SysVar.filesQuickAccess = [
         eltype: 'folder'
     },
     {
+        emoji:'⬇️',
+        text: 'Descargas',
+        _dynamicRoute: `downloads`,
+        eltype: 'folder'
+    },
+    {
         emoji:'🖥️',
         text: 'This PC',
         route: '/',
@@ -309,7 +373,7 @@ SysVar.appBarIcons = [
   { "icon": "assets/apps/settings/3.png", "name": "Configuracion", "app": "settings", "minimized": false, "permanent": true },
   { "icon": "assets/apps/notes/3.png", "name": "Bloc de notas", "app": "notes", "minimized": false, "permanent": true },
   { "icon": "assets/apps/calc/3.png", "name": "Calculadora", "app": "calc", "minimized": false, "permanent": true },
-  { "icon": "assets/apps/browser/3.png", "name": "NyxPaw", "app": "browser", "minimized": false, "permanent": true },
+  { "icon": "assets/apps/browser/3.png", "name": "PawNet", "app": "browser", "minimized": false, "permanent": true },
   { "icon": "assets/apps/files/3.png", "name": "Archivos", "app": "files", "minimized": false, "permanent": true },
   { "icon": "assets/apps/calendar/3.png", "name": "Calendario", "app": "calendar", "minimized": false, "permanent": true },
   { "icon": "assets/apps/terminal/3.png", "name": "Terminal", "app": "terminal", "minimized": false, "permanent": true }
@@ -320,71 +384,151 @@ SysVar.tempCurrentAppCenterName = '';
 SysVar.appsUsage = [];
 SysVar.pointerTopZ = 0;
 SysVar.currentlang = "auto";
-SysVar.userversion = "26.0";
-SysVar.maxversion = "26.0";
+SysVar.userversion = "26.1";
+SysVar.maxversion = "26.1";
+SysVar.nytclient_apikey = "";
+SysVar.notebookai_notebooks = [];
+SysVar.loggedUsers = [];
+SysVar.windowsBeforeLock = {};
+SysVar.userBeforeLock = null;
+SysVar.bootFinished = false;
+SysVar.sysshutdownUIAvailable = false;
+SysVar.sysRunningServices = [
+    {
+        name: 'Dock',
+        id: 'dock.srv',
+        icon: 'assets/apps/launchpad/3.png',
+    },
+    {
+        name: 'Window Manager',
+        id: 'windowmanager.srv',
+        icon: 'assets/desktop.png',
+    },
+    {
+        name: 'Language Manager',
+        id: 'langmanager.srv',
+        icon: 'assets/apps/unknown.png',
+    },
+    {
+        name: 'Language Pack Service',
+        id: 'lang.json',
+        icon: 'assets/apps/unknown.png',
+    },
+    {
+        name: 'AI Service',
+        id: 'aiservice.srv',
+        icon: 'assets/nekiri.png',
+    },
+    {
+        name: 'NeptuneFS',
+        id: 'filesystemNFS.srv',
+        icon: 'assets/apps/unknown.png',
+    },
+    {
+        name: 'System Critical',
+        id: 'mainsession/sys.srv',
+        icon: 'assets/therianb.png',
+    }
+];
+SysVar.contacts_contacts = [];
+SysVar.safeFiles = [];
+SysVar.logonAutoStart = [];
+SysVar.userDataCollection = {
+    ip:"unknown",
+    internetProvider:"unknown",
+    city:"unknown",
+    country:"unknown",
+};
+SysVar.userPrivacyPreferences = ['location','network'];
 
+
+//Servicios
+function sysCloseServiceById(serviceId) {
+    if (serviceId.endsWith('.srv') || serviceId.endsWith('.json')) {
+        SysVar.sysRunningServices = SysVar.sysRunningServices.filter(item => item.id !== serviceId);
+    }
+}
 
 /*VARIABLES GLOBALES END */
 //reestablecer variables desde localstorage:
 const usedBefore = localStorage.getItem('used-before');
 
 //---------------------------------------------------------------------------------------------------------------------
-
+let _isSavingConfig = false;
 async function saveDataReg() {
-    if (mode === 'safe') {
-        const confirmSaveRege = await showMsgBox("Datos","Quieres guardar los cambios?", "Guardar", "Descartar");
-        if (!confirmSaveRege) {
-            return;
-        }
+    if (!window.fsReady) {
+        console.warn('saveDataReg called before FS ready, aborting.');
+        return;
     }
-
+    _isSavingConfig = true;
     try {
-        if (!window.fs.fileExist('/system/general')) {
-            window.fs.createFolder('general', '/system');
-        }
-        const props = {
-            format24h: SysVar.format24h,
-            windowManager0: SysVar.windowManager0,
-            disableJSload: SysVar.disableJSload,
-            devMode: SysVar.devMode,
-            currenttheme: SysVar.currenttheme,
-            currentlang: SysVar.currentlang,
-            userversion: SysVar.userversion,
-            filesQuickAccess: JSON.stringify(SysVar.filesQuickAccess),
-            sessionAutoStart: JSON.stringify(SysVar.sessionAutoStart),
-            appBarIcons: JSON.stringify(SysVar.appBarIcons)
-        };
-
-        let configContent = '';
-        for (const [key, value] of Object.entries(props)) {
-            if (value !== undefined) {
-                configContent += `${key}=${value};\n`;
-            } else {
-                console.error(`Error while saving data: "${key}" is undefined`);
+        if (mode === 'safe') {
+            const confirmSaveRege = await showMsgBox("msgbox_data","Quieres guardar los cambios?", "Guardar", "Descartar");
+            if (!confirmSaveRege) {
+                return;
             }
         }
 
-        let eventsContent = '';
-        if (SysVar.sysEvents !== undefined) {
-            eventsContent = JSON.stringify(SysVar.sysEvents);
+        try {
+            if (!window.fs.fileExist('/system')) {
+                window.fs.createFolder('system', '/');
+            }
+            if (!window.fs.fileExist('/system/general')) {
+                window.fs.createFolder('general', '/system');
+            }
+            const props = {
+                format24h: SysVar.format24h,
+                windowManager0: SysVar.windowManager0,
+                disableJSload: SysVar.disableJSload,
+                devMode: SysVar.devMode,
+                currenttheme: SysVar.currenttheme,
+                currentlang: SysVar.currentlang,
+                userversion: SysVar.userversion,
+                wallpaper: SysVar.wallpaper,
+                nytclient_apikey: SysVar.nytclient_apikey,
+                filesQuickAccess: JSON.stringify(SysVar.filesQuickAccess),
+                sessionAutoStart: JSON.stringify(SysVar.sessionAutoStart),
+                appBarIcons: JSON.stringify(SysVar.appBarIcons),
+                notebookai_notebooks: JSON.stringify(SysVar.notebookai_notebooks),
+                contacts_contacts: JSON.stringify(SysVar.contacts_contacts),
+                safeFiles: JSON.stringify(SysVar.safeFiles),
+                logonAutoStart: JSON.stringify(SysVar.logonAutoStart),
+                userPrivacyPreferences: JSON.stringify(SysVar.userPrivacyPreferences)
+            };
+
+            let configContent = '';
+            for (const [key, value] of Object.entries(props)) {
+                if (value !== undefined) {
+                    configContent += `${key}=${value};\n`;
+                } else {
+                    console.error(`Error while saving data: "${key}" is undefined`);
+                }
+            }
+
+            let eventsContent = '';
+            if (SysVar.sysEvents !== undefined) {
+                eventsContent = JSON.stringify(SysVar.sysEvents);
+            }
+
+            if (window.fs.fileExistInPath('main.conf', '/system/general')) {
+                window.fs.modifyFile('main.conf', configContent, '/system/general');
+            } else {
+                window.fs.createFile('main.conf', configContent, '/system/general');
+            }
+
+            if (window.fs.fileExistInPath('events.data', '/system/general')) {
+                window.fs.modifyFile('events.data', eventsContent, '/system/general');
+            } else {
+                window.fs.createFile('events.data', eventsContent, '/system/general');
+            }
+
+            console.log('[NyxPawOS] Config saved to /system/general/main.conf');
+
+        } catch (error) {
+            console.error('Error while saving data:', error);
         }
-
-        if (window.fs.fileExistInPath('main.conf', '/system/general')) {
-            window.fs.modifyFile('main.conf', configContent, '/system/general');
-        } else {
-            window.fs.createFile('main.conf', configContent, '/system/general');
-        }
-
-        if (window.fs.fileExistInPath('events.data', '/system/general')) {
-            window.fs.modifyFile('events.data', eventsContent, '/system/general');
-        } else {
-            window.fs.createFile('events.data', eventsContent, '/system/general');
-        }
-
-        console.log('[NyxPawOS] Config saved to /system/general/main.conf');
-
-    } catch (error) {
-        console.error('Error while saving data:', error);
+    } finally {
+        _isSavingConfig = false;
     }
 }
 
@@ -494,6 +638,9 @@ function loadDataReg() {
                             case 'userversion':
                                 SysVar.userversion = rawValue;
                                 break;
+                            case 'nytclient_apikey':
+                                SysVar.nytclient_apikey = rawValue;
+                                break;
                             case 'filesQuickAccess':
                                 SysVar.filesQuickAccess = JSON.parse(normalizeConfigValue(rawValue));
                                 break;
@@ -502,6 +649,24 @@ function loadDataReg() {
                                 break;
                             case 'sessionAutoStart':
                                 SysVar.sessionAutoStart = JSON.parse(normalizeConfigValue(rawValue));
+                                break;
+                            case 'notebookai_notebooks':
+                                SysVar.notebookai_notebooks = JSON.parse(normalizeConfigValue(rawValue));
+                                break;
+                            case 'safeFiles':
+                                SysVar.safeFiles = JSON.parse(normalizeConfigValue(rawValue));
+                                break;
+                            case 'contacts_contacts':
+                                SysVar.contacts_contacts = JSON.parse(normalizeConfigValue(rawValue));
+                                break;
+                            case 'logonAutoStart':
+                                SysVar.logonAutoStart = JSON.parse(normalizeConfigValue(rawValue));
+                                break;
+                            case 'userPrivacyPreferences':
+                                SysVar.userPrivacyPreferences = JSON.parse(normalizeConfigValue(rawValue));
+                                break;
+                            case 'wallpaper':
+                                SysVar.wallpaper = rawValue;
                                 break;
                             default:
                                 console.warn(`loadDataReg: unknown key "${key}" in main.conf`);
@@ -521,6 +686,21 @@ function loadDataReg() {
             const eventsContent = openFile('events.data', '/system/general');
             if (eventsContent) {
                 SysVar.sysEvents = JSON.parse(eventsContent);
+            }
+        }
+        const lastCrash = localStorage.getItem('sys_last_crash');
+        if (lastCrash) {
+            try {
+                const crashEvent = JSON.parse(lastCrash);
+                SysVar.sysEvents.unshift(crashEvent);
+                localStorage.removeItem('sys_last_crash');
+                // Ya que el FS esta listo, guardar los eventos actualizados
+                // saveDataReg() se llamara despues del boot, pero por si acaso:
+                if (window.fs && window.fs.fileExistInPath('events.data', '/system/general')) {
+                    window.fs.modifyFile('events.data', JSON.stringify(SysVar.sysEvents), '/system/general');
+                }
+            } catch(e) {
+                console.error('Error recovering crash log:', e);
             }
         }
 
@@ -569,8 +749,17 @@ function loadDataReg() {
     */
 }
 
+function msgBoxTranslateText(str) {
+    const lang = SysVar.currentlang || "en";
+    return translations[lang]?.[str] ?? translations["en"]?.[str] ?? str;
+}
+
 //funcion msgbox
 function showPromptMsgBox(title, text, okbtn_text, cancelbtn_text, options={}) {
+    const _title = msgBoxTranslateText(title);
+    const _text = msgBoxTranslateText(text);
+    const _okbtn_text = msgBoxTranslateText(okbtn_text);
+    const _cancelbtn_text = msgBoxTranslateText(cancelbtn_text);
     return new Promise((resolve) => {
         const {
             as_win = false,
@@ -587,10 +776,10 @@ function showPromptMsgBox(title, text, okbtn_text, cancelbtn_text, options={}) {
 
             bgOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.445)";
 
-            msgTitle.textContent = title;
-            msgText.textContent = text;
-            msgButtonOk.textContent = okbtn_text;
-            msgButtonCancel.textContent = cancelbtn_text;
+            msgTitle.textContent = _title;
+            msgText.textContent = _text;
+            msgButtonOk.textContent = _okbtn_text;
+            msgButtonCancel.textContent = _cancelbtn_text;
             msgInput.value = '';
             msgInput.setAttribute('autocomplete', 'off');
 
@@ -637,10 +826,10 @@ function showPromptMsgBox(title, text, okbtn_text, cancelbtn_text, options={}) {
             const msgButtonCancel = document.getElementById('msg-box-win-cancelbtn');
             const msgIcon = document.getElementById('msg-box-win-icon');
 
-            msgTitle.textContent = title;
-            msgText.textContent = text;
-            msgButtonOk.textContent = okbtn_text;
-            msgButtonCancel.textContent = cancelbtn_text;
+            msgTitle.textContent = _title;
+            msgText.textContent = _text;
+            msgButtonOk.textContent = _okbtn_text;
+            msgButtonCancel.textContent = _cancelbtn_text;
             msgIcon.textContent = icon;
             msgInput.value = '';
             msgInput.setAttribute('autocomplete', 'off');
@@ -680,6 +869,10 @@ function showPromptMsgBox(title, text, okbtn_text, cancelbtn_text, options={}) {
 }
 
 function showMsgBox(title, text, okbtn_text, cancelbtn_text, options={}) {
+    const _title = msgBoxTranslateText(title);
+    const _text = msgBoxTranslateText(text);
+    const _okbtn_text = msgBoxTranslateText(okbtn_text);
+    const _cancelbtn_text = msgBoxTranslateText(cancelbtn_text);
     return new Promise((resolve) => {
         const {
             as_win = false,
@@ -696,10 +889,10 @@ function showMsgBox(title, text, okbtn_text, cancelbtn_text, options={}) {
 
             bgOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.445)";
 
-            msgTitle.textContent = title;
-            msgText.textContent = text;
-            msgButtonOk.textContent = okbtn_text;
-            msgButtonCancel.textContent = cancelbtn_text;
+            msgTitle.textContent = _title;
+            msgText.textContent = _text;
+            msgButtonOk.textContent = _okbtn_text;
+            msgButtonCancel.textContent = _cancelbtn_text;
             
 
             msgBox.style.zIndex = topZ + 10;
@@ -730,10 +923,10 @@ function showMsgBox(title, text, okbtn_text, cancelbtn_text, options={}) {
             const msgButtonCancel = document.getElementById('msg-box-win-cancelbtn');
             const msgIcon = document.getElementById('msg-box-win-icon');
 
-            msgTitle.textContent = title;
-            msgText.textContent = text;
-            msgButtonOk.textContent = okbtn_text;
-            msgButtonCancel.textContent = cancelbtn_text;
+            msgTitle.textContent = _title;
+            msgText.textContent = _text;
+            msgButtonOk.textContent = _okbtn_text;
+            msgButtonCancel.textContent = _cancelbtn_text;
             msgIcon.textContent = icon;
 
             msgBox.style.zIndex = topZ + 10;
@@ -756,6 +949,8 @@ function showMsgBox(title, text, okbtn_text, cancelbtn_text, options={}) {
 }
 
 function showAlertBox(title, text, options={}) {
+    const _title = msgBoxTranslateText(title);
+    const _text = msgBoxTranslateText(text);
     const {
         as_win = false,
         icon = '⚠️'
@@ -773,8 +968,8 @@ function showAlertBox(title, text, options={}) {
 
         bgOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.445)";
 
-        msgTitle.textContent = title;
-        msgText.textContent = text;
+        msgTitle.textContent = _title;
+        msgText.textContent = _text;
         msgButtonOk.textContent = "Sin definir";
         msgButtonCancel.textContent = "Ok";
 
@@ -786,10 +981,10 @@ function showAlertBox(title, text, options={}) {
         msgButtonOk.classList.add('hidden');
         bgOverlay.classList.remove('hidden');
 
-        msgButtonCancel.addEventListener("click", () => {
+        msgButtonCancel.onclick = () => {
             msgBox.classList.add('hidden');
             bgOverlay.classList.add('hidden');
-        });
+        };
     } else {
         const msgBox = document.getElementById('msg-box-win');
         const msgTitle = document.getElementById('msg-box-win-title');
@@ -802,8 +997,8 @@ function showAlertBox(title, text, options={}) {
         sysPlaySound('error');
 
 
-        msgTitle.textContent = title;
-        msgText.textContent = text;
+        msgTitle.textContent = _title;
+        msgText.textContent = _text;
         msgButtonOk.textContent = "Sin definir";
         msgButtonCancel.textContent = "Ok";
         msgIcon.textContent = icon;
@@ -814,9 +1009,9 @@ function showAlertBox(title, text, options={}) {
         msgBox.classList.remove('hidden');
         msgButtonOk.classList.add('hidden');
 
-        msgButtonCancel.addEventListener("click", () => {
+        msgButtonCancel.onclick = () => {
             msgBox.classList.add('hidden');
-        });
+        };
     }
 }
 /*Ejemplo de uso para los prompts y msgbox
@@ -924,9 +1119,16 @@ let loginin_user = '';
 
 async function sysshutdown(askConfirm = true,typeshutdown='normal',extrainfo) {
     try {
+        document.getElementById('start-dropdown').classList.add('hidden');
+        document.getElementById('control-dropdown').classList.add('hidden');
+        document.getElementById('nekiri-dropdown').classList.add('hidden');
+        document.getElementById('brief-dropdown').classList.add('hidden');
+        document.getElementById('appbar-ctxmenu').classList.add('hidden');
+        
+        document.getElementById('quickview').classList.add('hidden');
         hideappcenter();
         if (SysVar.blockShutdown) {
-            showAlertBox('❌ Error', 'function sysshutdown() is blocked by your administrator');
+            showAlertBox('msgbox_err_icon', 'function sysshutdown() is blocked by your administrator');
         } else {
             if (askConfirm) {
                 let shutdownCustomMsg = ''
@@ -937,46 +1139,54 @@ async function sysshutdown(askConfirm = true,typeshutdown='normal',extrainfo) {
                 } else {
                     shutdownCustomMsg = "Quieres apagar el sistema? Asegurate de guardar tus datos";
                 }
-                const confirmSysShutdown = await showMsgBox("⚠️ Advertencia!",shutdownCustomMsg, "Apagar", "Cancelar");
-                
-                if (confirmSysShutdown) {
-
-                    await saveDataReg();
-
-                    localStorage.setItem('sys_status', 'shutdown');
-                    hideTopBar();
-                    hideAppBar();
-                    sysComQuitTasks();
-                    document.getElementById('start-dropdown').classList.add('hidden');
-                    document.getElementById('audio-dropdown').classList.add('hidden');
-                    document.getElementById('nekiri-dropdown').classList.add('hidden');
-                    document.getElementById('brief-dropdown').classList.add('hidden');
-                    document.getElementById('appbar-ctxmenu').classList.add('hidden');
-                    document.getElementById('loginscr').classList.add('hidden');
-                    document.getElementById('quickview').classList.add('hidden');
-                    
-                    setTimeout(() => {
-                        document.body.style.backgroundImage = "url('assets/bs.png')";
-                        document.documentElement.style.cursor = 'none';
+                if (SysVar.sysshutdownUIAvailable) {
+                    if (SysVar.currentuser.user === 'system' || !document.getElementById('loginscr').classList.contains('hidden')) {
+                        SysVar.lockedSession = false;
                         setTimeout(() => {
-                            document.body.classList.add("hidden");
-                            const sysScripts = document.querySelectorAll('script');
-                            sysScripts.forEach(script => script.parentNode.removeChild(script));
-                            localStorage.setItem('sys_status', 'off');
-                            window.close();
-                        }, 1100);
-                    }, 900);
+                            SysVar.lockedSession = true;
+                        },110);
+                    }
+                    sysExecApp('sysshutdown');
+                    await waitUntil(() => typeof sysshutdownMode === 'function');
+                    setTimeout(() => sysshutdownMode('shutdown',shutdownCustomMsg), 90);
+
+                } else {
+                    const confirmSysShutdown = await showMsgBox("msgbox_warning_icon",shutdownCustomMsg, "Apagar", "Cancelar");
                     
+                    if (confirmSysShutdown) {
+                        hideTopBar();
+                        hideAppBar();
+                        sysComQuitTasks();
+
+                        await saveDataReg();
+
+                        localStorage.setItem('sys_status', 'shutdown');
+                        
+                        document.getElementById('loginscr').classList.add('hidden');
+                        
+                        setTimeout(() => {
+                            document.documentElement.style.setProperty('--wallpaper', 'black');
+                            document.documentElement.style.cursor = 'none';
+                            setTimeout(() => {
+                                document.body.classList.add("hidden");
+                                const sysScripts = document.querySelectorAll('script');
+                                sysScripts.forEach(script => script.parentNode.removeChild(script));
+                                localStorage.setItem('sys_status', 'off');
+                                window.close();
+                            }, 1100);
+                        }, 900);
+                        
+                    }
                 }
             } else {
-                await saveDataReg();
-
-                localStorage.setItem('sys_status', 'shutdown');
                 hideTopBar();
                 hideAppBar();
                 sysComQuitTasks();
+                await saveDataReg();
+                
+                localStorage.setItem('sys_status', 'shutdown');
                 setTimeout(() => {
-                    document.body.style.backgroundImage = "url('assets/bs.png')";
+                    document.documentElement.style.setProperty('--wallpaper', 'black');
                     setTimeout(() => {
                         document.body.classList.add("hidden");
                         const sysScripts = document.querySelectorAll('script');
@@ -989,7 +1199,7 @@ async function sysshutdown(askConfirm = true,typeshutdown='normal',extrainfo) {
         }
     }  catch (error) {
         console.error('Failed to shutdown system: ', error);
-        showAlertBox('❌ Error', 'El sistema no se pudo apagar');
+        showAlertBox('msgbox_err_icon', 'El sistema no se pudo apagar');
     }
 }
 
@@ -998,27 +1208,38 @@ async function sysrestart(askConfirm = true) {
         hideappcenter();
         document.getElementById('quickview').classList.add('hidden');
         document.getElementById('start-dropdown').classList.add('hidden');
-        document.getElementById('audio-dropdown').classList.add('hidden');
+        document.getElementById('control-dropdown').classList.add('hidden');
         document.getElementById('nekiri-dropdown').classList.add('hidden');
         document.getElementById('brief-dropdown').classList.add('hidden');
         document.getElementById('appbar-ctxmenu').classList.add('hidden');
         
         if (askConfirm) {
-            const confirmSysRestart = await showMsgBox("⚠️ Advertencia!","Quieres reiniciar el sistema? Asegurate de guardar tus datos", "Reiniciar", "Cancelar");
-            
-            if (confirmSysRestart) {
-                await saveDataReg();
-
-                hideTopBar();
-                hideAppBar();
-                sysComQuitTasks();
-                localStorage.setItem('sys_status', 'off');
-                setTimeout(() => {
-                    document.getElementById('loginscr').classList.add('hidden');
-                    window.location.href = "index.html";
-                }, 2200);   
+            if (SysVar.sysshutdownUIAvailable) {
+                if (SysVar.currentuser.user === 'system' || !document.getElementById('loginscr').classList.contains('hidden')) {
+                    SysVar.lockedSession = false;
+                    setTimeout(() => {
+                        SysVar.lockedSession = true;
+                    },110);
+                }
+                sysExecApp('sysshutdown');
+                await waitUntil(() => typeof sysshutdownMode === 'function');
+                setTimeout(() => sysshutdownMode('restart'), 90);
             } else {
-                document.getElementById('msg-box-checkboxdiv').classList.remove('hidden');
+                const confirmSysRestart = await showMsgBox("msgbox_warning_icon","Quieres reiniciar el sistema? Asegurate de guardar tus datos", "Reiniciar", "Cancelar");
+                
+                if (confirmSysRestart) {
+                    await saveDataReg();
+
+                    hideTopBar();
+                    hideAppBar();
+                    sysComQuitTasks();
+                    document.getElementById('loginscr').classList.add('hidden');
+                    localStorage.setItem('sys_status', 'off');
+                    setTimeout(() => {
+                        document.getElementById('loginscr').classList.add('hidden');
+                        window.location.href = "index.html";
+                    }, 2200);   
+                }
             }
         } else {
             await saveDataReg();
@@ -1028,12 +1249,13 @@ async function sysrestart(askConfirm = true) {
             sysComQuitTasks();
             localStorage.setItem('sys_status', 'off');
             setTimeout(() => {                
+                document.getElementById('loginscr').classList.add('hidden');
                 window.location.href = "index.html";
             }, 2200);
         }
     } catch (error) {
         console.error('Failed to reboot system: ', error);
-        showAlertBox('❌ Error', 'El sistema no se pudo reiniciar');
+        showAlertBox('msgbox_err_icon', 'El sistema no se pudo reiniciar');
     }
 }
 /*
@@ -1116,6 +1338,7 @@ function updateNotisList(animateNewItem=false) {
 
         const notiItemTitle = document.createElement('p');
         notiItemTitle.textContent = notiData.title;
+        notiItemTitle.className = 'notiItem_title';
 
         const notiItemCont = document.createElement('p');
         notiItemCont.textContent = notiData.content;
@@ -1139,7 +1362,7 @@ function updateNotisList(animateNewItem=false) {
             if (notiData.firstbtn.action === "exec") {
                 sysExecApp(String(notiData.firstbtn.data));
             } else if (notiData.firstbtn.action === "alert") {
-                showAlertBox('Notificacion', String(notiData.firstbtn.data), {as_win:true,icon:'ℹ️'});
+                showAlertBox('msgbox_noti', String(notiData.firstbtn.data), {as_win:true,icon:'ℹ️'});
             } else if (notiData.secondbtn.action === "delnoti") {
                 const refIndex = SysVar.notifications.indexOf(notiItem._notiRef);
                 notiItem.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
@@ -1179,7 +1402,7 @@ function updateNotisList(animateNewItem=false) {
             if (notiData.secondbtn.action === "exec") {
                 sysExecApp(String(notiData.secondbtn.data));
             } else if (notiData.secondbtn.action === "alert") {
-                showAlertBox('Notificacion', String(notiData.secondbtn.data), {as_win:true,icon:'ℹ️'});
+                showAlertBox('msgbox_noti', String(notiData.secondbtn.data), {as_win:true,icon:'ℹ️'});
             } else if (notiData.secondbtn.action === "delnoti") {
                 const refIndex = SysVar.notifications.indexOf(notiItem._notiRef);
                 notiItem.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
@@ -1243,15 +1466,15 @@ function createNotification(icon='assets/nekiri.png', title='Notificacion', cont
 function showappinfo() {
     const getWinInfoID = getFocusedWindowId();
     if (getWinInfoID === null) {
-        showAlertBox("Advertencia!","No hay informacion de la aplicacion actual", {as_win:true,icon:'⚠️'});
+        showAlertBox("msgbox_warning","No hay informacion de la aplicacion actual", {as_win:true,icon:'⚠️'});
         return;
     }
     const getWinInfoTitle = getWindowTitleById(getWinInfoID);
     if (getWinInfoTitle === null) {
-        showAlertBox("Desconocido","Programa desconocido o inexistente", {as_win:true,icon:'⚠️'});
+        showAlertBox("msgbox_unknown","Programa desconocido o inexistente", {as_win:true,icon:'⚠️'});
         return;
     }
-    showAlertBox(getWinInfoTitle,`Programa: ${getWinInfoTitle}\nID: ${getWinInfoID}`, {as_win:true,icon:'ℹ️'});
+    showAlertBox(getWinInfoTitle,`${getWinInfoTitle}\nID: ${getWinInfoID}`, {as_win:true,icon:'ℹ️'});
 }
 
 function hideTopBar() {
@@ -1296,11 +1519,11 @@ document.addEventListener('contextmenu', (e) => {
 const appCenterClsBtn = document.getElementById('appcenterclose');
 const appCenterWindow = document.getElementById('win_appcenter');
 appCenterClsBtn.addEventListener('click', () => {
-    appCenterWindow.classList.add('hidden');
+    appCenterWindow.classList.add('appcenter-hidden');
 });
 
 function hideappcenter() {
-    appCenterWindow.classList.add('hidden');
+    appCenterWindow.classList.add('appcenter-hidden');
 }
 
 function sysBlurSetto(blurlevel) {
@@ -1382,25 +1605,96 @@ document.addEventListener("click", () => {
     startDPOpen = false;
 });
 
+let programDPOpen = false;
+const programButton = document.getElementById('topbar_program');
+const programDropdown = document.getElementById('program-dropdown');
+let currentTopBarApp = '';
 
-
-const nekiriAnswersAccess = [
-    'Claro que si {user}!',
-    'Con gusto :3',
-    'Por supuesto {user} :3',
-    'Enseguida!',
-    'oks :3'
-]
-
-function getRandomNekiriRes(type, array) {
-    if (type === 'array') {
-        return array[Math.floor(Math.random() * array.length)];
-    } else if (type === 'access') {
-        return nekiriAnswersAccess[Math.floor(Math.random() * nekiriAnswersAccess.length)];
-    } else {
-        return 'Invalid type given: ' + type + ' - Please use "array" or "access"';
+programButton.addEventListener('click',(e) => {
+    e.stopPropagation();
+    if (programDPOpen) {
+        programDropdown.classList.add('hidden');
+        programDPOpen = false;
+        return;
     }
+    const rect = programButton.getBoundingClientRect();
+    programDropdown.style.left = rect.left + 'px';
+    programDropdown.style.top = rect.bottom + 'px';
+    programDropdown.style.zIndex = topZ + 3;
+    programDropdown.classList.remove('hidden');
+    programDPOpen = true;
+});
+
+function updateTopBarProgram(winEl) {
+    const appNameMap = { 'win_config': 'settings' };
+    const rawId = winEl.id.replace('win_', '');
+    const appName = appNameMap[winEl.id] || rawId;
+
+    const systemWindows = [
+        'askforfilecreation', 'savenote', 'askForVideoFile',
+        'askForImageFile', 'askforuserspassword', 'sysaskfornewuserdata'
+    ];
+    if (systemWindows.includes(rawId)) return;
+
+    currentTopBarApp = appName;
+    const displayName = AppManager.loadedApps.get(appName)?.displayName
+        || winEl.querySelector('.grab-title')?.textContent?.trim()
+        || appName;
+
+    programButton.textContent = displayName;
+    programButton.classList.remove('hidden');
+
+    window._topBarAbort?.abort();
+    window._topBarAbort = new AbortController();
+
+    document.querySelector('#program-dropdown button:last-child').addEventListener('click', () => {
+        const focused = document.querySelector('.window.win-focused');
+        if (!focused) return;
+        const rawId = focused.id.replace('win_', '');
+        const appName = { 'config': 'settings' }[rawId] || rawId;
+        AppManager.unloadApp(appName);
+        programDropdown.classList.add('hidden');
+        programDPOpen = false;
+    }, { signal: window._topBarAbort.signal });
 }
+
+window.addEventListener('load', () => {
+    if (typeof AppManager === 'undefined') return;
+    const _origUnload = AppManager.unloadApp.bind(AppManager);
+    AppManager.unloadApp = function(appName) {
+        _origUnload(appName);
+        const focused = document.querySelector('.window.win-focused');
+        if (!focused) {
+            programButton.classList.add('hidden');
+            programDropdown.classList.add('hidden');
+        }
+    };
+});
+function toggleFocusedFullscreen() {
+    if (!currentTopBarApp) return;
+    const windowExceptions = { settings: 'win_config' };
+    const winId = windowExceptions[currentTopBarApp] || `win_${currentTopBarApp}`;
+    const winEl = document.getElementById(winId);
+    if (!winEl) return;
+
+    const isFullscreen = winEl.classList.contains('win-fullscreen')
+                      || winEl.classList.contains('win-max');
+
+    sysFullscreenApp(currentTopBarApp, !isFullscreen);
+
+    programDropdown.classList.add('hidden');
+    programDPOpen = false;
+}
+
+function closeFocusedApp() {
+    if (!currentTopBarApp) return;
+    AppManager.unloadApp(currentTopBarApp);
+    programButton.classList.add('hidden');
+    programDropdown.classList.add('hidden');
+    programDPOpen = false;
+    currentTopBarApp = '';
+}
+
 
 const nekiriInput = document.getElementById('nekiri_input');
 const nekiriRes = document.getElementById('nekiri_response');
@@ -1426,7 +1720,7 @@ nekiriButton.addEventListener('click', (e) => {
 
     nekiriDropdown.style.right = (window.innerWidth - rect.right) + "px";
     nekiriDropdown.style.top = rect.bottom + "px";
-    nekiriDropdown.style.zIndex = topZ + 2;
+    nekiriDropdown.style.zIndex = topZ + 10;
 
     nekiriDropdown.classList.remove('hidden');
 
@@ -1458,240 +1752,69 @@ function nekiriShowSmartCard(type, args1 = '', args2 = '') {
     }
 }
 
-function nekiriRunBtnFunc() {
+async function nekiriRunBtnFunc() {
     if (nekiriButtonAction === 'search') {
         sysExecApp('browser');
-        setTimeout(() => browserSetWebTo(nekiriButtonActionArg), 90);
+        await waitUntil(() => typeof browserSetWebTo === 'function');
+        browserSetWebTo(nekiriButtonActionArg);
     }
 } 
 
-function normalizeNekiriUserInput(userRequest) {
-    let userInputToReturn = userRequest.toLowerCase();
-    userInputToReturn = userInputToReturn.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    userInputToReturn = userInputToReturn.replace(/[^a-zA-Z0-9 ]/g, "");
-    userInputToReturn.replace(/\n+/g, "\n");
-    userInputToReturn.replace(/[\u200B-\u200D\uFEFF]/g, "");
-    userInputToReturn = userInputToReturn.trim();
-    return userInputToReturn;
-}
 
 
+let nekiridp_nekiriresponse = ''
 function nekiriShowAnswer() {
-    const userInput = normalizeNekiriUserInput(nekiriInput.value);
     nekiriSmartcard.classList.add('hidden');
+    try {
+        nekiridp_nekiriresponse = sysNekiriAsk(nekiriInput.value, undefined, 'system', {});
+        nekiriInput.value = '';
+    } catch(e) {
+        console.error('Cannot get AI response:'+e);
+        nekiriRes.textContent = `Ocurrio un error, vuelve a intentarlo mas tarde...`;
+        nekiriInput.value = '';
+        return;
+    }
+    if (nekiridp_nekiriresponse.card.show == true) {
+        nekiriShowSmartCard(nekiridp_nekiriresponse.card.type, nekiridp_nekiriresponse.card.title, nekiridp_nekiriresponse.card.url);
+    }
+    if ((nekiridp_nekiriresponse.code).startsWith('2')) {
+        nekiriRes.textContent = nekiridp_nekiriresponse.ans;
+    } else if (nekiridp_nekiriresponse.code == '403') {
+        nekiriRes.textContent = 'No tengo permiso para hacer eso.';
+    } else if (nekiridp_nekiriresponse.code == '422') {
+        nekiriRes.textContent = nekiridp_nekiriresponse.ans;
+    } else if (nekiridp_nekiriresponse.code == '409') {
+        nekiriRes.textContent = 'Si quieres resumir, modificar, o expandir un texto intentalo de nuevo en NotebookAI.';
+    } else {
+        nekiriRes.textContent = `Ocurrio un error: ${nekiridp_nekiriresponse.ans}`;
+    }
+    
+    //nekiriShowSmartCard('search','Buscar en internet', encodeURI(`https://www.google.com/search?q=${userInput}&igu=1`));
 
-    if (userInput.includes('hola')) {
-        nekiriAnswers = [
-            "Hola "+ SysVar.currentuser.dName +"! En qué puedo ayudarte hoy? :3",
-            "Nya~ ¡Hola! ¿Cómo estás? :3",
-            "¡Holi! ¿Qué tal tu día? uwu",
-            "¡Hey! ¿En qué te puedo ayudar "+ SysVar.currentuser.dName +"? nya~"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('estas') || userInput.includes('encuentras')) {
-        nekiriAnswers = [
-            "Bien uwu, gracias por preguntar! nya~",
-            "Muy bien! ¿Y tú? :3",
-            "Genial! Lista para ayudarte nya~",
-            "De maravilla uwu ¿Cómo estás tú?"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('puedes hacer')) {
-        nekiriAnswers = [
-            "Puedo ayudarte a navegar por el sistema, entretenerte, contarte chistes, etc...",
-            "Te puedo entretener con chistes o cosas curiosas como la toybox!",
-            "Puedo ayudarte con cualquier cosa sobre NyxPaw OS, si necesitas ayuda solo dime!",
-            "Puedo aumentar tu productividad ayudandote a abrir apps, dandote tips, evitando que procastines jeje, y muchas cosas mas :D"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('aburrid')) {
-        nekiriAnswers = [
-            "Parece que estas aburrido... Te puedo contar chistes o podemos charlar un rato si quieres :D",
-            "Hmmm... podrías intentar personalizar el sistema! En la toybox hay varias opciones de personalizacion!",
-            //"Puedes personalizar el sistema aun mas! Solo entra a la NyxPaw Store, ve a plugins, y activa el plugin de 'Toybox++'!",
-            "Te puedo contar chistes o si quieres solo hablemos un rato :D"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('chiste') || userInput.includes('divierteme')) {
-        nekiriAnswers = [
-            "Toma un chiste BUENISIMO: Por qué los gatos no usan computadoras? Porque les da miedo el ratón! JAJAJAJ Por favor ríete 😭",
-            "Qué le dice un gato a otro gato? Miau! ...Ok ese estuvo malo nya~ xD",
-            "Cómo se dice gato en japonés? Neko! Y en español? ...Gato xD Lo siento ese fue horrible 😭",
-            "Por qué el gato cruzó la calle? Para llegar al otro lad... ESPERA! Esa era la del pollo! nya~ :3"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('tiste')) {
-        nekiriAnswers = [
-            "Oh no, lo siento mucho "+ SysVar.currentuser.dName +"... recuerda que siempre puedes abrir la app de notas y escribir lo que sientes, a veces ayuda mucho :3",
-            "Aww, "+ SysVar.currentuser.dName +"... ¿quieres hablar sobre ello? Estoy aquí para escucharte nya~",
-            "Lo siento mucho uwu... Escribir en las notas puede ayudar a desahogarte :3",
-            "Lamento escuchar eso... podemos hablar sobre eso si quieres..."
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('sistema') && (userInput.includes('version') || userInput.includes('info'))) {
-        nekiriAnswers = [
-            "Acabo de abrir mi ventana de 'Acerca de' para ti :3",
-            "Revisa la ventana 'Acerca de' para ver la versión del sistema nya~ :3",
-            "Puedes ver la versión del sistema en la ventana 'Acerca de' uwu"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('therian') && userInput.includes('furr')) {
-        nekiriAnswers = [
-            "Los therians no son furros!! Los therians sienten una conexión espiritual con los animales, los furros disfrutan de usar fursuits o mas que nada el hobby como tal, me explico?",
-            "Mucha gente se confunde, pero los therians no son lo mismo que los furros... Los furros simplemente disfrutan del hobby (arte, trajes, etc...) y los therians sienten una conexión espiritual!",
-            "Hay una gran diferencia entre los therians y los furros, pero mucha gente los confunde. Los therians sienten una conexión espiritual con los animales, los furros disfrutan de usar fursuits o mas que nada el hobby como tal, me explico?"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-        nekiriShowSmartCard('search','Buscar en internet', encodeURI(`https://www.google.com/search?q=¿Los therians son lo mismo que los furros?&igu=1`));
-    } else if (userInput.includes('gracias') || userInput.includes('agrade')) {
-        nekiriAnswers = [
-            "De nada! Si necesitas otra cosa solo dime :D",
-            "Con gusto :3 Si ocupas ayuda con algo dime :D",
-            "De nada :3 Si necesitas que te ayude en algo mas dime."
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('jaj') || userInput.includes('jej') || userInput.includes('jij') || userInput.includes('joj') || userInput.includes('juj') || userInput.includes('jsj')) {
-        nekiriAnswers = [
-            "Me alegra que te hayas reido :3",
-            "Me pone feliz que estes feliz! Jajaja",
-            "Gracias por reir! Todos se burlan de mi... menos tu!"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('tierno') || userInput.includes('uwu') || userInput.includes('nya') || userInput.includes('arigato') || userInput.includes('goodboy') || userInput.includes('rwar')) {
-        nekiriAnswers = [
-            "Nya!",
-            "Rwar! :3",
-            "Nya! UwU!",
-            "I am a good boy! UwU!",
-            "Nya! Arigato!",
-            "Nya, itchi ni san nya! Arigatoooo!"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('clima') || userInput.includes('temperatura') || userInput.includes('weather')) {
-        sysExecApp('weather');
-        nekiriAnswers = [
-            "Aqui tienes el clima!",
-            "Toma! El clima para ti :3",
-            "Acabo de abrir la app de clima",
-            "Este es el clima actual :3"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if ((userInput.includes('quiero') || userInput.includes('deseo') || userInput.includes('gustaria') || userInput.includes('podemos') || userInput.includes('que tal si')) && (userInput.includes('habla') || userInput.includes('conversa') || userInput.includes('charla'))) {
-        nekiriAnswers = [
-            "Claro que si! De que quieres hablar?",
-            "Dale!! Hablemos un rato :D Tu empiezas",
-            "Oks! Charlemos un rato si te parece bien!",
-            "Okie pero tu empiezas! No tengo buenos temas de conversacion jeje :3"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    } else if (userInput.includes('busca') && (userInput.includes('internet') || userInput.includes('google') || userInput.includes('navegador'))) {
-        nekiriAnswers = [
-            "Esto es lo que encontre:",
-            "Encontre esto en internet, te sirve?",
-            "Esto fue lo que encontre:",
-            "Encontre esto, que tal?"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-        nekiriShowSmartCard('search','Buscar en internet', encodeURI(`https://www.google.com/search?q=${userInput}&igu=1`));
-    } else if (userInput.includes('eres') && (userInput.includes('quien') || userInput.includes('que') || userInput.includes('esto'))) {
-        nekiriAnswers = [
-            "Soy Nekiri, el asistente personal de NyxPawOS! Te puedo ayudar con todo lo que quieras!",
-            "Me llamo Nekiri, te puedo ayudar con lo que tu quieras! Abrir apps, documentos, buscar en internet, etc...",
-            "Soy tu asistente personal! Puedo ayudarte en todo lo que quieras!",
-            "Soy Nekiri, y soy tu asistente personal! Te ayudare a abrir apps, buscar documentos, etc... o solo podemos hablar :D"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    //abrir apps (basico xq muy dificil hacer que las instaladas tambien xD)
-    else if (userInput.includes('abr') && (userInput.includes('config') || userInput.includes('ajust'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('settings');
-    } else if (userInput.includes('abr') && (userInput.includes('nota') || userInput.includes('note'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('notes');
-    } else if (userInput.includes('abr') && (userInput.includes('calc') || userInput.includes('matem'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('calc');
-    } else if (userInput.includes('abr') && (userInput.includes('navegador') || userInput.includes('internet'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('browser');
-    } else if (userInput.includes('abr') && (userInput.includes('archivo') || userInput.includes('documento'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('files');
-    } else if (userInput.includes('abr') && (userInput.includes('calendar') || userInput.includes('fecha'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('calendar');
-    } else if (userInput.includes('abr') && (userInput.includes('terminal') || userInput.includes('com'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('terminal');
-    } else if (userInput.includes('abr') && (userInput.includes('toybox') || userInput.includes('diver'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('toybox');
-    } else if (userInput.includes('abr') && (userInput.includes('video') || userInput.includes('player'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('nyxvideoplayer');
-    } else if (userInput.includes('abr') && (userInput.includes('imagen') || userInput.includes('image'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('nyximageviewer');
-    } else if (userInput.includes('abr') && (userInput.includes('store') || userInput.includes('tienda'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('nyxpawstore');
-    } else if (userInput.includes('abr') && (userInput.includes('ytcl') || userInput.includes('youtube'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('nytclient');
-    } else if (userInput.includes('abr') && (userInput.includes('task') || userInput.includes('tareas'))) {
-        nekiriRes.textContent = getRandomNekiriRes('access', null);
-        sysExecApp('taskmanager');
-    }
-    
-    
-    
-    
-    
-    
-    else {
-        nekiriAnswers = [
-            "Disclulpa, pero no te entendí, puedes buscar en internet :D",
-            "Hmmm... no te he entendido, puedes explicarlo mejor?",
-            "No te entendí, pero encontre esto en internet:"
-        ]
-        nekiriRes.textContent = getRandomNekiriRes('array', nekiriAnswers);
-        nekiriShowSmartCard('search','Buscar en internet', encodeURI(`https://www.google.com/search?q=${userInput}&igu=1`));
-    }
-
-    userInput.value = '';
     nekiriInput.value = '';
 }
 
-let audioDPOpen = false;
-const audioButton = document.getElementById('topbar_audio');
-const audioDropdown = document.getElementById('audio-dropdown');
+let controlDPOpen = false;
+const controlButton = document.getElementById('topbar_control');
+const controlDropdown = document.getElementById('control-dropdown');
 
-audioButton.addEventListener("click", (e) => {
+controlButton.addEventListener("click", (e) => {
     e.stopPropagation();
 
-    if (audioDPOpen) {
-        audioDropdown.classList.add('hidden');
-        audioDPOpen = false;
+    if (controlDPOpen) {
+        controlDropdown.classList.add('hidden');
+        controlDPOpen = false;
         return;
     }
 
-    const rect = audioButton.getBoundingClientRect();
+    const rect = controlButton.getBoundingClientRect();
 
-    audioDropdown.style.right = (window.innerWidth - rect.right) + "px";
-    audioDropdown.style.top = rect.bottom + "px";
-    audioDropdown.style.zIndex = topZ + 2;
-    audioDropdown.classList.remove('hidden');
+    controlDropdown.style.right = (window.innerWidth - rect.right) + "px";
+    controlDropdown.style.top = rect.bottom + "px";
+    controlDropdown.style.zIndex = topZ + 10;
+    controlDropdown.classList.remove('hidden');
 
-    audioDPOpen = true;
+    controlDPOpen = true;
 });
 
 let briefDPOpen = false;
@@ -1711,7 +1834,7 @@ briefButton.addEventListener('click', (e) => {
 
     briefDropdown.style.right = (window.innerWidth - rect.right) + "px";
     briefDropdown.style.top = rect.bottom + "px";
-    briefDropdown.style.zIndex = topZ + 2;
+    briefDropdown.style.zIndex = topZ + 10;
     briefDropdown.style.backgroundImage = getNBriefBackgroundImg();
 
     briefDropdown.classList.remove('hidden');
@@ -1873,6 +1996,12 @@ document.addEventListener('keydown', e => {
     if (e.repeat) return;
 
     const tag = document.activeElement.tagName;
+    if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        if (!document.getElementById('appcenter_nekiriHint').classList.contains('hidden')) {
+            appcenterAskNekiri();
+        }
+    }
     if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable) return;
 
     if ((e.ctrlKey || e.metaKey) && e.altKey && e.shiftKey && e.key.toLowerCase() === 'm') {
@@ -1883,22 +2012,23 @@ document.addEventListener('keydown', e => {
                 sysEmgMenu.id = 'sys-emg-menu';
                 sysEmgMenu.innerHTML = 
                 `<p>System Emergency Menu</p>
-        <button onclick="document.getElementById('sys-emg-menu').remove()">Close</button>
-        <button onclick="sysclosesesion(); document.getElementById('sys-emg-menu').remove();">Sign Out</button>
-        <button onclick="sysExecApp('taskmanager'); document.getElementById('sys-emg-menu').remove();">Task Manager</button>
-        <button onclick="sysShowRunDialog(); document.getElementById('sys-emg-menu').remove();">Execute ID/quickCommand</button>
-        <button onclick="sysshutdown(); document.getElementById('sys-emg-menu').remove();">Shutdown</button>
-        <button onclick="sysrestart(); document.getElementById('sys-emg-menu').remove();">Reboot</button>
-        <button >-----------</button>
-        <button onclick="window.close()">EMERGENCY SHUTDOWN - WILL CAUSE DATA LOSS</button>
-        <button onclick="window.location.href = 'index.html'">EMERGENCY RESTART - WILL CAUSE DATA LOSS</button>`;
-                sysEmgMenu.style.zIndex = topZ + 10;
+        <button onclick="document.getElementById('sys-emg-menu').remove()">❌ Close</button>
+        <button onclick="sysclosesesion(); document.getElementById('sys-emg-menu').remove();">🔓 Sign Out</button>
+        <button onclick="sysExecApp('taskmanager'); document.getElementById('sys-emg-menu').remove();">📋 Task Manager</button>
+        <button onclick="sysShowRunDialog(); document.getElementById('sys-emg-menu').remove();">⌨️ Execute</button>
+        <button onclick="sysshutdown(); document.getElementById('sys-emg-menu').remove();">⏻ Shutdown</button>
+        <button onclick="sysrestart(); document.getElementById('sys-emg-menu').remove();">🔄 Reboot</button>
+        <div></div>
+        <button onclick="window.close()">🔴 EMERGENCY SHUTDOWN</button>
+        <button onclick="window.location.href = 'index.html'">🟠 EMERGENCY RESTART</button>`;
+                sysEmgMenu.style.zIndex = topZ + 30;
                 document.body.appendChild(sysEmgMenu);
             }, 10);
         }
     }
 
     if (e.ctrlKey && e.shiftKey && e.key.toLocaleLowerCase() === 'e') {
+        e.preventDefault();
         sysShowRunDialog();
     }
 
@@ -1910,12 +2040,15 @@ document.addEventListener('keydown', e => {
         document.getElementById('quickview_img').classList.add('hidden');
     }
 
-    if (e.key === ' ' && AppManager.loadedApps.has('files')) {
+    if (e.key === ' ') {
         e.preventDefault();
         
-        if (!(document.getElementById('quickview').classList.contains('hidden'))) {
+        if (!document.getElementById('quickview').classList.contains('hidden')) {
             hidequickview();
+            return;
         }
+
+        if (!AppManager.loadedApps.has('files')) return;
 
         const selected = window.fs.getSelectedItem();
         const selectedType = window.fs.getSelectedItemType();
@@ -1939,7 +2072,7 @@ document.addEventListener('keydown', e => {
                             const url = URL.createObjectURL(req.result);
                             showQuickViewWin('img', url);
                         } else {
-                            showAlertBox('Error', 'Imagen no encontrada.', {as_win:true, icon:'❌'});
+                            showAlertBox('msgbox_err', 'Imagen no encontrada.', {as_win:true, icon:'❌'});
                         }
                     };
                 });
@@ -1951,34 +2084,29 @@ document.addEventListener('keydown', e => {
 
     if (e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        if (document.getElementById('win_appcenter').classList.contains('hidden')) {
+        if (document.getElementById('win_appcenter').classList.contains('appcenter-hidden')) {
             sysExecApp('appcenter');
             setTimeout(() => {
                 document.getElementById('appcenter_searchbar').focus();
             },120);
         } else {
-            document.getElementById('win_appcenter').classList.add('hidden');
+            document.getElementById('win_appcenter').classList.add('appcenter-hidden');
             document.getElementById('appcenter_searchbar').value = '';
         }
     }
     if (e.ctrlKey && e.shiftKey && e.code === 'Space') {
         e.preventDefault();
-        if (document.getElementById('win_appcenter').classList.contains('hidden')) {
+        if (document.getElementById('win_appcenter').classList.contains('appcenter-hidden')) {
             sysExecApp('appcenter');
             setTimeout(() => {
                 document.getElementById('appcenter_searchbar').focus();
             },120);
         } else {
-            document.getElementById('win_appcenter').classList.add('hidden');
+            document.getElementById('win_appcenter').classList.add('appcenter-hidden');
             document.getElementById('appcenter_searchbar').value = '';
         }
     }
-    if (e.ctrlKey && e.key === 'Enter') {
-        e.preventDefault();
-        if (!document.getElementById('appcenter_nekiriHint').classList.contains('hidden')) {
-            appcenterAskNekiri();
-        }
-    }
+    
 });
 
 document.addEventListener('keyup', () => {
@@ -2001,17 +2129,34 @@ document.addEventListener('keyup', () => {
 
 
 /*Sonidos UI */
-function sysPlaySound(soundname) {
+function sysPlaySound(soundname, loop=false) {
     if (SysVar.sessionAutoStart.includes('audio')) {
         if (SysVar.systemSound[soundname]) {
             SysVar.systemSound[soundname].currentTime = 0;
+            SysVar.systemSound[soundname].loop = loop;
             SysVar.systemSound[soundname].play().catch(e => console.log('Failed to play system sound'));
         }
     } else {
         console.error('Audio Service not found');
-        showAlertBox('Error', 'System Audio Service not found!', {as_win:true,icon:'❌'});
+        showAlertBox('msgbox_err', 'System Audio Service not found!', {as_win:true,icon:'❌'});
     }
 }
+
+function sysStopSound(soundname) {
+    if (SysVar.systemSound[soundname]) {
+        SysVar.systemSound[soundname].loop = false;
+        SysVar.systemSound[soundname].pause();
+        SysVar.systemSound[soundname].currentTime = 0;
+    }
+}
+
+async function sysPreloadApp(appName, bypassLock = false) {
+    if (typeof AppManager === 'undefined') return;
+    if (SysVar.lockedSession && !bypassLock) return;
+    await AppManager.preloadApp(appName);
+}
+
+window.sysPreloadApp = sysPreloadApp;
 
 function sysExecApp(appName, options = {}) {
     if (typeof AppManager === 'undefined') {
@@ -2019,10 +2164,11 @@ function sysExecApp(appName, options = {}) {
         return;
     }
 
+
     if (appName !== 'syssetup') {
         if (SysVar.lockedSession) {
             console.error('Session locked');
-            showAlertBox('Error', 'The current session is locked by your administrator', {as_win:true,icon:'❌'});
+            showAlertBox('msgbox_err', 'The current session is locked by your administrator', {as_win:true,icon:'❌'});
             return;
         }
     }
@@ -2031,14 +2177,16 @@ function sysExecApp(appName, options = {}) {
         const appCenter = document.getElementById('win_appcenter');
         if (appCenter) {
             document.getElementById('appcenter_searchbar').value = '';
-
+    
             document.querySelectorAll('#appcenterapps .appcenter_appdiv').forEach(appDiv => {
                 appDiv.classList.remove('appcenter-searchhidden');
             });
             document.getElementById('appcenter_nekiriHint').classList.add('hidden');
-
+    
             appCenter.style.zIndex = topZ + 10;
-            appCenter.classList.remove('hidden');
+            
+            appCenter.classList.remove('appcenter-hidden');
+            
             return;
         }
     }
@@ -2053,6 +2201,9 @@ function sysExecApp(appName, options = {}) {
                 if (!windowEL.dataset.winInitialized) {
                     window.initNewWindow(windowEL);
                     windowEL.dataset.winInitialized = 'true';
+                }
+                if (typeof updateTopBarProgram === 'function') {
+                    updateTopBarProgram(windowEL);
                 }
             }
 
@@ -2070,9 +2221,9 @@ function sysExecApp(appName, options = {}) {
             console.error(`Failed to execute '${appName}': `, err);
             document.documentElement.style.cursor = "default";
             if (navigator.onLine) {
-                showAlertBox('❌ Error', `Ocurrio un error al abrir ${appName}`);
+                showAlertBox('msgbox_err_icon', `Ocurrio un error al abrir ${appName}`);
             } else {
-                showAlertBox('🛜 Sin internet', `Conectate a internet para abrir ${appName}`);
+                showAlertBox('msgbox_nonetwork', `Conectate a internet para abrir ${appName}`);
             }
         });
 }
@@ -2119,7 +2270,7 @@ async function sysShowRunDialog() {
     const commandRun = await showPromptMsgBox('⬆️ Ejecutar', 'Ingresa el ID o quickCommand para ejecutar', 'Ejecutar', 'Cancelar');
     if (!commandRun.confirmed) return;
     if (!commandRun.value) {
-        showAlertBox('⚠️ Advertencia','Ingresa un ID o quickCommand valido!');
+        showAlertBox('msgbox_warning_icon','Ingresa un ID o quickCommand valido!');
         return;
     }
     try {
@@ -2128,13 +2279,13 @@ async function sysShowRunDialog() {
         const command = fullCommand[0];
         const args = fullCommand.slice(1);
 
-        if (command === '--app') {
+        if (command === 'exec') {
             sysExecApp(args[0]);
-        } else if (command === '--q') {
-            if (args[0] === 'runProg') {
+        } else if (command === 'q') {
+            if (args[0] === 'run') {
                 sysExecApp(args[1]);
             } else if (args[0] === 'shutdown') {
-                if (args[1] === '--now') {
+                if (args[1] === '-now') {
                     sysshutdown();
                 } else {
                     const shutdownTime = args[1];
@@ -2143,11 +2294,12 @@ async function sysShowRunDialog() {
                     }, shutdownTime);
                 }
             }
-        } else if (command === '--terminal') {
+        } else if (command === 'com') {
             const consoleCom = args.join(' ');
             sysExecApp('terminal');
-            setTimeout(() => runCommand(consoleCom), 90);
-        } else if (command === '--devmode') {
+            await waitUntil(() => typeof runCommand === 'function');
+            runCommand(consoleCom);
+        } else if (command === 'dev') {
             if (SysVar.devMode) {
                 if (args[0] === '--as$npss') {
                     if (args[1] === 'system.appBar.show()') {
@@ -2163,10 +2315,10 @@ async function sysShowRunDialog() {
                     } else if (args[1] === 'mod.desktopBG()') {
                         document.body.style.backgroundImage = `url(${args[2]})`;
                     } else {
-                        showAlertBox('❌ Error', `${args[1]} is not supported as a NyxPawBasicScript! This error might occur if:\n- The script is too large\n- The script did not execute with enough permissions`)
+                        showAlertBox('msgbox_err_icon', `${args[1]} is not supported as a NyxPawBasicScript! This error might occur if:\n- The script is too large\n- The script did not execute with enough permissions`)
                     }
                 } else if (args[0] === '--as$npss') {
-                    showAlertBox('❌ Error', 'npss (NyxPawSystemScripts) are no longer supported on quickCommand, please use the terminal or execute a npbs (NyxPawBasicScript).');
+                    showAlertBox('msgbox_err_icon', 'npss (NyxPawSystemScripts) are no longer supported on quickCommand, please use the terminal or execute a npbs (NyxPawBasicScript).');
                 } else if (args[0] === '--as$jsgs') {
                     const FNStr = args[1];
                     const FNMatch = FNStr.match(/^(\w+)\((.*)\)$/);
@@ -2181,25 +2333,25 @@ async function sysShowRunDialog() {
                     }
                 }
             } else {
-                showAlertBox('❌ Error', 'No tienes permisos para ejecutar el comando: Modo dev no activado!');
+                showAlertBox('msgbox_err_icon', 'No tienes permisos para ejecutar el comando: Modo dev no activado!');
             }
         } else if (command === 'eval') {
             const jsToExec = args.join(' ');
             if (SysVar.flagAlwaysAllowEvals) {
                 eval(jsToExec);
             } else if (SysVar.devMode) {
-                const sureToExecEval = await showPromptMsgBox('⚠️ ADVERTENCIA', 'Esta acción ejecutará código arbitrario en tiempo real. Un uso incorrecto puede causar pérdida de datos, errores críticos o vulnerabilidades de seguridad. Si no sabes exactamente qué hace este comando, cancela ahora.', 'Cancelar', 'Continuar');
+                const sureToExecEval = await showPromptMsgBox('msgbox_warning_icon', 'Esta acción ejecutará código arbitrario en tiempo real. Un uso incorrecto puede causar pérdida de datos, errores críticos o vulnerabilidades de seguridad. Si no sabes exactamente qué hace este comando, cancela ahora.', 'Cancelar', 'Continuar');
                 if (sureToExecEval.confirmed) return;
                 eval(jsToExec);
             } else {
-                showAlertBox('❌ Error', 'No tienes permisos para ejecutar el comando: Modo dev no activado!');
+                showAlertBox('msgbox_err_icon', 'No tienes permisos para ejecutar el comando: Modo dev no activado!');
             }
         } else {
-            showAlertBox('❌ Error', 'Comando desconocido');
+            showAlertBox('msgbox_err_icon', 'Comando desconocido');
         }
 
     } catch(error) {
-        showAlertBox('❌ Error','Error:'+error);
+        showAlertBox('msgbox_err_icon','Error:'+error);
     }
 }
 
@@ -2212,7 +2364,7 @@ if (usedBefore) {
 }
 
 async function formatSystem() {
-    const confirmDeleteData = await showMsgBox("⚠️ ALERTA!", "Estas a punto de borrar todos tus datos y configuraciones! Realmente quieres proceder? Tu sistema se apagara!", "Eliminar mis datos", "Cancelar");
+    const confirmDeleteData = await showMsgBox("msgbox_warning_icon", "Estas a punto de borrar todos tus datos y configuraciones! Realmente quieres proceder? Tu sistema se apagara!", "Eliminar mis datos", "Cancelar");
     if (confirmDeleteData) {
         sysComQuitTasks();
         hideAppBar();
@@ -2284,6 +2436,9 @@ function tempSysAddEvent(type, title, info) {
     };
 
     SysVar.sysEvents.unshift(newEvent);
+    if (SysVar.sysEvents.length > 500) {
+        SysVar.sysEvents.pop();
+    }
 }
 
 const showABEnabled = SysVar.showconsoleerr;
@@ -2294,7 +2449,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //const errorMsg = `${e.message}\nArchivo: ${e.filename}\nLínea: ${e.lineno}`;
             const errorMsg = `Error: ${e.message}`;
             if (showABEnabled && showABEnabled.checked) {
-                showAlertBox('Error', errorMsg, {as_win:true, icon:'❌'});
+                showAlertBox('msgbox_err', errorMsg, {as_win:true, icon:'❌'});
             }
             try {
                 sysAddEvent('error', 'Error', errorMsg);
@@ -2307,7 +2462,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('unhandledrejection', (e) => {
         const errorMsg = `Error: ${e.reason}`;
         if (showABEnabled && showABEnabled.checked) {
-            showAlertBox('Error', errorMsg, {as_win:true, icon:'❌'});
+            showAlertBox('msgbox_err', errorMsg, {as_win:true, icon:'❌'});
         }
         try {
             sysAddEvent('error', 'Error', errorMsg);
@@ -2330,7 +2485,7 @@ console.warn = function(...args) {
     if (isMainWindow) {
         const errorMsg = args.join(' ');
         if (showABEnabled && showABEnabled.checked) {
-            showAlertBox('Advertencia', errorMsg, {as_win:true, icon:'⚠️'});
+            showAlertBox('msgbox_warning', errorMsg, {as_win:true, icon:'⚠️'});
         }
         try {
             sysAddEvent('warn', 'Warning', errorMsg);
@@ -2346,7 +2501,7 @@ console.error = function(...args) {
     if (isMainWindow) {
         const errorMsg = args.join(' ');
         if (showABEnabled && showABEnabled.checked) {
-            showAlertBox('Error', errorMsg, {as_win:true, icon:'❌'});
+            showAlertBox('msgbox_err', errorMsg, {as_win:true, icon:'❌'});
         }
         try {
             sysAddEvent('error', 'Error', errorMsg);
@@ -2507,8 +2662,17 @@ function waitUntil(conditionFn, interval = 50) {
 }
 
 
-
-function renderAppBar() {
+document.addEventListener('mouseup', () => {
+    document.querySelectorAll('.appbar-app').forEach(b => {
+        b.style.transition = '';
+    });
+});
+function _renderAppBarImpl() {
+    if (!SysVar.sysRunningServices.some(item => item.id === 'dock.srv')) {
+        document.getElementById('appbar').innerHTML = '';
+        showAlertBox('msgbox_err','No se encontro el servicio del AppBar', {as_win:true,icon:'❌'});
+        return;
+    }
     const appBar = document.getElementById('appbar');
     appBar.innerHTML = '';
 
@@ -2520,6 +2684,12 @@ function renderAppBar() {
     function createAppBtn(appObj) {
         const btn = document.createElement('button');
         btn.className = 'appbar-app';
+        btn.style.transition = 'none';
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                btn.style.transition = '';
+            });
+        });
         btn.id = `appbar-${appObj.app}`;
 
         const img = document.createElement('img');
@@ -2592,6 +2762,12 @@ function renderAppBar() {
             });
         });
 
+        btn.addEventListener('mousedown', () => {
+            document.querySelectorAll('.appbar-app').forEach(b => {
+                b.style.transition = 'none';
+            });
+        });
+
         return btn;
     }
 
@@ -2620,6 +2796,10 @@ function renderAppBar() {
     btnAppcenter.addEventListener('click', () => sysExecApp('appcenter'));
     appBar.appendChild(btnAppcenter);
 }
+function renderAppBar() {
+    clearTimeout(renderAppBar._debounce);
+    renderAppBar._debounce = setTimeout(_renderAppBarImpl, 80);
+}
 
 function appBarAddApp(icon, name, app, minimized = false, permanent = true) {
     const exists = SysVar.appBarIcons.some(a => a.app === app);
@@ -2634,7 +2814,7 @@ function appBarAddApp(icon, name, app, minimized = false, permanent = true) {
 function appBarRemoveApp(app) {
     if (app === 'appcenter') {
         if (!SysVar.devMode) {
-            showAlertBox('Advertencia','No puedes eliminar el App Center.',{icon:'⚠️',as_win:true});
+            showAlertBox('msgbox_warning','No puedes eliminar el App Center.',{icon:'⚠️',as_win:true});
             return;
         }
     }
@@ -2650,35 +2830,34 @@ function appBarRemoveApp(app) {
 }
 
 // Watcher para main.conf - recarga SysVar cuando el archivo cambia externamente
-let _mainConfLastContent = null;
+/*let _mainConfLastContent = null; //Codigo comentado porque hacer esto es costoso
+let _watchMainConfDebounce = null;
 
 function watchMainConf() {
     if (!window.fs) return;
-    
-    try {
-        if (!window.fs.fileExistInPath('main.conf', '/system/general')) return;
-        
-        const currentContent = openFile('main.conf', '/system/general');
-        
-        if (_mainConfLastContent === null) {
-            _mainConfLastContent = currentContent;
-            return;
+    if (_isSavingConfig) return;
+
+    clearTimeout(_watchMainConfDebounce);
+    _watchMainConfDebounce = setTimeout(() => {
+        try {
+            if (!window.fs.fileExistInPath('main.conf', '/system/general')) return;
+            const currentContent = openFile('main.conf', '/system/general');
+            if (_mainConfLastContent === null) {
+                _mainConfLastContent = currentContent;
+                return;
+            }
+            if (currentContent !== _mainConfLastContent) {
+                _mainConfLastContent = currentContent;
+                loadDataReg();
+                renderAppBar();
+            }
+        } catch (e) {
+            if (SysVar.devMode) console.error(e);
         }
-        
-        if (currentContent !== _mainConfLastContent) {
-            console.log('[NyxPawOS] main.conf changed externally, reloading config...');
-            _mainConfLastContent = currentContent;
-            loadDataReg();
-            renderAppBar();
-        }
-    } catch (e) {
-        if (SysVar.devMode) {
-            console.error(e);
-        }
-    }
+    }, 500);
 }
 
-setInterval(watchMainConf, 2000);
+setInterval(watchMainConf, 2000);*/
 
 document.getElementById('appcenterapps').addEventListener('contextmenu', (e) => {
     const appDiv = e.target.closest('.appcenter_appdiv');
@@ -2804,14 +2983,16 @@ function hidequickview() {
 }
 
 async function requestAddAppBar(apptoaddname) {
-    const confirmAddAppTAB = await showMsgBox("Solicitud",`Una aplicacion quiere agregar ${apptoaddname} al AppBar\nPermitir?`, "Permitir", "Cancelar",{as_win: false,icon: '💻'});
+    const confirmAddAppTAB = await showMsgBox("msgbox_request",`Una aplicacion quiere agregar ${apptoaddname} al AppBar\nPermitir?`, "Permitir", "Cancelar",{as_win: false,icon: '💻'});
     if (confirmAddAppTAB) {
         const apptoaddicon = await getPathAppIcon(apptoaddname);
         appBarAddApp(apptoaddicon, apptoaddname, apptoaddname);
     }
 }
 
+const _appbarIconsCache = {};
 async function getPathAppIcon(appName) {
+    if (_appbarIconsCache[appName]) return _appbarIconsCache[appName];
     const routes = [
         `assets/apps/${appName}/3.png`,
         `assets/apps/${appName}.png`,
@@ -2821,10 +3002,14 @@ async function getPathAppIcon(appName) {
     for (const route of routes) {
         try {
             const res = await fetch(route, { method: 'HEAD' });
-            if (res.ok) return route;
+            if (res.ok) {
+                _appbarIconsCache[appName] = route;
+                return route;
+            };
         } catch (e) {}
     }
 
+    _appbarIconsCache[appName] = 'assets/apps/unknown.png';
     return 'assets/apps/unknown.png';
 }
 
@@ -2845,9 +3030,11 @@ const topbarIconWifiError = new Image();
 topbarIconWifiError.src = 'assets/system/wifi-error.png';
 
 window.addEventListener('online', () => {
+    sysPreloadApp('sysshutdown', true);
+    SysVar.sysshutdownUIAvailable = true;
     document.getElementById('topbar_network').src = topbarIconWifi.src;
     if (systemIsOffline) {
-        createNotification('assets/system/wifi.png', 'Reconectado', 'Conectado a internet nuevamente.');
+        createNotification(topbarIconWifi.src, 'Reconectado', 'Conectado a internet nuevamente.');
     }
     systemIsOffline = false;
 });
@@ -2879,5 +3066,383 @@ function reciveCall(number='+00 000 0000') {
     createNotification('assets/system/call.png', String(number), 'Llamada entrante', { show:true, text:"Contestar", action:"alert", data:"Llamadas no implementadas." }, { show:true, text:"Rechazar", action:"delnoti", data:undefined });
 }
 
+let systemInactiveTime;
+let systemInactiveExtra;
+const _brightnessOverlay = document.createElement('div');
+_brightnessOverlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: black;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 8999;
+    transition: opacity 0.5s ease;
+`;
+document.body.appendChild(_brightnessOverlay);
+
+function sysResetInactivityBrightness() {
+    _brightnessOverlay.style.opacity = '0';
+}
+
+function sysLowerBrightness() {
+    _brightnessOverlay.style.opacity = '0.4';
+}
+
+function sysResetInactivityTimer() {
+    clearTimeout(systemInactiveTime);
+    clearTimeout(systemInactiveExtra);
+
+    sysResetInactivityBrightness();
+
+    systemInactiveTime = setTimeout(() => {
+        sysLowerBrightness();
+
+        systemInactiveExtra = setTimeout(() => {
+            syslockscr();
+            sysResetInactivityBrightness();
+        }, 10000);
+    }, 60000);
+}
+
+document.addEventListener("mousemove", sysResetInactivityTimer);
+document.addEventListener("keydown", sysResetInactivityTimer);
+document.addEventListener("click", sysResetInactivityTimer);
+document.addEventListener("scroll", sysResetInactivityTimer);
+
+sysResetInactivityTimer();
+
+setTimeout(() => {
+    console.log(
+    "%c🚫 Warning!",
+    "color: red; font-size: 48px; font-weight: bold;"
+    );
+
+    console.log(
+    "%cIf you don't know what you're doing, close this window immediately!",
+    "font-size: 16px;"
+    );
+
+    console.log(
+    "%cIf you like experimenting, go ahead, you won't get anything too dangerous from here anyway haha",
+    "font-size: 16px;"
+    );
+},5000);
+
+setInterval(() => {
+    if (!SysVar.sysRunningServices.some(item => item.id === 'mainsession/sys.srv')) {
+        sysBsod('X-SRV-CRT', 'Unknown error ocurred during session.');
+    }
+}, 10000);
+function watchBootHeartbeat() {
+    if (SysVar.bootFinished) return;
+    
+    const lastBeat = localStorage.getItem('sys_boot_heartbeat');
+    if (!lastBeat) return;
+    
+    const silence = Date.now() - parseInt(lastBeat);
+    
+    if (silence > 6000) {
+        sysBsod('','','booting');
+        new Audio("../assets/crash.mp3").play();
+    }
+}
+
+window._bootHeartbeatWatcher = setInterval(watchBootHeartbeat, 3000);
+
+const specialcommandskeys = new Set();
+
+document.addEventListener("keydown", (e) => {
+  specialcommandskeys.add(e.key.toLowerCase());
+
+  if (specialcommandskeys.has("q") && specialcommandskeys.has("e")) {
+    if (e.shiftKey) {
+        e.preventDefault();
+        if (!SysVar.bootFinished) {
+            console.log("Crashed by user command");
+            sysBsod('','','booting');
+            new Audio("../assets/crash.mp3").play();
+        }
+    }
+  }
+});
+
+document.addEventListener("keyup", (e) => {
+  specialcommandskeys.delete(e.key.toLowerCase());
+});
+
+let systemHalted = false;
+function emergencyStop(reason) {
+    if (systemHalted) return;
+    systemHalted = true;
+    sysBsod('','Crash Detected: '+reason+' | Please Restart System Manually');
+    console.log("🛑 SYSTEM STOPPED: "+reason);
+
+    const noop = () => {};
+    window.setTimeout = noop;
+    window.setInterval = noop;
+    window.requestAnimationFrame = noop;
+    EventTarget.prototype.addEventListener = noop;
+    throw new Error("System halted: " + reason);
+}
+let _rafLast = performance.now();
+let _rafLagSpikes = 0;
+const RAF_LAG_THRESHOLD_MS = 800;
+const RAF_SPIKE_LIMIT = 6;
+
+function _rafLagLoop() {
+    if (systemHalted) return;
+
+    const now = performance.now();
+    const diff = now - _rafLast;
+    _rafLast = now;
+
+    if (!document.hidden && diff > RAF_LAG_THRESHOLD_MS) {
+        _rafLagSpikes++;
+        console.warn(`⚠️ Lag spike #${_rafLagSpikes}: ${diff.toFixed(1)}ms`);
+        if (_rafLagSpikes >= RAF_SPIKE_LIMIT) {
+            emergencyStop("sustained lag");
+            return;
+        }
+    } else if (!document.hidden) {
+        _rafLagSpikes = 0;
+    }
+
+    requestAnimationFrame(_rafLagLoop);
+}
+requestAnimationFrame(_rafLagLoop);
+
+
+let listenerCount = 0;
+let lastListenerSnapshot = 0;
+let lastListenerCheck = performance.now();
+const LISTENER_GROWTH_LIMIT = 1000;
+const LISTENER_WARMUP_MS = 5000;
+const bootTime = performance.now();
+const orig = EventTarget.prototype.addEventListener;
+
+EventTarget.prototype.addEventListener = function(...args) {
+    if (systemHalted) return;
+
+    listenerCount++;
+
+    const now = performance.now();
+    const elapsed = now - lastListenerCheck;
+
+    if (elapsed > 1000) {
+        const growth = listenerCount - lastListenerSnapshot;
+        const inWarmup = (now - bootTime) < LISTENER_WARMUP_MS;
+
+        if (!inWarmup && growth > LISTENER_GROWTH_LIMIT) {
+            emergencyStop(`listener spam (+${growth}/s)`);
+        }
+
+        if (growth > 200) {
+            console.warn(`⚠️ Listener growth: +${growth}/s (total: ${listenerCount})`);
+        }
+
+        lastListenerSnapshot = listenerCount;
+        lastListenerCheck = now;
+    }
+
+    return orig.apply(this, args);
+};
+const SysProtected = Object.freeze({
+    sysAddEvent: window.sysAddEvent,
+    sysBsod: window.sysBsod,
+    emergencyStop: window.emergencyStop,
+    sysExecApp: window.sysExecApp,
+    sysshutdown: window.sysshutdown,
+});
+
+setInterval(() => {
+    for (const [name, fn] of Object.entries(SysProtected)) {
+        if (window[name] !== fn) {
+            console.warn(`⚠️ System function overwritten: ${name} — restoring`);
+            window[name] = fn;
+        }
+    }
+}, 2000);
+
+function _wallpaperFileName(id) {
+    const isCustomUrl = id.startsWith('https://') || id.startsWith('http://');
+    return isCustomUrl
+        ? id.replace(/https?:\/\//, '').replace(/[^a-zA-Z0-9]/g, '_') + '.jpg'
+        : `${id}.jpg`;
+}
+
+async function syssetwallpaperto(id) {
+    if (id === 'default') {
+        document.documentElement.style.setProperty('--wallpaper', 'url(assets/wallpaper.jpg)');
+        SysVar.wallpaper = 'default';
+        return;
+    }
+
+    SysVar.wallpaper = id;
+    const currentUser = SysVar.currentuser.user;
+    if (currentUser && currentUser !== 'system' && sysUsers[currentUser]) {
+        sysUsers[currentUser].wallpaper = id;
+        localStorage.setItem('sysUsers', JSON.stringify(sysUsers));
+    }
+
+    const savePath = '/system/wallpapers';
+    const fileName = _wallpaperFileName(id);
+    const fullPath = `${savePath}/${fileName}`;
+
+    async function applyFromDB() {
+        const db = await _openDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction('media', 'readonly');
+            const req = tx.objectStore('media').get(fullPath);
+            req.onsuccess = () => {
+                if (!req.result) { reject('No encontrado en media store'); return; }
+                const url = URL.createObjectURL(req.result);
+                document.documentElement.style.setProperty('--wallpaper', `url(${url})`);
+                resolve();
+            };
+            req.onerror = (e) => reject(e.target.error);
+        });
+    }
+
+    if (window.fs.fileExistInPath(fileName, savePath)) {
+        await applyFromDB();
+        return;
+    }
+
+    document.getElementById('settings_loadingwallpapertext').textContent = 'Descargando...';
+    document.getElementById('settings_loadingwallpapertext').classList.remove("hidden");
+    console.log(`[Wallpaper] Descargando: ${id}...`);
+    const ok = await downloadwallpaper(id);
+    if (ok) {
+        console.log(`[Wallpaper] Descarga finalizada: ${id}`);
+        document.getElementById('settings_loadingwallpapertext').classList.add("hidden");
+        await applyFromDB();
+    } else {
+        document.getElementById('settings_loadingwallpapertext').textContent = 'Ocurrio un error al descargar el fondo de pantalla.';
+        setTimeout(()=>{
+            document.getElementById('settings_loadingwallpapertext').classList.add("hidden");
+        },1200);
+        showAlertBox('Error', `No se pudo descargar el wallpaper.`, { as_win: true, icon: '❌' });
+    }
+
+    SysVar.wallpaper = id;
+}
+
+async function downloadwallpaper(id) {
+    const screenWidth = window.innerWidth;
+    const dpr = window.devicePixelRatio || 1;
+    let targetWidth = screenWidth * dpr;
+
+    let connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (connection) {
+        const speed = connection.effectiveType;
+        if (speed === "slow-2g" || speed === "2g") targetWidth *= 0.5;
+        else if (speed === "3g") targetWidth *= 0.75;
+    }
+
+    if (targetWidth < 500) targetWidth = 500;
+    if (targetWidth > 4000) targetWidth = 4000;
+    targetWidth = Math.round(targetWidth);
+
+    const isCustomUrl = id.startsWith('https://') || id.startsWith('http://');
+    const url = isCustomUrl
+        ? id
+        : `https://images.unsplash.com/photo-${id}?q=80&w=${targetWidth}`;
+
+    const savePath = '/system/wallpapers';
+    const fileName = _wallpaperFileName(id);
+
+    if (!window.fs.fileExist(savePath)) {
+        window.fs.createFolder('wallpapers', '/system');
+    }
+
+    if (window.fs.fileExistInPath(fileName, savePath)) {
+        console.log(`[Wallpaper] Ya existe: ${savePath}/${fileName}`);
+        return true;
+    }
+
+    console.log(`[Wallpaper] Descargando: ${url}`);
+    return await window.fs.downloadImageToFS(url, fileName, savePath);
+}
+
+function isValidUrl(string) {
+    try {
+        new URL(string);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+document.addEventListener('keydown',(e)=>{
+    if (system_crashed && e.shiftKey && e.key === 'F') {
+        renderCrashDetails();
+        clearTimeout(window._bsodTimeout);
+    }
+    if (system_crashed && document.getElementById('crashDetailsDiv') && e.key === 'Enter') {
+        window.location.href = "index.html";
+        localStorage.setItem('sysStartupConfig', 'ShowBSODAlert');
+    }
+});
+
+function renderCrashDetails() {
+    document.documentElement.style.cursor = 'none';
+    document.head.insertAdjacentHTML(
+        'beforeend',
+        '<style>*{cursor:none !important;}</style>'
+    );
+    const nav = performance.getEntriesByType("navigation")[0];
+
+    const crashDetailsDiv = document.createElement('div');
+    crashDetailsDiv.id = 'crashDetailsDiv';
+
+    const crashDetailsText = document.createElement('span');
+    //crashDetailsText.classList.add('textShowEvents');
+    crashDetailsText.textContent = `
+    [${window.performance.now() / 1000}] [!] System halted.
+    [CRITICAL] Critical Error
+    === Critical Error Information ===
+
+    Instruction: ${window.crashInfo.causedby}
+    Stack: ${window.crashInfo.stack}
+    Error Code: ${window.crashInfo.errorCode}
+    Failed: ${window.crashInfo.errorText}
+    Exception_Class: ${window.crashInfo.type}
+    Timestamp: ${window.crashInfo.timestamp}
+    Source_Path: ${window.crashInfo.url}
+    Loaded Apps: ${window.crashInfo.loadedApps}
+    Mem_Dump: 0x${window.crashInfo.memory} [SEGMENTATION FAULT]
+    Uptime: ${nav.loadEventEnd}
+
+    ==================================
+    [Info] Crash Log Saved in event viewer.
+    [Info] Press ENTER to reboot_
+    `;
+
+    crashDetailsDiv.appendChild(crashDetailsText);
+    document.body.appendChild(crashDetailsDiv);
+}
+
+setTimeout(()=>{
+    if (SysVar.wallpaper) {
+        syssetwallpaperto(SysVar.wallpaper);
+    }
+},1000);
+
+setTimeout(()=>{
+    if (SysVar.userPrivacyPreferences.includes('network') || SysVar.userPrivacyPreferences.includes('location')) {
+        fetch("https://ipapi.co/json/")
+            .then(res => res.json())
+            .then(data => {
+                if (SysVar.userPrivacyPreferences.includes('network')) {
+                    SysVar.userDataCollection.ip = data.ip;
+                    SysVar.userDataCollection.internetProvider = data.org;
+                }
+                if (SysVar.userPrivacyPreferences.includes('location')) {
+                    SysVar.userDataCollection.city = data.city;
+                    SysVar.userDataCollection.country = data.country_name;
+                }
+        });
+    }
+},1000);
 
 window.scriptReady('sys');

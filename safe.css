@@ -3,12 +3,26 @@ COLORS
 Idle: rgb(75, 75, 75);
 Hover: rgb(101, 101, 101);
 Active: rgb(45, 45, 45);*/
-*{
-    backdrop-filter: none !important;
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        
+        
+    }
+    
+    .window {
+        background-color: rgb(0, 0, 0) !important;
+    }
+    
+    #appbar {
+        background-color: rgb(0, 0, 0) !important;
+    }
 }
 
 :root {
-    --blur-multiplier: 0;
+    --blur-multiplier: 1;
 
     --btn-primary-base: rgb(0, 145, 255);
     --btn-primary-hover: rgb(54, 168, 255);
@@ -30,8 +44,8 @@ Active: rgb(45, 45, 45);*/
     --win-grab-btn: rgb(0, 0, 0);
     --win-grab-btn-hover: rgb(107, 107, 107);
 
-    --win-bg: rgb(35, 35, 35);
-    --win-second: rgb(25, 25, 25);
+    --win-bg: rgb(0, 0, 0);
+    --win-second: rgb(0, 0, 0);
     --win-text: rgb(255, 255, 255);
     
     --uisetting-base: rgb(46, 46, 46);
@@ -41,28 +55,103 @@ Active: rgb(45, 45, 45);*/
     --uisetting-second: #555;
     --uisetting-third: #292929;
 
-    --file-btn-base: rgb(75, 75, 75);
-    --file-btn-hover: rgb(101, 101, 101);
-    --file-btn-active: rgb(45, 45, 45);
+    --file-recombtn-base: rgb(255, 255, 255);
+    --file-recombtn-hover: rgb(255, 255, 255);
+    --file-recombtn-active: rgb(255, 255, 255);
+
+    --file-btn-base: rgb(255, 255, 255);
+    --file-btn-hover: rgb(255, 255, 255);
+    --file-btn-active: rgb(255, 255, 255);
     --file-btn-selected: rgb(0, 78, 138);
     --file-btn-border: rgb(0, 0, 0);
+    
+
+    /*
+    --sysbar-base: rgb(255, 255, 255);
+    --sysbar-second: #ffffff7b;
+    --sysbar-third: #ffffffea;
+
+    --btn-secondary-base: rgb(255, 255, 255);
+    --btn-secondary-hover: rgb(255, 255, 255);
+    --btn-secondary-active: rgb(255, 255, 255);
+
+    --win-grab-bg: rgb(255, 255, 255);
+    --win-grab-title: rgb(0, 0, 0);
+
+    --win-grab-btn-icon: rgb(0, 0, 0);
+    --win-grab-btn: rgb(255, 255, 255);
+    --win-grab-btn-hover: rgb(0, 0, 0);
+
+    --win-bg: rgb(255, 255, 255);
+    --win-second: rgb(255, 255, 255);
+    --win-text: rgb(0, 0, 0);
+    
+    --uisetting-base: rgb(226, 226, 226);
+    --uisetting-hover: rgb(203, 203, 203);
+    --settings-divider: rgb(50, 50, 50);
+
+    --uisetting-second: #b4b4b4;
+    --uisetting-third: #9c9c9c;
+
+    --file-btn-base: rgb(0, 0, 0);
+    --file-btn-hover: rgb(0, 0, 0);
+    --file-btn-active: rgb(0, 0, 0);
+    --file-btn-selected: rgb(0, 78, 138);
+    --file-btn-border: rgb(0, 0, 0);*/
 }
 
 /* Scroll bar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255, 255, 255) rgb(0, 0, 0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(0, 0, 0);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(255, 255, 255);
+    
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(255, 255, 255);
+}
+
+
 body {
-    background-color: #000000;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
-    background-size: cover;
     padding-top: 48px;
+    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background/*-image*/: var(--wallpaper, url(assets/wallpaper.jpg));
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
 }
 
 .hidden {
     display: none !important;
 }
 
-h1, h2, h3, h4, h5, h6, span, label, p, a, img {
+h1, h2, h3, h4, h5, h6, span, label, p, a, img, i {
     cursor: default;
     user-select: none;
     -ms-user-select: none;
@@ -89,11 +178,10 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     -webkit-user-select: text !important;
 }
 
-#bsod {
+#crashDetailsDiv {
     position: fixed;
     display: flex;
     flex-direction: column;
-    gap: 30px;
     width: 100%;
     height: 100%;
     top: 0;
@@ -101,20 +189,62 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     z-index: 9010;
     background-color: rgb(0, 0, 0);
     align-items: left;
-    justify-content: center;
-    padding-left: 40px;
-    cursor: none;
+    justify-content: left;
+    padding: 0;
+    cursor: none !important;
+    text-align: left;
+}
+#crashDetailsDiv span {
+    color: white;
+    font-family: monospace;
+    white-space: pre;
+    margin: 0;
+    width: 100%;
+    height: 100%;
 }
 
-#bsod p, #bsod h1{
+#bsod {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9010;
+    background-color: rgb(0, 0, 0);
+    align-items: center;
+    justify-content: center;
+    padding-left: 40px;
+    cursor: none !important;
+    text-align: center;
+}
+
+#bsod p, #bsod h3{
     color: white;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
+    cursor: none !important;
+    text-align: center;
+}
+
+#bsod h3, #body h1{
+    margin: 0;
+    cursor: none !important;
+}
+
+#bsod h1{
+    font-size: 60px !important;
+    margin: 0;
+    margin-bottom: 10px;
+    cursor: none !important;
 }
 
 #sysdivider {
     height: 1px;
-    width: 90%;
+    width: 25%;
     background-color: white;
+    cursor: none !important;
 }
 
 #startupscr {
@@ -130,7 +260,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     background-color: black;
     align-items: center;
     justify-content: center;
-    cursor: none;
+    cursor: none !important;
 }
 
 .startupscr_loadingcontainer {
@@ -138,22 +268,27 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     height: 10px;
     background-color: #000000;
     border: 1px solid white;
+    
     overflow: hidden;
     margin-bottom: 10px;
+    cursor: none !important;
 }
 
 .startupscr_loadingbar {
     width: 0%;
     height: 100%;
     background: linear-gradient(90deg, #ffffff, #f0f0f0);
-    animation: width 0.1s ease;
+    
+    
+    cursor: none !important;
 }
 
 .startupscr_loadingtext {
     text-align: center;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 14px;
     color: #b2b2b2;
+    cursor: none !important;
 }
 
 /*SEM - System Emergency Menu*/
@@ -174,18 +309,220 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 
 #sys-emg-menu p {
     color: white;
-    margin-bottom: 80px;
+    margin-bottom: 20px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+}
+
+#sys-emg-menu div {
+    width: 35%;
+    height: 1px;
+    background-color: white;
 }
 
 #sys-emg-menu button {
     border: none;
-    background-color: transparent;
-    cursor: pointer;
+    background-color: rgb(255, 255, 255);
     color: white;
+    height: 30px;
+    width: 30%;
+    
 }
 
 #sys-emg-menu button:hover {
-    color: rgb(155, 155, 155);
+    background-color: rgb(255, 255, 255);
+}
+
+#sys-emg-menu button:active {
+    background-color: transparent;
+}
+
+/* notis */
+#NotificationList {
+    position: fixed;
+    top: 40px;
+    right: 10px;
+
+    padding: 12px;
+    
+    overflow: hidden;
+
+    z-index: 8036;
+
+    width: 364px;
+    min-height: 50px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+#NotificationList::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+
+    
+    
+    will-change: transform;
+
+    mask-image: 
+        linear-gradient(to right, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%);
+    -webkit-mask-image: 
+        linear-gradient(to right, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%);
+
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+
+    pointer-events: none;
+}
+
+#NotificationList > * {
+    position: relative;
+    z-index: 1;
+}
+
+.sysNotification {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+    position: relative;
+
+    align-items: center;
+
+    width: 340px;
+    height: 100px;
+
+    background: 
+        linear-gradient(135deg, 
+            rgb(255, 255, 255) 0%, 
+            rgb(255, 255, 255) 100%),
+        rgb(0, 0, 0);
+    border: 1px solid rgb(255, 255, 255);
+    
+
+}
+
+.sysNotification:hover .sysNotificationDel {
+    display: flex !important;
+}
+
+.sysNotificationDel {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    
+    width: 24px;
+    height: 24px;
+    
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(255, 255, 255);
+    
+    
+    
+    color: rgb(0, 0, 0);
+    font-size: 12px;
+    line-height: 1;
+    
+    
+    
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.sysNotificationIconAndCont img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.sysNotificationIconAndCont {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    height: 100%;
+    width: 100%;
+    flex: 1;
+}
+
+.sysNotificationBtnsDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    gap: 8px;
+}
+
+.sysNotificationBtn {
+    background-color: transparent;
+    width: 100%;
+    height: 30px;
+    color: white;
+
+    border: none;
+    
+}
+
+.sysNotificationBtn:hover {
+    background-color: rgb(101, 101, 101);
+}
+.sysNotificationBtn:active {
+    background-color: rgb(45, 45, 45);
+}
+
+.notiItem_title {
+    font-size: 18px !important;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes slideOut {
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+@keyframes slideUp {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-98px);
+    }
+}
+
+.sysNotificationMain {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+    justify-content: center;
+}
+
+.sysNotificationMain p {
+    margin: 0;
+    color: white;
+    font-size: 14px;
+    font-family: 'Outfit', sans-serif;
+
+    text-shadow: 
+        0 0 8px rgb(0, 0, 0),
+        0 0 4px rgb(0, 0, 0);
 }
 
 /*msgbox*/
@@ -197,14 +534,16 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     height: 100%;
     background-color: rgb(0, 0, 0);
     backdrop-filter: blur(calc(8px * var(--blur-multiplier)));
+    will-change: transform;
     z-index: 9002;
 }
 
 #msg-box {
     background-color: #0000007c;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     /*border: 1px solid #ccc;*/
     box-shadow: 0 4px 8px rgb(0, 0, 0);
+    
     width: 400px;
     height: fit-content;
     padding: 20px;
@@ -217,12 +556,17 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     color: white;
 }
 
+#msg-box-text {
+    white-space: pre-line;
+}
+
 #msg-box-input {
     margin-top: 5px;
     padding: 8px;
     border: none;
     background: #ffffff3b;
     color: rgb(255, 255, 255);
+    
 }
 
 #msg-box-input:hover {
@@ -235,6 +579,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     border: none;
     background: #ffffff22;
     color: rgb(255, 255, 255);
+    
 }
 
 #msg-box-okbtn:hover {
@@ -248,6 +593,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     border: none;
     background: #ffffff22;
     color: rgb(255, 255, 255);
+    
 }
 
 #msg-box-cancelbtn:hover {
@@ -262,9 +608,11 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     align-items: center;
     background: var(--win-bg, rgb(0, 0, 0));
     backdrop-filter: blur(calc(20px * var(--blur-multiplier)));
-    font-family: 'JetBrains Mono', monospace;
+    will-change: transform;
+    font-family: 'Outfit', sans-serif;
     /*border: 1px solid #ccc;*/
     box-shadow: 0px 5px 5px rgb(0, 0, 0);
+    
     min-width: 350px;
     width: auto;
     height: fit-content;
@@ -305,12 +653,14 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     margin-bottom: 0;
     font-size: 28px;
     text-align: left;
-    color: var(--win-text, white)
+    color: var(--win-text, white);
+    white-space: pre-line;
 }
 
 #msg-box-win-text {
     text-align: left;
-    color: var(--win-text, white)
+    color: var(--win-text, white);
+    white-space: pre-line;
 }
 /*
 
@@ -345,6 +695,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     border: none;
     background: #ffffff3b;
     color: rgb(255, 255, 255);
+    
     margin-bottom: 5px;
     margin-top: 14px;
 }
@@ -369,6 +720,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     border: none;
     background-color: rgb(0, 145, 255);
     color: rgb(255, 255, 255);
+    
 }
 
 #msg-box-win-okbtn:hover {
@@ -388,6 +740,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     border: none;
     background-color: rgb(75, 75, 75);
     color: rgb(255, 255, 255);
+    
 }
 
 #msg-box-win-cancelbtn:hover {
@@ -401,9 +754,70 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 
+/*quickview*/
+#quickview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--win-bg, rgb(0, 0, 0));
+    backdrop-filter: blur(calc(20px * var(--blur-multiplier)));
+    font-family: 'Outfit', sans-serif;
+    box-shadow: 0px 5px 5px rgb(0, 0, 0);
+    
+    width: 350px;
+    width: auto;
+    height: fit-content;
+    padding: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: left;
+    z-index: 9004;
+    position: fixed;
+    color: white;
+}
 
+#quickview_img {
+    max-width: 500px;
+    max-height: 500px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    
+}
 
+#quickview video {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+}
 
+#quickview p {
+    color: white;
+}
+
+#quickview_div_closebtn {
+    width: 100%;
+    height: auto;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    justify-content: flex-start;
+}
+
+#quickview_closebtn {
+    width: 18px;
+    height: 18px;
+    
+    background-color: rgb(255, 255, 255);
+    color: white;
+    font-size: 10px;
+    border: none;
+}
+
+/*login scr*/
 #loginscr {
     position: fixed;
     display: flex;
@@ -419,9 +833,31 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     z-index: 9003;
 }
 
+#loginscr_time {
+    color: transparent;
+    font-size: 90px;
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(to bottom, rgb(255, 255, 255), rgb(255, 255, 255));
+    background-clip: text;
+    -webkit-background-clip: text;
+    margin-bottom: 190px;
+}
+
+#loginscr_userlist {
+    height: auto;
+    width: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+}
+
 .loginscr_account {
     padding: 10px;
     margin-bottom: 8px;
+    
     background-color: rgb(46, 46, 46);
     height: 50px;
     width: 220px;
@@ -431,7 +867,7 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     justify-content: center;
     gap: 20px;
     color: white;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
 }
 
 .loginscr_account:hover {
@@ -492,7 +928,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #loginscr_passwordinput {
-        border: none;
+    
+    border: none;
     background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
@@ -510,6 +947,77 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     flex-direction: column;
     gap: 8px;
     align-items: center;
+}
+
+.loginscr_options img {
+    width: 22px;
+    height: 22px;
+    object-fit: cover;
+}
+
+.loginscr_options {
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    border: none;
+    
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loginscr_options:hover {
+    background: rgb(255, 255, 255);
+}
+
+.loginscr_options:active {
+    background: rgb(255, 255, 255);
+}
+
+#loginscr_options_dp {
+    position: fixed;
+
+    bottom: 120px;
+    right: 90px;
+
+    transform: translate(50%, 50%);
+
+    width: 120px;
+    height: auto;
+
+    background: rgb(0, 0, 0);
+    
+
+    
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding: 10px;
+    z-index: 8037;
+}
+
+#loginscr_options_dp button {
+    background-color: transparent;
+    border: none;
+    
+    color: white;
+    padding: 6px;
+    margin: 0;
+    width: 100%;
+}
+
+#loginscr_options_dp button:hover {
+    background-color: rgb(255, 255, 255);
+}
+
+#loginscr_options_dp button:active {
+    background-color: rgb(255, 255, 255);
 }
 
 /*Sistema de usuarios*/
@@ -552,7 +1060,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #settings_newuser_usernameinput {
-        border: none;
+    
+    border: none;
     background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
@@ -566,7 +1075,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #settings_newuser_displaynameinput {
-        border: none;
+    
+    border: none;
     background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
@@ -580,7 +1090,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 #settings_newuser_passwordinput {
-        border: none;
+    
+    border: none;
     background-color: rgb(75, 75, 75);
     color: white;
     height: 30px;
@@ -609,8 +1120,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     display: flex;
     align-items: center;
     padding: 0 12px;
-    background-color: var(--sysbar-base, rgb(0, 0, 0));
-    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
+    background: linear-gradient(to top, rgb(0, 0, 0), rgb(0, 0, 0));
+    /*backdrop-filter: blur(calc(20px * var(--blur-multiplier))) saturate(200%);*/
     z-index: 8000;
     /*transision*/
     
@@ -636,7 +1147,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 
 #timetext {
     color: white;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
+    text-shadow: 1px 1px 7px rgb(0, 0, 0);
 }
 
 #topbar_button {
@@ -647,6 +1159,17 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     height: 23px;
 }
 
+#topbar_program {
+    background: none;
+    border: none;
+    padding: 0 8px;
+    width: auto;
+    height: 23px;
+    font-size: 15px;
+    color: white;
+    font-family: 'Outfit', sans-serif;
+}
+
 #topbar_nekiri {
     background: none;
     border: none;
@@ -655,12 +1178,71 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     height: 23px;
 }
 
+#topbar_brief {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+}
+
+#topbar_brief:hover {
+    filter: brightness(0.80);
+}
+
+#topbar_control {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+}
+
 #topbar_button:hover {
-    filter: brightness(0.60);
+    filter: brightness(0.80);
+}
+
+#topbar_control:hover {
+    filter: brightness(0.80);
 }
 
 #topbar_nekiri:hover {
-    filter: brightness(0.60);
+    filter: brightness(0.80);
+}
+
+#topbar_right_el {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    width: auto ;
+    margin: 0;
+}
+
+#topbar_battery {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+#topbar_network {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.battery-empty {
+    filter: invert(27%) sepia(98%) saturate(7498%) hue-rotate(356deg) brightness(95%) contrast(118%);
+}
+
+.battery-charging {
+    filter: brightness(0) invert(1);
 }
 
 #topbar_button img {
@@ -669,11 +1251,25 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     object-fit: contain;
 }
 
+#topbar_control img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
 #topbar_nekiri img {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
+
+#topbar_brief img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
 
 .dropdown-menu {
     position: absolute;
@@ -684,32 +1280,174 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     background: var(--sysbar-second, #0000007b);
     color: white;
     padding: 10px;
-        z-index: 8035;
-    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
-    align-items: center;
     
+    z-index: 8035;
+    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
+    will-change: transform;
+    align-items: center;
+    width: auto;
+    min-width: 180px;
 }
 
 .dropdown-menu button {
     background-color: transparent;
     border: none;
-        color: white;
-    padding: 6px;
+    
+    color: white;
+    padding: 4px;
     margin: 0;
     width: 100%;
+    height: 25px;
+    text-align: center;
 }
 
 .dropdown-menu button:hover {
-    background-color: #0000007b;
+    background-color: rgb(255, 255, 255);
 }
 
-.dropdown-menu button:active {
+
+#control-dropdown {
+    
+    overflow: hidden;
+
+    width: 360px;
+    min-height: 250px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
+    background: transparent;
+    backdrop-filter: none;
+}
+#control-dropdown::before {
+    
+    content: "";
+    position: absolute;
+    inset: -2px;
+
+    
+    
+    will-change: transform;
+
+    background: radial-gradient(
+        ellipse 90% 80% at center,
+        rgb(0, 0, 0) 40%,
+        transparent 65%
+    );
+
+    mask-image: 
+        linear-gradient(to right, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%);
+    -webkit-mask-image: 
+        linear-gradient(to right, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%);
+
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+
+    pointer-events: none;
+}
+#control-dropdown > * {
+    position: relative;
+    z-index: 1;
+}
+.controlpanel_smallsetting,
+.controlpanel_setting,
+.controlpanel_twowrapper {
+    position: relative;
+    z-index: 1;
+}
+.controlpanel_twowrapper {
+    width: 100%;
+    height: 60px;
+    background: transparent;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.controlpanel_smallsetting {
+    width: 50%;
+    height: 60px;
+    
     background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(255, 255, 255);
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    padding: 6px;
+    box-sizing: border-box;
+    
+}
+.controlpanel_smallsetting:hover {
+    background-color: rgb(255, 255, 255);
+}
+.controlpanel_smallsetting label {
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+}
+.controlpanel_smallsetting img {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    margin-left: 18px;
+    filter: brightness(0) invert(1);
+}
+.controlpanel_setting {
+    width: 100%;
+    height: 60px;
+    
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    padding: 6px;
+    box-sizing: border-box;
+    
+}
+.controlpanel_setting:hover {
+    background-color: rgb(255, 255, 255);
+}
+.controlpanel_setting .ctrlpanel_stng_label {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    text-align: center;
+}
+.controlpanel_setting .ctrlpanel_stng_label img {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    margin-left: 18px;
+    filter: brightness(0) invert(1);
+}
+.controlpanel_setting .ctrlpanel_stng_label label {
+    color: rgb(255, 255, 255);
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+}
+.controlpanel_setting input {
+    margin: 0;
+    width: 94% !important;
+    flex-shrink: 0;
+    height: 10px;
 }
 
 #nekiri-dropdown {
     width: 350px;
-    background: var(--sysbar-third, #181818ea);
+    background: rgb(0, 0, 0);
 }
 
 #nekiri_div_topbtns {
@@ -725,20 +1463,219 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 #nekiri_input {
     border: 2px solid rgb(49, 49, 49);
     background-color: rgb(21, 21, 21);
-        color: white;
+    
+    color: white;
     width: 100%;
 }
 
 #nekiri_send {
     border: 2px solid rgb(49, 49, 49);
     background-color: rgb(21, 21, 21);
-        color: white;
+    
+    color: white;
     width: 30px;
+    height: auto;
+}
+
+#nekiri_send:hover {
+    background: rgb(49, 49, 49);
+}
+
+
+#nekiri_search {
+    border: 2px solid rgb(49, 49, 49);
+    background-color: rgb(21, 21, 21);
+    
+    color: white;
+    width: 180px;
+    height: 50px;
+}
+#nekiri_search:hover {
+    background-color: rgb(49, 49, 49);
+}
+
+#nekiri_netimg {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
 }
 
 #nekiri_response {
     color: white;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
+}
+
+#nekiri_smartcard {
+    border: 2px solid rgb(49, 49, 49);
+    background-color: rgb(21, 21, 21);
+    
+    color: white;
+    width: 100%;
+    height: 150px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+#brief-dropdown {
+    width: 450px;
+    height: 230px;
+    background: var(--sysbar-third, #181818ea);
+
+    background-image: url('assets/morning.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+#brief-dropdown::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(0, 0, 0);
+    z-index: 0;
+}
+
+#brief-dropdown > * {
+    position: relative;
+    z-index: 1;
+}
+
+#brief_dp_content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+}
+
+#brief_dp_content_verticaldiv {
+    height: 100%;
+    width: 1px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    
+    background-color: rgb(215, 215, 215);
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+#brief_dp_content_weather {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+
+#brief_dp_content_weather_text_maxmin,
+#brief_dp_content_weather_text_feelslike,
+#brief_dp_content_weather_text_description {
+    font-size: 14px;
+    font-family: 'Outfit', sans-serif;
+    margin: 1px;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+}
+#brief_dp_content_weather_text_place {
+    font-size: 16px;
+    font-family: 'Outfit', sans-serif;
+    margin: 1px;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+}
+#brief_dp_content_weather_text_temp {
+    font-size: 22px;
+    font-family: 'Outfit', sans-serif;
+    margin: 1px;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+}
+#brief_dp_content_weather_icon {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+#brief_dp_content_weather_tempicon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+#brief_dp_openbtn {
+    width: 100%;
+    height: 30px;
+    background-color: rgb(255, 255, 255);
+    
+    flex-shrink: 0;
+}
+
+#brief_dp_openbtn:active {
+    background-color: rgb(201, 201, 201);
+}
+
+#brief_dp_content_usage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+
+.brief_dp_content_usage_card {
+    width: 100%;
+    height: 50px;
+    background-color: rgb(255, 255, 255);
+    
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.brief_dp_content_usage_card:active {
+    background-color: rgb(201, 201, 201);
+}
+
+.brief_dp_content_usage_card_img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.brief_dp_content_usage_card_content {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    justify-content: center;
+}
+
+.brief_dp_content_usage_card_content_appname {
+    font-size: 14px;
+    font-family: 'Outfit', sans-serif;
+    margin: 1px;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+}
+
+.brief_dp_content_usage_card_content_apptimeuse {
+    font-size: 12px;
+    font-family: 'Outfit', sans-serif;
+    margin: 1px;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
 }
 
 #appbar {
@@ -754,7 +1691,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     padding: 15px;
     box-sizing: border-box;
 
-        background-color: var(--sysbar-base, rgb(0, 0, 0));
+    
+    background-color: var(--sysbar-base, rgb(0, 0, 0));
     backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
     z-index: 8002;
 
@@ -772,19 +1710,31 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 }
 
 .appbar-app {
+    position: relative;
     border: none;
     background: none;
-
     
     transform-origin: center;
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .appbar-app:hover {
-    transform: scale(1.20);
+    transform: scale(1.35);
 }
 
 .appbar-app:active {
-    filter: brightness(0.70);
+    transform: scale(1.35);
+    filter: brightness(0.60);
+    
+}
+
+.appbar-app.appbar-neighbor-1 {
+    transform: scale(1.15);
+}
+
+.appbar-app.appbar-neighbor-2 {
+    transform: scale(1.07);
 }
 
 .app-img {
@@ -802,8 +1752,9 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     width: auto;
     padding: 2px 12px;
     height: 30px;
-        backdrop-filter: blur(calc(5px * var(--blur-multiplier)));
-    font-family: 'JetBrains Mono', monospace;
+    
+    backdrop-filter: blur(calc(5px * var(--blur-multiplier)));
+    font-family: 'Outfit', sans-serif;
     text-align: center;
     justify-content: center;
 
@@ -812,18 +1763,91 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     
     z-index: 8003;
 }
+
+#appbar-ctxmenu {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    color: white;
+    background-color: var(--sysbar-second, #0000007b);
+    width: auto;
+    height: auto;
+    padding: 10px;
+    
+    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+    z-index: 8004;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.appbar-ctxmenu-btn {
+    background-color: transparent;
+    border: none;
+    
+    color: white;
+    padding: 6px;
+    margin: 0;
+    width: 100%;
+}
+
+.appbar-ctxmenu-btn:hover {
+    background-color: #0000007b;
+}
+
+.appbar-ctxmenu-btn:active {
+    background-color: rgb(255, 255, 255);
+}
+
+.appbar-separator {
+    width: 30px;
+    height: 1px;
+    background: rgb(255, 255, 255);
+    margin: 0 4px;
+    align-self: center;
+}
+
+.appbar-dot {
+    width: 4px;
+    height: 4px;
+    
+    background: rgb(255, 255, 255);
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.appbar-dot-active {
+    background: rgb(255, 255, 255);
+}
+
 /*Ventanas*/
-.window.win-max {
+.window_anim_open {
+    transform: scale(1) !important;
+    opacity: 1 !important;
+}
+
+/*.window.win-max {
     left: 85px !important;
     top: 4px !important;
     right: 4px !important;
     bottom: 4px !important;
-    width: auto !important;
-    height: auto !important;
-}
+    width: auto;
+    height: auto;
+}*/
 
 .window.win-max .resize-handle {
     display: none;   /* no tiene sentido redimensionar si está maximizada jajajaja */
+}
+
+.win-focused {
+    box-shadow: 0px 5px 5px rgb(0, 0, 0) !important;
 }
 
 .window {
@@ -834,20 +1858,35 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     width: 300px;
     height: 200px;
 
-    background: var(--win-bg, rgb(0, 0, 0));
-    backdrop-filter: blur(calc(20px * var(--blur-multiplier)));
+    background-color: var(--win-bg, rgb(0, 0, 0));
+    backdrop-filter: blur(calc(60px * var(--blur-multiplier))) saturate(140%);
+    will-change: transform;
     color: white;
     
+
     box-shadow: 0px 5px 5px rgb(0, 0, 0);
+    border: 1px solid rgb(255, 255, 255);
 
     z-index: 8020;
     overflow: hidden;
 
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
 
     display: flex;
     flex-direction: column;
+
+    transform: scale(0.9);
+    
+    opacity: 0;
+    contain: layout style;
 }
+
+.window.win-animating {
+    transition: transform 0.1s ease, opacity 0.1s ease,
+                width 0.35s ease, height 0.35s ease,
+                left 0.35s ease, top 0.35s ease;
+}
+
 
 .grab {
     height: 38px;
@@ -855,29 +1894,39 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
+
     padding: 0 10px;
+    position: relative;
 
     user-select: none;
 }
 
-/*.grab:active {
-    cursor: grabbing;
+/*.grab:hover .grab-btn {
+    filter: brightness(10);
 }*/
 
 .grab-title {
     pointer-events: none;
-    color: var(--win-text, white)
+    color: var(--win-text, white);
+
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    font-size: 14px;
+    opacity: 0.92;
+    white-space: nowrap;
 }
 
 .grab-btn {
     background: var(--win-grab-btn, rgb(0, 0, 0));
     border: none;
     color: var(--win-text, white);
-    font-size: 14px;
+    font-size: 10px;
     padding: 3px;
-        width: 28px;
-    height: 28px;
+    
+    width: 20px;
+    height: 20px;
 }
 
 .grab-btn:hover {
@@ -901,8 +1950,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     right: 0;
     bottom: 0;
 
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
 
     cursor: nwse-resize;
     background: transparent;
@@ -912,80 +1961,44 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     display: none;
 }
 
-/*Config*/
-.content_settings {
+/*System UI*/
+
+#files-btnsdiv {
     display: flex;
     flex-direction: row;
-    /*height: 100%;*/
-    gap: 10px;
-
-    /*test*/
-    flex: 1;
-    min-height: 0;
-    color: var(--win-text, white);
-}
-
-.settings-sidebar {
-    width: 160px;
-    background: var(--win-second, rgb(0, 0, 0));
-    padding: 6px;
-    box-sizing: border-box;
-        overflow-y: auto;
-    min-height: 0;
-    color: var(--win-text, white);
-}
-
-.settings-sidebar .tab {
-    width: 100%;
-    margin-bottom: 4px;
-    padding: 8px;
-
-    background: none;
-    border: none;
-    color: var(--win-text, white);
-    text-align: left;
-
-    }
-
-
-.settings-sidebar .tab.profile {
-    width: 100%;
-    height: 60px;
-    display: flex;
-    flex-direction: row;
-    gap: 18px;
+    gap: 8px;
     align-items: center;
+    width: 100%;
 }
 
-.settings-sidebar .tab.profile i {
-    margin: 0;
-    font-size: 24px;
+.files-btnstyled {
+    width: 100%;
+    height: 25px;
+    border: none;
+    
+    color: white;
 }
 
-.tabprofilet p {
-    margin: 0;
-    font-size: 14px;
+#files-btn_cancel {
+    background-color: rgb(75, 75, 75);
+}
+#files-btn_cancel:hover {
+    background-color: rgb(101, 101, 101);
+}
+#files-btn_cancel:active {
+    background-color: rgb(45, 45, 45);
 }
 
-.tabprofilet2 {
-    font-size: 10px;
-    color: rgb(0, 0, 0);
-}
 
-.settings-sidebar .tab:hover {
-    background-color: rgb(0, 0, 0);
-}
 
-.settings-sidebar .tab:active {
-    background-color: rgb(0, 0, 0);
+#files-btn_newfile {
+    background-color: rgb(0, 145, 255);
 }
-
-.settings-content {
-    flex: 1;
-    padding: 12px;
-    overflow-y: auto;
-    box-sizing: border-box;
-    min-height: 0;
+#files-btn_newfile:hover {
+    background-color: rgb(54, 168, 255);
+}
+#files-btn_newfile:active {
+    background-color: rgb(0, 126, 222);
 }
 
 .tab-content {
@@ -1005,7 +2018,23 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 .uisetting {
     padding: 10px;
     margin-bottom: 8px;
-        background-color: var(--uisetting-base, rgb(46, 46, 46));
+    
+    background-color: var(--uisetting-base, rgb(46, 46, 46));
+    font-family: 'Outfit', sans-serif;
+}
+
+.uisetting_container {
+    padding: 10px;
+    margin-bottom: 8px;
+    
+    background-color: var(--uisetting-base, rgb(46, 46, 46));
+    font-family: 'Outfit', sans-serif;
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    grid-auto-rows: auto;
+    justify-content: center;
+    align-content: center;
+    gap: 10px;    
 }
 
 .uisetting:hover {
@@ -1015,7 +2044,6 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
 .checkbox {
     display: flex;
     gap: 8px;
-    cursor: pointer;
 }
 
 .checkbox input {
@@ -1042,7 +2070,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     position: absolute;
     inset: 0;
     background: var(--uisetting-third, #555);
-        
+    
+    
 }
 
 .slider::before {
@@ -1053,7 +2082,8 @@ h1, h2, h3, h4, h5, h6, span, label, p, a, img {
     left: 2px;
     top: 2px;
     background: white;
-        
+    
+    
 }
 
 .switch input:checked + .slider {
@@ -1072,7 +2102,8 @@ input[type="range"] {
     width: 100%;
     padding: 6px;
     margin-top: 4px;
-        border: none;
+    
+    border: none;
     background: var(--uisetting-second, #555);
     color: rgb(255, 255, 255);
 }
@@ -1080,17 +2111,18 @@ input[type="range"] {
 .select {
     width: 100%;
     padding: 6px;
-        background: var(--uisetting-second, #555);
+    
+    background: var(--uisetting-second, #555);
     color: white;
     border: none;
 }
 
 .btn {
     padding: 6px 10px;
-        border: none;
+    
+    border: none;
     background: var(--uisetting-second, #555);
     color: white;
-    cursor: pointer;
 }
 
 .btn.primary {
@@ -1099,11 +2131,17 @@ input[type="range"] {
 
 .btn:hover {
     opacity: 0.85;
+    background: #393939;
+}
+
+.btn.primary {
+    background: #418bda !important;
 }
 
 #screendiv {
     padding: 4px;
-        color: rgb(0, 0, 0);
+    
+    color: rgb(0, 0, 0);
     box-shadow: 0px 2px 5px rgb(0, 0, 0);
     width: 160px;
     height: 110px;
@@ -1125,1167 +2163,33 @@ input[type="range"] {
     font-size: 28px;
 }
 
-
-
-/*Notas*/
-.content_notes {
-    display: flex;
-}
-
-.content_notes textarea {
-    resize: none;
-    width: 100%;
-    height: 100%;
-    flex: 1;
-    border: none;
-    outline: none;
-    box-sizing: border-box;
-        font-family: 'JetBrains Mono', monospace;
-    top: 6px;
-}
-
-.content_notes button {
-        border: none;
-    color: white;
-    background-color: rgb(0, 0, 0);
-    padding: 2px;
-    width: 76px;
-    height: 30px;
-}
-
-.content_notes button:hover {
-    background-color: rgb(0, 0, 0);
-}
-
-.program_topbar {
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    padding: 2px;
-    gap: 6px;
-}
-
-
-.content_savenote {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-}
-
-#notes-savefilename {
-        border: none;
-    background-color: rgb(75, 75, 75);
-    color: white; 
-    height: 30px;
-    width: 100%;
-    box-sizing: border-box;
-    flex: 0 0 auto;
-}
-
-#notes-savefilename:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#notes-btnsdiv {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
-    width: 100%;
-}
-
-.files-btnstyled {
-    width: 100%;
-    height: 25px;
-    border: none;
-        color: white;
-}
-
-#notes-btn_cancel {
-    background-color: rgb(75, 75, 75);
-}
-#notes-btn_cancel:hover {
-    background-color: rgb(101, 101, 101);
-}
-#notes-btn_cancel:active {
-    background-color: rgb(45, 45, 45);
-}
-
-
-
-#notes-btn_save {
-    background-color: rgb(0, 145, 255);
-}
-#notes-btn_save:hover {
-    background-color: rgb(54, 168, 255);
-}
-#notes-btn_save:active {
-    background-color: rgb(0, 126, 222);
-}
-
-
-/*
-            <div id="notes-btnsdiv">
-                <button id="notes-btn_save" class="files-btnstyled">Guardar</button>
-                <button id="notes-btn_cancel" class="files-btnstyled">Cancelar</button>
-            </div>
-
-#files-btnsdiv {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
-    width: 100%;
-}
-
-.files-btnstyled {
-    width: 100%;
-    height: 25px;
-    border: none;
-        color: white;
-}
-
-#files-btn_cancel {
-    background-color: rgb(75, 75, 75);
-}
-#files-btn_cancel:hover {
-    background-color: rgb(101, 101, 101);
-}
-#files-btn_cancel:active {
-    background-color: rgb(45, 45, 45);
-}
-
-
-
-#files-btn_newfile {
-    background-color: rgb(0, 145, 255);
-}
-#files-btn_newfile:hover {
-    background-color: rgb(54, 168, 255);
-}
-#files-btn_newfile:active {
-    background-color: rgb(0, 126, 222);
-}
-
-    <div class="window hidden no-resize" id="win_savenote">
-        <div class="grab">
-            <span class="grab-title">Guardar Nota</span>
-            <button class="grab-btn" id="btn_savenote">X</button>
-        </div>
-
-        <div class="win_content content_savenote">
-            <p>Nombre del archivo:</p>
-            <input type="text" id="notes-savefilename" placeholder="mi-nota.txt">
-            <div id="notes-btnsdiv">
-                <button id="notes-btn_save" class="files-btnstyled">Guardar</button>
-                <button id="notes-btn_cancel" class="files-btnstyled">Cancelar</button>
-            </div>
-        </div>
-        <div class="resize-handle"></div>
-    </div>
-*/
-
-
-/*Calc*/
-.content_calc {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-}
-
-#calcdisplay {
-    flex: 1;
-    width: 100%;
-    height: 30px;
-    margin-bottom: 10px;
-    background-color: rgb(46, 46, 46);
-        border: none;
-    color: white;
-    text-align: right;
-    font-size: 34px;
-}
-
-#calcbuttons {
+.userinfogrid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-gap: 8px;
-    width: 100%;
-    flex: 3;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 10px;
 }
 
-.calcbutton {
-    background-color: rgb(75, 75, 75);
-        border: none;
-    color: white;
-    font-size: medium;
-}
-
-.calcbutton:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-.calcbutton:active {
-    background-color: rgb(45, 45, 45);
-}
-
-/*Navegador*/
-.content_browser {
+.userinfodiv {
     display: flex;
-    width: 100%;
-    height: 100%;
-}
-
-#browseriframe {
-    flex: 1;
-    border: none;
-        
-}
-
-#navbar {
-    display: flex;
-    height: 29px;
-    align-items: center;
-    gap: 6px;
-    padding: 6px;
-}
-
-#navbar input {
-    flex: 1;
-    min-width: 0;
-        border: none;
-    background-color: rgb(75, 75, 75);
-    color: white;
-    height: 30px;
-}
-
-#navbar input:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#navbar input:active {
+    flex-direction: column;
+    gap: 10px;
     border: 2px solid white;
-}
-
-#navbar button {
-        border: none;
-    background-color: rgb(75, 75, 75);
-    color: white;
-    height: 30px;
-}
-
-#navbar button:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#navbar button:active {
-    background-color: rgb(45, 45, 45);
-}
-
-/*Files*/
-.content_files {
-    overflow: auto;
-}
-
-.file-btn {
-    width: 100%;
-    text-align: center;
-        padding: 4px 8px;
-    border: none;
-    background-color: var(--file-btn-base, rgb(75, 75, 75));
-    color: white;
-    text-align: left;
-}
-
-.file-btn:hover {
-    background-color: var(--file-btn-hover, rgb(101, 101, 101));
-}
-
-.file-btn:active {
-    background-color: var(--file-btn-active, rgb(45, 45, 45));
-}
-
-.file-btn.selected {
-    background-color: var(--file-btn-selected, rgb(101, 101, 101));
-    border: 1px solid var(--file-btn-border, gray);
-}
-
-.file-btn-up {
-    width: auto;
-    text-align: center;
-        padding: 4px 8px;
-    border: none;
-    background-color: rgb(75, 75, 75);
-    color: white;
-}
-
-.file-btn-up:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-.file-btn-up:active {
-    background-color: rgb(45, 45, 45);
-}
-
-
-
-#toolbar {
-    display: flex;
-    flex-direction: row;
-    gap: 6px;
-    margin-bottom: 10px
-}
-
-#toolbar button {
-    width: auto;
-    text-align: center;
-        padding: 4px 8px;
-    border: none;
-    background-color: rgb(75, 75, 75);
-    color: white;
-}
-
-#toolbar button:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#toolbar button:active {
-    background-color: rgb(45, 45, 45);
-}
-
-#verticaldivisor {
-    width: 2px;
-    height: 24px;
-    margin: 0px 6px;
-    background-color: rgb(75, 75, 75);
-}
-
-.filesaltmenu {
-    position: fixed;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    background: #0000007b;
-    color: white;
-    padding: 10px;
-        z-index: 8022;
-    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
-    min-width: 150px;
-}
-.filesaltmenu button {
-    width: 100%;
-    background: none;
-    color: white;
-        text-align: left;
-    border: none;
-    padding: 4px 10px;
-}
-
-.filesaltmenu button:hover {
-    background: rgb(101, 101, 101);
-}
-
-.content_askforfilecreation {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-}
-
-#files-newfilename {
-        border: none;
-    background-color: rgb(75, 75, 75);
-    color: white;
-    height: 30px;
-    width: 100%;
-    box-sizing: border-box;
-    flex: 0 0 auto;
-}
-
-#files-newfilename:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#files-newfiletype {
-        border: none;
-    background-color: rgb(75, 75, 75);
-    color: white;
-    height: 30px;
-    width: 100%;
-    box-sizing: border-box;
-    flex: 0 0 auto;
-}
-
-#files-newfiletype:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#files-btnsdiv {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
-    width: 100%;
-}
-
-.files-btnstyled {
-    width: 100%;
-    height: 25px;
-    border: none;
-        color: white;
-}
-
-#files-btn_cancel {
-    background-color: rgb(75, 75, 75);
-}
-#files-btn_cancel:hover {
-    background-color: rgb(101, 101, 101);
-}
-#files-btn_cancel:active {
-    background-color: rgb(45, 45, 45);
-}
-
-
-
-#files-btn_newfile {
-    background-color: rgb(0, 145, 255);
-}
-#files-btn_newfile:hover {
-    background-color: rgb(54, 168, 255);
-}
-#files-btn_newfile:active {
-    background-color: rgb(0, 126, 222);
-}
-
-/*Calendar*/
-.content_calendar {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    overflow-y: auto;
-    box-sizing: border-box;
-    height: 100%;
-}
-
-.calendar_header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.calendar_header h2 {
-    color: white;
-    font-size: 24px;
-    margin: 0;
-}
-
-.calendar_nav-btn {
-    background-color: rgb(0, 145, 255);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-        font-size: 20px;
-}
-
-.calendar_nav-btn:hover {
-    background-color: rgb(54, 168, 255);
-}
-
-.calendar_allweekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.calendar_weekday {
-    text-align: center;
-    font-weight: bold;
-    color: rgb(0, 145, 255);
-    padding: 10px 0;
-}
-
-.calendar_days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-}
-
-.calendar_day {
-    aspect-ratio: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid #e0e0e0;
-        
-    position: relative;
-    background-color: rgb(75, 75, 75);
-}
-
-.calendar_day:hover {
-    border-color: rgb(54, 168, 255);
-    transform: scale(1.05);
-}
-
-.calendar_day.empty {
-    border: none;
-}
-
-.calendar_day.empty:hover {
-    transform: none;
-}
-
-.calendar_day.today {
-    background-color: rgb(0, 145, 255);
-    color: white;
-    border-color: rgb(0, 145, 255);
-}
-
-.calendar_day-number {
-    font-size: 16px;
-    font-weight: 500;
-}
-
-.calendar_star {
-    font-size: 20px;
-    margin-top: 2px;
-}
-
-/*Terminal*/
-.content_terminal {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    overflow-y: scroll;
-    line-height: 1.2;
-}
-
-.content_terminal p {
-    margin: 0;
-}
-
-#terminalin {
-    outline: none;
-    border: none;
-    background: transparent;
-    font-size: 12px;
-    color: white;
-    width: 100%;
-}
-
-#terminalinDiv {
-    display: flex;
-    flex-direction: row;
-    gap: 1px;
-}
-
-/*Toybox*/
-.content_toybox {
-    position: relative;
-    display: flex;
-    flex-direction: row-reverse;
-    gap: 10px;
-}
-
-#toyboxBtnsDiv {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 10px;
-    overflow-y: scroll;
-    flex-shrink: 0;
-    background: rgb(0, 0, 0);
-        padding: 4px;
-}
-
-#toyboxBtnsDiv button {
-    width: 230px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: transparent;
-    border: none;
-        color: white;
-}
-
-#toyboxBtnsDiv button:hover {
-    background-color: rgb(0, 0, 0);
-}
-
-#toyboxBtnsDiv button:active {
-    background-color: rgb(0, 0, 0);
-}
-
-
-#toyboxBtnsDiv button img{
-    width: 220px;
-    height: 160px;
-    margin-top: 4px;
-    object-fit: cover;
-    display: block;
-    }
-
-.toyboxTab {
-    flex: 1;
-    min-width: 0;
-}
-
-/*Nyx video player*/
-#askForVideoFile-btnsdiv {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
-    width: 100%;
-}
-
-#askForVideoFile-btn_cancel {
-    background-color: rgb(75, 75, 75);
-}
-#askForVideoFile-btn_cancel:hover {
-    background-color: rgb(101, 101, 101);
-}
-#askForVideoFile-btn_cancel:active {
-    background-color: rgb(45, 45, 45);
-}
-
-
-
-#askForVideoFile-btn_save {
-    background-color: rgb(0, 145, 255);
-}
-#askForVideoFile-btn_save:hover {
-    background-color: rgb(54, 168, 255);
-}
-#askForVideoFile-btn_save:active {
-    background-color: rgb(0, 126, 222);
-}
-
-#nyxvideoplayer_openFilePrompt {
-    background-color: rgb(75, 75, 75);
-    margin-bottom: 10px;
-}
-
-#nyxvideoplayer_openFilePrompt:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#nyxvideoplayer_openFilePrompt:active {
-    background-color: rgb(45, 45, 45);
-}
-
-
-
-#nyxvideoplayer_selectVid {
-    background-color: rgb(75, 75, 75);
-    margin-bottom: 10px;
-    border: none;
-        color: white;
-    height: 25px;
-}
-
-#nyxvideoplayer_selectVid:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#nyxvideoplayer_selectVid:active {
-    background-color: rgb(45, 45, 45);
-}
-
-/*Nyx img player*/
-.content_nyximageviewer {
-    overflow-y: scroll;
-}
-
-#askForImageFile-btnsdiv {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
-    width: 100%;
-}
-
-#askForImageFile-btn_cancel {
-    background-color: rgb(75, 75, 75);
-}
-#askForImageFile-btn_cancel:hover {
-    background-color: rgb(101, 101, 101);
-}
-#askForImageFile-btn_cancel:active {
-    background-color: rgb(45, 45, 45);
-}
-
-
-
-#askForImageFile-btn_save {
-    background-color: rgb(0, 145, 255);
-}
-#askForImageFile-btn_save:hover {
-    background-color: rgb(54, 168, 255);
-}
-#askForImageFile-btn_save:active {
-    background-color: rgb(0, 126, 222);
-}
-
-#nyximageviewer_openFilePrompt {
-    background-color: rgb(75, 75, 75);
-    margin-bottom: 10px;
-}
-
-#nyximageviewer_openFilePrompt:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#nyximageviewer_openFilePrompt:active {
-    background-color: rgb(45, 45, 45);
-}
-
-
-
-#nyximageviewer_selectVid {
-    background-color: rgb(75, 75, 75);
-    margin-bottom: 10px;
-    border: none;
-        color: white;
-    height: 25px;
-}
-
-#nyximageviewer_selectVid:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#nyximageviewer_selectVid:active {
-    background-color: rgb(45, 45, 45);
-}
-
-/*nyxclient*/
-.content_nytclient {
-    display: flex;
-    width: 100%;
-    height: 100%;
-}
-
-#nytclientiframe {
-    flex: 1;
-    border: none;
-        
-}
-
-#nytclientnavbar {
-    display: flex;
-    height: 29px;
-    align-items: center;
-    gap: 6px;
-    padding: 6px;
-}
-
-#nytclientnavbar input {
-    flex: 1;
-    min-width: 0;
-        border: none;
-    background-color: rgb(75, 75, 75);
-    color: white;
-    height: 30px;
-}
-
-#nytclientnavbar input:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#nytclientnavbar input:active {
-    border: 2px solid white;
-}
-
-#nytclientnavbar button {
-        border: none;
-    background-color: rgb(75, 75, 75);
-    color: white;
-    height: 30px;
-}
-
-#nytclientnavbar button:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#nytclientnavbar button:active {
-    background-color: rgb(45, 45, 45);
-}
-
-/*ARCADE*/
-#arcadeiframe {
-    position: static;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-/*Nyxpawstore*/
-.content_nyxpawstore {
-    width: 100%;
-    height: 100%;
-}
-
-#nyxpawstore_mainmenu {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 270px);
-    gap: 10px;
-    width: 100%;
-    overflow-y: scroll;
-}
-
-.nyxpawstore_app {
-    width: 270px;
-    height: 150px;
-    background-color: rgb(75, 75, 75);
+    padding: 18px;
     
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
 }
 
-.nyxpawstore_imgtextrow {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-}
-
-.nyxpawstore_imgtextrow img {
-    width: 60px;
-    height: 60px;
-}
-
-.nyxpawstore_imgtextrow p {
+.userinfotitle {
+    margin: 0;
     font-size: 18px;
-    margin-left: auto;
-    padding-right: 16px;
+    color: rgb(255, 255, 255);
 }
 
-.nyxpawstore_app button {
-    /*margin-top: auto;*/
-    width: 100%;
-    height: 40px;
-    background-color: transparent;
-    border: none;
-    color: white;
-    padding: 2px;
-    }
-
-.nyxpawstore_app button:hover {
-    background-color: rgb(101, 101, 101);
+.userinfosubtitle {
+    margin: 0;
+    font-size: 16px;
+    color: gray;
 }
-
-.horizontal_divider  {
-    height: 1px;
-    width: 90%;
-    background-color: gray;
-    margin: auto auto 0 auto;
-}
-
-
-#nyxpawstore_appicon {
-    width: 100px;
-    height: 100px;
-}
-
-#nyxpawstore_apptab {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-#nyxpawstore_apptabappntitle {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-}
-
-#nyxpawstore_apptabtitlenbtn {
-    margin-top: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-#nyxpawstore_apptabtitlenbtn button {
-    width: 120px;
-    height: 25px;
-    background-color: rgb(75, 75, 75);
-    border: none;
-        color: white;
-}
-
-#nyxpawstore_apptabtitlenbtn button:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#nyxpawstore_apptabtitlenbtn button:active {
-    background-color: rgb(45, 45, 45);
-}
-
-
-
-#nyxpawstore_backbutton {
-    width: 100%;
-    height: 25px;
-    background-color: transparent;
-    border: none;
-        color: white;
-    margin-bottom: 30px;
-}
-
-#nyxpawstore_backbutton:hover {
-    background-color: rgb(101, 101, 101);
-}
-
-#nyxpawstore_backbutton:active {
-    background-color: rgb(45, 45, 45);
-}
-
-/*TASK MANAGER*/
-.content_taskmanager {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    align-items: center;
-}
-
-#taskmanager_topbar {
-    width: 100%;
-    height: 45px;
-    background-color: #00000086;
-        display: flex;
-    flex-direction: row;
-    gap: 0;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-#taskmanager_topbar button {
-    margin-left: 10px;
-    background-color: #ffffff2c;
-        border: none;
-    height: 25px;
-    color: white;
-}
-
-#taskmanager_topbar button:hover {
-    background-color: #ffffff6d;
-}
-
-#taskmanager_topbar button:active {
-    background-color: #ffffff14;
-}
-
-.taskmanager_task {
-    width: 100%;
-    height: 30px;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    background-color: #00000086;
-        align-items: center;
-    margin-bottom: 5px;
-}
-
-.taskmanager_task img {
-    width: 28px;
-    height: 28px;
-}
-
-/*venge*/
-#iframevenge {
-    position: static;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-/*eventviewer*/
-.content_eventviewer {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-}
-
-#eventviewer_leftsidebar {
-    width: 200px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    background-color: #ffffff18;
-        padding: 12px;
-    margin-right: auto;
-}
-
-#eventviewer_centerdiv {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-    overflow-y: auto;
-}
-
-#eventviewer_rightsidebar {
-    width: 200px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    background-color: #ffffff18;
-        padding: 12px;
-    margin-left: auto;
-}
-
-.eventviewer_btn {
-    height: 28px;
-    width: 100%;
-    background-color: rgb(255, 255, 255);
-    color: white;
-    border: none;
-    }
-
-.eventviewer_btn:hover {
-    background-color: rgb(255, 255, 255);
-}
-
-.eventviewer_btn:active {
-    background-color: rgb(255, 255, 255);
-}
-
-.eventviewer_event {
-    background-color: rgb(255, 255, 255);
-    box-sizing: border-box;
-    width: 100%;
-        height: 28px;
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    align-items: center;
-    padding-left: 10px;
-}
-
-.eventviewer_event:hover {
-    background-color: rgb(255, 255, 255);
-}
-
-.eventviewer_text {
-    font-family: 'JetBrains Mono', monospace;
-}
-
-/*regedit*/
-.content_regedit {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-}
-
-#regedit_leftsidebar {
-    width: 200px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    background-color: #ffffff18;
-        padding: 12px;
-    margin-right: auto;
-}
-
-.regedit_list {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-    overflow-y: auto;
-}
-
-.regedit_btn {
-    height: 28px;
-    width: 100%;
-    background-color: rgb(255, 255, 255); 
-    border: none;
-    color: #000000;
-}
-
-.regedit_btn:hover {
-    background-color: rgb(255, 255, 255);
-}
-
-.regedit_btn:active {
-    background-color: rgb(255, 255, 255);
-}
-
-.regedit_el {
-    background-color: rgb(255, 255, 255);
-    box-sizing: border-box;
-    width: 100%;
-        height: 28px;
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    align-items: center;
-    padding-left: 10px;
-    color: #000000;
-}
-
-.regedit_el:hover {
-    background-color: rgb(255, 255, 255);
-}
-
-.regedit_el button {
-    height: 20px;
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-    border: none;
-    }
-
-.regedit_el button:active {
-    background-color: rgb(255, 255, 255);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*
 COLORS
@@ -2294,24 +2198,93 @@ Hover: rgb(101, 101, 101);
 Active: rgb(45, 45, 45);
 
 Otros:*/
+#appcenter_ctxm {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: #0000007b;
+    color: white;
+    padding: 10px;
+    
+    z-index: 8022;
+    backdrop-filter: blur(calc(10px * var(--blur-multiplier)));
+    min-width: 150px;
+}
+
+.appcenter_ctxm_btn {
+    width: 100%;
+    background: transparent;
+    color: white;
+    
+    text-align: left;
+    border: none;
+    padding: 4px 10px;
+}
+
+.appcenter_ctxm_btn:hover {
+    background: rgb(101, 101, 101);
+}
+
+.appcenter_ctxm_btn:active {
+    background: rgb(45, 45, 45);
+}
+
 #win_appcenter {
     position: fixed;
     z-index: 8028;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-
+    transform: translate(-50%, -50%) scale(1);
+ 
     background: rgb(0, 0, 0);
     backdrop-filter: blur(calc(20px * var(--blur-multiplier)));
     color: white;
     
+ 
     width: 700px !important;
-    height: 500px !important; /*Le pongo !important xq no debe seguir las reglas de las ventanas dinamicas xD*/
-
+    height: 500px !important;
+ 
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: center;
+    opacity: 1;
+    filter: blur(0px);
+    transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                opacity 0.15s ease,
+                backdrop-filter 0.15s ease,
+                filter 0.15s ease;
+}
+
+ 
+#win_appcenter.appcenter-hidden {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0;
+    backdrop-filter: blur(calc(0px * var(--blur-multiplier)));
+    filter: blur(8px);
+    pointer-events: none;
+}
+
+.appcenter-searchhidden {
+    display: none !important;
+}
+
+#appcenter_nekiriHint {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff10;
+    
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    height: 38px;
+    width: 200px;
+    margin: 0;
+    justify-content: center;
+    text-align: center;
+}
+#appcenter_nekiriHint p {
+    margin: 0;
 }
 
 #appcentertopbtns {
@@ -2329,6 +2302,7 @@ Otros:*/
     margin-bottom: 10px;
     padding: 0 16px;
     
+
     background-color: rgb(255, 255, 255);
     color: white;
     font-size: 14px;
@@ -2342,6 +2316,7 @@ Otros:*/
     margin-bottom: 10px;
     padding: 0 16px;
     
+
     background-color: rgb(255, 255, 255);
     color: white;
     font-size: 14px;
@@ -2357,6 +2332,7 @@ Otros:*/
     gap: 10px;
     width: 90%;
     overflow-y: scroll;
+    will-change: scroll-position;
 }
 
 .appcenter_appdiv {
@@ -2367,7 +2343,8 @@ Otros:*/
 
     background-color: transparent;
     
-    font-family: 'JetBrains Mono', monospace;
+
+    font-family: 'Outfit', sans-serif;
     text-align: center;
 }
 
@@ -2397,7 +2374,8 @@ Otros:*/
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-        z-index: 8040 !important;
+    
+    z-index: 8040 !important;
 }
 
 .window.win-fullscreen .grab {
@@ -2421,7 +2399,7 @@ Otros:*/
     background-image: url(system/systemApps/assets/background.jpg);
     background-repeat: no-repeat;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: scroll;
     background-size: cover;
     color: #000000;
 }
@@ -2455,6 +2433,7 @@ Otros:*/
 .syssetup_container {
     background: rgb(255, 255, 255);
     border: none;
+    
     box-shadow: 0px 0px 5px rgb(84, 84, 84);
     padding: 50px;
     display: flex;
@@ -2469,6 +2448,7 @@ Otros:*/
 }
 
 .syssetup_btn {
+    
     border: none;
     background-color: rgb(0, 145, 255);
     color: white;
@@ -2501,6 +2481,70 @@ Otros:*/
     background-color: rgb(194, 194, 194);
 }
 
+.accs-high-contrast {
+    background: black !important;
+    color: white !important;
+}
+
+.accs-high-contrast button {
+    background: yellow !important;
+    color: black !important;
+}
+
+/* Nyx Image Viewer */
+#win_askForImageFile {
+    width: 320px;
+    height: auto;
+    min-height: 220px;
+}
+
+.content_askForImageFile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#askForImageFile-btn_fromfs {
+    background-color: rgb(0, 145, 255);
+    color: white;
+    border: none;
+    
+}
+
+#askForImageFile-btn_fromfs:hover {
+    background-color: rgb(54, 168, 255);
+}
+
+#askForImageFile-btn_fromfs:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#askForImageFile-btn_save {
+    background-color: rgb(0, 145, 255);
+    color: white;
+}
+
+#askForImageFile-btn_save:hover {
+    background-color: rgb(54, 168, 255);
+}
+
+#askForImageFile-btn_save:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#askForImageFile-btn_cancel {
+    background-color: rgb(75, 75, 75);
+    color: white;
+}
+
+#askForImageFile-btn_cancel:hover {
+    background-color: rgb(101, 101, 101);
+}
+
+#askForImageFile-btn_cancel:active {
+    background-color: rgb(45, 45, 45);
+}
+
 /*
 
 #askForImageFile-btn_save {
@@ -2509,7 +2553,7 @@ Otros:*/
 #askForImageFile-btn_save:hover {
     background-color: rgb(54, 168, 255);
 }
-#askForImageFile-btn_save:active {
+#a-btn_save:active {
     background-color: rgb(0, 126, 222);
 }
     

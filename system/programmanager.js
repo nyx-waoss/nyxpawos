@@ -1,6 +1,54 @@
 console.log('Current: programmanager.js');
+/*
+program manager es un archivo critico de NyxPawOS. Este archivo carga y administra cada aplicacion.
+Sin este archivo, el sistema carga y podrias incluso iniciar sesion, pero el sistema seria inutil, ya que no puedes abrir ninguna aplicacion xD.
+*/
 
 window.SysVar = window.SysVar || {};
+
+const _sysFunctionWatchdog = {
+    protected: {},
+    watchdogInterval: null,
+
+    init() {
+        const toProtect = [
+            'sysAddEvent', 'sysBsod', 'emergencyStop',
+            'sysExecApp', 'sysshutdown', 'sysrestart', 'showAlertBox', 'showMsgBox'
+        ];
+        toProtect.forEach(name => {
+            if (typeof window[name] === 'function') {
+                this.protected[name] = window[name];
+            }
+        });
+
+        this.watchdogInterval = setInterval(() => {
+            for (const [name, fn] of Object.entries(this.protected)) {
+                if (window[name] !== fn) {
+                    console.warn(`[SysGuard] ${name} was overwritten — restoring`);
+                    window[name] = fn;
+                }
+            }
+        }, 2000);
+    },
+
+    restore(name) {
+        if (this.protected[name]) {
+            window[name] = this.protected[name];
+        }
+    }
+};
+
+function safeCallAppFn(fnName, appName) {
+    const fn = window[fnName];
+    if (typeof fn !== 'function') return false;
+    try {
+        fn();
+        return true;
+    } catch (err) {
+        console.error(`[AppManager] ${fnName} threw an error in ${appName}:`, err);
+        return false;
+    }
+}
 
 const AppManager = {
     loadedApps: new Map(), // { appName: { script, instance, window } }
@@ -27,61 +75,6 @@ const AppManager = {
             console.error('Cannot init App Manager. Please check that apps.json exist. Error:'+error);
         }
     },
-    
-    /*appPaths: {
-        syssetup: 'system/systemApps/syssetup.js',
-        settings: 'system/apps/settings.js',
-        notes: 'system/apps/notes.js',
-        calc: 'system/apps/calc.js',
-        browser: 'system/apps/browser.js',
-        files: 'system/apps/files.js',
-        calendar: 'system/apps/calendar.js',
-        terminal: 'system/apps/terminal.js',
-        toybox: 'system/apps/toybox.js',
-        nyxvideoplayer: 'system/apps/videoplayer.js',
-        nyximageviewer: 'system/apps/imgviewer.js',
-        nyxpawstore: 'system/apps/nyxpawstore.js',
-        nytclient: 'system/apps/ytclient.js',
-        weather: 'system/apps/weather.js',
-        arcade: 'system/apps/arcade.js',
-        appcenter: 'system/apps/appcenter.js',
-        taskmanager: 'system/apps/taskmanager.js',
-        vengegame: 'system/apps/vengegame.js',
-        eventviewer: 'system/apps/eventviewer.js',
-        regedit: 'system/apps/regedit.js',
-        virtualenv: 'system/apps/virtualenv.js',
-        vscode: 'system/apps/vscode.js',
-        nkbrief: 'system/apps/nkbrief.js',
-        loginhelp: 'system/apps/loginhelp.js'
-        
-    },
-
-    htmlPaths: {
-        syssetup: 'system/systemApps/syssetup.js',
-        settings: 'system/apps/html/settings.html',
-        notes: 'system/apps/html/notes.html',
-        calc: 'system/apps/html/calc.html',
-        browser: 'system/apps/html/browser.html',
-        files: 'system/apps/html/files.html',
-        calendar: 'system/apps/html/calendar.html',
-        terminal: 'system/apps/html/terminal.html',
-        toybox: 'system/apps/html/toybox.html',
-        nyxvideoplayer: 'system/apps/html/videoplayer.html',
-        nyximageviewer: 'system/apps/html/imgviewer.html',
-        nyxpawstore: 'system/apps/html/nyxpawstore.html',
-        nytclient: 'system/apps/html/ytclient.html',
-        weather: 'system/apps/html/weather.html',
-        arcade: 'system/apps/html/arcade.html',
-        appcenter: 'system/apps/html/appcenter.html',
-        taskmanager: 'system/apps/html/taskmanager.html',
-        vengegame: 'system/apps/html/vengegame.html',
-        eventviewer: 'system/apps/html/eventviewer.html',
-        regedit: 'system/apps/html/regedit.html',
-        virtualenv: 'system/apps/html/virtualenv.html',
-        vscode: 'system/apps/html/vscode.html',
-        nkbrief: 'system/apps/html/nkbrief.html',
-        loginhelp: 'system/apps/html/loginhelp.html'
-    },*/
 
     async checkImageExists(URL) {
         return new Promise((resolve) => {
@@ -114,6 +107,59 @@ const AppManager = {
         const html = await res.text();
         document.body.insertAdjacentHTML('beforeend', html);
     },
+
+    hideWindow(appName) {
+        const windowExceptions = { settings: 'win_config' };
+        const windowId = windowExceptions[appName] || `win_${appName}`;
+        const windowEl = document.getElementById(windowId);
+
+        if (!windowEl) return;
+
+        windowEl.classList.remove('window_anim_open');
+        windowEl.classList.remove('win-focused');
+        setTimeout(() => {
+            windowEl.classList.add('hidden');
+            windowEl.style.removeProperty('opacity');
+        }, 200);
+    },
+
+    async preloadApp(appName) {
+        if (this.loadedApps.has(appName)) return;
+
+        const appPath = this.appPaths[appName];
+        if (!appPath) return;
+
+        try { await this.loadAppHTML(appName); } catch(e) { console.error(e); return; }
+        try { this.loadAppCSS(appName); } catch(e) { console.error(e); }
+
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = appPath;
+            script.id = `script-${appName}`;
+
+            script.onload = async () => {
+                const customMetadata = window.AppMetadata?.[appName];
+                const displayName = customMetadata?.displayName || `${appName}.app`;
+                let icon = customMetadata?.icon || 'assets/apps/unknown.png';
+
+                this.loadedApps.set(appName, {
+                    script, loadedAt: Date.now(), displayName, icon
+                });
+
+                safeCallAppFn(`init_${appName}`, appName);
+
+                const windowId = appName === 'settings' ? 'win_config' : `win_${appName}`;
+                const windowEl = document.getElementById(windowId);
+                if (windowEl) windowEl.classList.add('hidden');
+
+                startUsageTimer(appName);
+                resolve();
+            };
+
+            script.onerror = () => reject();
+            document.body.appendChild(script);
+        });
+    },
     
     async loadApp(appName) {
         if (this.loadedApps.has(appName)) {
@@ -123,28 +169,30 @@ const AppManager = {
         }
 
         if (!(navigator.onLine)) {
-            showAlertBox('🛜 Sin internet', `Conectate a internet para abrir ${appName}`);
+            showAlertBox('msgbox_nonetwork', `Conectate a internet para abrir ${appName}`);
         }
         
         const appPath = this.appPaths[appName];
         if (!appPath) {
             console.error(`Unknown program: ${appName}`);
+            showAlertBox('msgbox_err', 'No se encontro la aplicacion.', {as_win:true,icon:'❓'});
             return;
         }
 
         if (SysVar.disableJSload) {
             console.error('Javascript load is locked');
-            showAlertBox('Error', 'Javascript load is locked by your administrator', {as_win:true,icon:'❌'});
+            showAlertBox('msgbox_err', 'Javascript load is locked by your administrator', {as_win:true,icon:'❌'});
             return;
         }
 
         if (!SysVar.sessionAutoStart.includes('programs')) {
             console.error('AppManager not available');
-            showAlertBox('Error', 'AppManager not available', {as_win:true,icon:'❓'});
+            showAlertBox('msgbox_err', 'AppManager not available', {as_win:true,icon:'❓'});
             return;
         }
         
         document.documentElement.style.cursor = "wait";
+        document.getElementById('topbar_loadingsys').classList.remove('hidden');
         console.log(`Loading ${appName}...`);
 
         try {
@@ -152,6 +200,7 @@ const AppManager = {
         } catch(error) {
             console.error(`Cannot inject HTML for ${appName}: ${error}`);
             document.documentElement.style.cursor = "default";
+            document.getElementById('topbar_loadingsys').classList.add('hidden');
             return;
         }
 
@@ -160,6 +209,7 @@ const AppManager = {
         } catch(error) {
             console.error(`Cannot load css styles for ${appName}: ${error}`);
             document.documentElement.style.cursor = "default";
+            document.getElementById('topbar_loadingsys').classList.add('hidden');
             return;
         }
         
@@ -171,6 +221,7 @@ const AppManager = {
             script.onload = async () => {
                 console.log(`${appName} has been loaded`);
                 document.documentElement.style.cursor = "default";
+                document.getElementById('topbar_loadingsys').classList.add('hidden');
 
                 const customMetadata = window.AppMetadata?.[appName];
                 
@@ -212,10 +263,18 @@ const AppManager = {
                 }
 
                 const initFunctionName = `init_${appName}`;
-
                 if (typeof window[initFunctionName] === 'function') {
                     console.log(`Init function ${appName}...`);
-                    window[initFunctionName]();
+                    const initOk = safeCallAppFn(initFunctionName, appName);
+                    if (!initOk) {
+                        console.error(`[AppManager] Init failed for ${appName}, aborting load`);
+                        document.documentElement.style.cursor = "default";
+                        document.getElementById('topbar_loadingsys').classList.add('hidden');
+                        this.unloadApp(appName);
+                        showAlertBox('msgbox_err', `${appName} no se pudo iniciar correctamente.`, {as_win:true, icon:'❌'});
+                        reject();
+                        return;
+                    }
                 }
                 
                 this.showWindow(appName);
@@ -240,13 +299,20 @@ const AppManager = {
         };
         
         const customSizes = {
-            settings: { width: '800px', height: '600px' },
+            settings: { width: '970px', height: '750px' },
             calc: { width: '310px', height: '480px' },
             calendar: { width: '470px', height: '610px'},
             toybox: { width: '800px', height: '480px'},
             weather: { width: '490px', height: '280px'},
             arcade: { width: '980px', height: '630px'},
-            nkbrief: { width: '940px', height: '600px'}
+            nkbrief: { width: '940px', height: '600px'},
+            nyxpawdocs: { width: '940px', height: '600px'},
+            nytclient: { width: '1015px', height: '650px'},
+            nyxpawworkspace: { width: '800px', height: '530px'},
+            nyxpawslides: { width: '940px', height: '600px'},
+            sysshutdown: { width: '360px', height: '540px'},
+            safefilesmanager: { width: '435px', height: '390px'},
+            startupapps: { width: '435px', height: '390px'}
         };
         
         const defaultSize = { width: '700px', height: '480px' };
@@ -256,7 +322,7 @@ const AppManager = {
         
         if (!windowEl) {
             console.error(`Window element not found in DOM for: ${windowId}`);
-            showAlertBox('Error','No se encontro el programa solicitado.',{as_win:true,icon:'❌'})
+            showAlertBox('msgbox_err','No se encontro el programa solicitado.',{as_win:true,icon:'❌'});
             return;
         }
 
@@ -272,6 +338,7 @@ const AppManager = {
         windowEl.style.removeProperty('opacity');
         windowEl.classList.remove('hidden');
         windowEl.style.zIndex = ++topZ;
+        windowEl.classList.add('win-focused');
 
         void windowEl.offsetHeight;
 
@@ -281,29 +348,44 @@ const AppManager = {
     },
     
     unloadApp(appName) {
+        
+        if (appName === 'sysshutdown') {
+            this.hideWindow(appName);
+            return;
+        }
         if (!this.loadedApps.has(appName)) {
             console.warn(`⚠️ ${appName} is not loaded`);
             return;
         }
         
         document.documentElement.style.cursor = "wait";
+        document.getElementById('topbar_loadingsys').classList.remove('hidden');
         console.log(`Unloading ${appName}...`);
         
         const appData = this.loadedApps.get(appName);
 
-        const cleanupFunctionName = `cleanup_${appName}`;
+        console.log(`Cleaning data from ${appName}...`);
+        safeCallAppFn(`cleanup_${appName}`, appName);
 
-        if (typeof window[cleanupFunctionName] === 'function') {
-            console.log(`Cleaning data from ${appName}...`);
-            window[cleanupFunctionName]();
+        for (const [name, fn] of Object.entries(_sysFunctionWatchdog.protected)) {
+            if (window[name] !== fn) {
+                console.warn(`[AppManager] ${appName} left "${name}" overwritten — restoring`);
+                window[name] = fn;
+            }
         }
         
         const windowExceptions = { settings: 'win_config' };
         const windowId = windowExceptions[appName] || `win_${appName}`;
         const windowEl = document.getElementById(windowId);
+        if (windowEl) {
+            console.log('_cleanup exists?', !!windowEl._cleanup);
+            if (windowEl._cleanup) windowEl._cleanup();
+        }
         
         if (windowEl) {
+            if (windowEl._cleanup) windowEl._cleanup();
             windowEl.classList.remove('window_anim_open');
+            windowEl.classList.remove('win-focused');
             setTimeout(() => {
                 windowEl.style.removeProperty('opacity');
                 windowEl.remove();
@@ -334,29 +416,24 @@ const AppManager = {
         
         console.log(`${appName} unloaded from RAM`);
         document.documentElement.style.cursor = "default";
-        
+        document.getElementById('topbar_loadingsys').classList.add('hidden');        
     },
 
     forceUnloadApp(appname) {
         const appData = this.loadedApps.get(appname);
 
-        try {
-            const cleanupFunctionName = `cleanup_${appname}`;
-
-            if (typeof window[cleanupFunctionName] === 'function') {
-                console.log(`Cleaning data from ${appname}...`);
-                window[cleanupFunctionName]();
-            }
-
-        } catch(error) {
-            console.warn('Cleanup failed for ' + appname + '. Error: ' + error);
+        safeCallAppFn(`cleanup_${appname}`, appname);
+        for (const [name, fn] of Object.entries(_sysFunctionWatchdog.protected)) {
+            if (window[name] !== fn) window[name] = fn;
         }
 
         const windowExceptions = { settings: 'win_config' };
         const windowId = windowExceptions[appname] || `win_${appname}`;
         const windowEl = document.getElementById(windowId);
+        windowEl.classList.remove('win-focused');
         
         if (windowEl) {
+            if (windowEl._cleanup) windowEl._cleanup();
             windowEl.remove();
         }
 

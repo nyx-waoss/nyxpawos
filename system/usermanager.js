@@ -1,4 +1,8 @@
 console.log("Current: usermanager.js");
+/*
+usermanager es un archivo necesario del sistema el cual administra y reconoce los usuarios del sistema, este usuario permite iniciar sesion en cada usuario y guardar sus configuraciones por separado.
+Sin este archivo, ni siquiera podrias iniciar sesion
+*/
 
 window.SysVar = window.SysVar || {};
 SysVar.lockedSession = true;
@@ -46,7 +50,11 @@ async function sysAskLoginPassword(user) {
     const userDiv = document.querySelector(`[data-username="${user}"]`);
     const loginText = userDiv.querySelector('.loginscr_logintext');
     loginText.textContent = 'Iniciando sesion...';
-    document.documentElement.requestFullscreen();
+    try {
+        document.documentElement.requestFullscreen();
+    } catch(e) {
+        console.log('Fullscreen not available:', e);
+    }
 
     const hasNoPassword = (userData.passwordHash === undefined && 
                           (userData.password === undefined || userData.password === ''))
@@ -71,6 +79,26 @@ async function sysAskLoginPassword(user) {
             SysVar.devMode = false;
         }
         SysVar.lockedSession = false;
+        const userWallpaper = sysUsers[loginin_user]?.wallpaper;
+        if (userWallpaper) {
+            syssetwallpaperto(userWallpaper);
+        } else {
+            syssetwallpaperto('default');
+        }
+        setTimeout(() => {
+            const restoringUser = loginin_user;
+            if (SysVar.windowsBeforeLock[restoringUser]?.length > 0) {
+                SysVar.windowsBeforeLock[restoringUser].forEach(winId => {
+                    const win = document.getElementById(winId);
+                    if (win) win.classList.remove('hidden');
+                });
+                delete SysVar.windowsBeforeLock[restoringUser];
+            }
+            SysVar.userBeforeLock = null;
+        },1000);
+        if (!SysVar.loggedUsers.includes(loginin_user)) {
+            SysVar.loggedUsers.push(loginin_user);
+        }
         setTimeout(() => {
             loginscr.classList.add('hidden');
             showAppBar();
@@ -96,10 +124,47 @@ function sysclosesesion() {
     SysVar.currentuser.dName = 'System';
     SysVar.currentuser.permissions = 'system';
     SysVar.devMode = false;
+    SysVar.loggedUsers = SysVar.loggedUsers.filter(u => u !== SysVar.currentuser.user);
     setTimeout(() => {
         const allLoginTexts = document.querySelectorAll('.loginscr_logintext');
         allLoginTexts.forEach(text => {
             text.textContent = 'Iniciar sesion';
+        });
+        
+        loginscr.classList.remove('hidden');
+        loginscrPassInput.value = '';
+    }, 400);
+}
+
+function syslockscr() {
+    const currentUser = SysVar.currentuser.user;
+    SysVar.windowsBeforeLock[currentUser] = [];
+
+    document.querySelectorAll('.window:not(.hidden)').forEach(win => {
+        SysVar.windowsBeforeLock[currentUser].push(win.id);
+        win.classList.add('hidden');
+    });
+
+    SysVar.userBeforeLock = currentUser;
+
+    hideAppBar();
+    hideTopBar();
+    SysVar.lockedSession = true;
+    sysResetInactivityBrightness();
+    setTimeout(() => {
+        const allLoginTexts = document.querySelectorAll('.loginscr_logintext');
+        allLoginTexts.forEach(text => {
+            text.textContent = 'Iniciar sesion';
+        });
+
+        SysVar.loggedUsers.forEach(username => {
+            const userDiv = document.querySelector(`[data-username="${username}"]`);
+            if (userDiv) {
+                const loginText = userDiv.querySelector('.loginscr_logintext');
+                if (loginText) {
+                    loginText.textContent = 'Sesion activa';
+                }
+            }
         });
         
         loginscr.classList.remove('hidden');
@@ -131,7 +196,7 @@ async function tryLoginToUser() {
 
     if (!SysVar.sessionAutoStart.includes('session')) {
         console.error('Session not found');
-        showAlertBox('Error', 'Session not found!', {as_win:true,icon:'❌'});
+        showAlertBox('msgbox_err', 'Session not found!', {as_win:true,icon:'❌'});
         return;
     }
 
@@ -187,6 +252,27 @@ async function tryLoginToUser() {
             SysVar.devMode = false;
         }
         SysVar.lockedSession = false;
+        const userWallpaper = sysUsers[loginin_user]?.wallpaper;
+        if (userWallpaper) {
+            syssetwallpaperto(userWallpaper);
+        } else {
+            syssetwallpaperto('default');
+        }
+        setTimeout(() => {
+            const restoringUser = loginin_user;
+            if (SysVar.windowsBeforeLock[restoringUser]?.length > 0) {
+                SysVar.windowsBeforeLock[restoringUser].forEach(winId => {
+                    const win = document.getElementById(winId);
+                    if (win) win.classList.remove('hidden');
+                });
+                delete SysVar.windowsBeforeLock[restoringUser];
+            }
+            SysVar.userBeforeLock = null;
+        },1000);
+
+        if (!SysVar.loggedUsers.includes(loginin_user)) {
+            SysVar.loggedUsers.push(loginin_user);
+        }
 
         setTimeout(() => {
             loginscr.classList.add('hidden');
@@ -196,11 +282,23 @@ async function tryLoginToUser() {
             loginscrPassInput.value = '';
             document.getElementById('loginscr_options_dp').classList.add('hidden');
 
+            SysVar.logonAutoStart.forEach(launch_item => {
+                const lastSlash = launch_item.lastIndexOf("/");
+                const autolaunch_dir = launch_item.substring(0, lastSlash);
+                const autolaunch_filename = launch_item.substring(lastSlash + 1);
+                window.fs.execFile(autolaunch_filename, autolaunch_dir);
+            });
+
             if (localStorage.getItem('sysStartupConfig') === 'ShowSTAlert') {
-                showAlertBox('⚠️ Advertencia', 'El sistema no se apago correctamente. Esto puede dañar el sistema o la computadora, si lees este mensaje entonces probablemente tu computadora esta bien, pero si esto sucede muy seguido si puede tener consecuencias graves.');
+                showAlertBox('msgbox_warning_icon', 'El sistema no se apago correctamente. Esto puede dañar el sistema o la computadora, si lees este mensaje entonces probablemente tu computadora esta bien, pero si esto sucede muy seguido si puede tener consecuencias graves.');
                 setTimeout(() => {
                     createNotification('assets/warn.webp','Advertencia','El sistema no se apago correctamente.');
                 },400);
+                localStorage.setItem('sysStartupConfig', 'none');
+            }
+
+            if (localStorage.getItem('sysStartupConfig') === 'ShowBSODAlert') {
+                showAlertBox('msgbox_warning', 'Ocurrio un fallo critico del sistema, quieres reportar este error?', {as_win:true,icon:"⚠️"});
                 localStorage.setItem('sysStartupConfig', 'none');
             }
 
@@ -215,6 +313,12 @@ async function tryLoginToUser() {
                 SysVar.userversion = SysVar.maxversion;
                 setTimeout(() => {
                     createNotification('assets/update.png','Actualizacion',`Sistema actualizado automaticamente a NyxPawOS ${SysVar.userversion}`);
+                },400);
+            }
+
+            if (!(navigator.onLine)) {
+                setTimeout(() => {
+                    createNotification('assets/system/wifi-error.png','Desconectado',`Conectate a internet para utilizar el sistema`);
                 },400);
             }
         }, 600);
@@ -238,13 +342,13 @@ loginscrPassInput.addEventListener('keydown', (e) => {
 
 
 
-async function sysCreateUser(username, displayName, password) {
+async function sysCreateUser(username, displayName, password, usrpermissions='user') {
     if (sysUsers[username]) {
-        return {success: false, message: 'El usuario ya existe'};
+        return {success: false, message: 'The username is already taken!'};
     }
 
     if (!username || !password) {
-        return {success: false, message: 'Ingrese la contraseña y el usuario!'};
+        return {success: false, message: 'Please enter both username and password!'};
     }
 
     const { hash, salt } = await hashPassword(password);
@@ -255,20 +359,21 @@ async function sysCreateUser(username, displayName, password) {
         passwordSalt: salt,
         password: undefined,
         createdAt: Date.now(),
-        permlevel: 'user'
+        permlevel: usrpermissions
     };
 
     window.fs.createFolder(username, '/home');
     window.fs.createFolder('documents', `/home/${username}`);
     window.fs.createFolder('videos', `/home/${username}`);
     window.fs.createFolder('images', `/home/${username}`);
+    window.fs.createFolder('downloads', `/home/${username}`);
 
     addUserToLoginScreen(username);
 
     localStorage.setItem('sysUsers', JSON.stringify(sysUsers));
     refreshUserCards();
 
-    return {success: true, message: 'Usuario creado'};
+    return {success: true, message: 'User created successfully'};
 }
 
 function sysUserModifyPerm(username, newpermlevel) {
@@ -297,13 +402,19 @@ function addUserToLoginScreen(username) {
     loginDiv.appendChild(userDiv);
 }
 
-function deleteUser(username) {
-    if (Object.keys(sysUsers).length === 1) {
-        return {success: false, message: 'No puedes eliminar el ultimo usuario'};
+function deleteUser(username, forcedel=false) {
+    if (username === 'user' && !forcedel) {
+        return {success: false, message: 'Unable to delete the main user'};
+    }
+    if ((username === 'root' || username === 'system') && !forcedel) {
+        return {success: false, message: 'Unable to delete a system user'};
+    }
+    if (Object.keys(sysUsers).length === 1 && !forcedel) {
+        return {success: false, message: 'Unable to delete the last user'};
     }
     
-    if (username === loginin_user && !loginscr.classList.contains('hidden')) {
-        return {success: false, message: 'No puedes eliminar el usuario logueado!'};
+    if ((username === loginin_user && !loginscr.classList.contains('hidden')) && !forcedel) {
+        return {success: false, message: 'Unable to delete the logged user'};
     }
 
     delete sysUsers[username];
@@ -360,7 +471,7 @@ function changeDisplayName(username, newDisplayName) {
     }
 
     if (!newDisplayName || newDisplayName.trim() === '') {
-        return Promise.resolve({success: false, message: 'El nombre no puede estar vacio!'});v
+        return Promise.resolve({success: false, message: 'El nombre no puede estar vacio!'});
     }
 
     user.displayName = newDisplayName;
@@ -410,7 +521,7 @@ function refreshUserCards() {
 
 async function settingsDeleteUser(username) {
     try {
-        const confirmDelete = await showMsgBox("ℹ️ Informacion",`¿Eliminar el usuario "${username}"?`,'Eliminar', 'Cancelar');
+        const confirmDelete = await showMsgBox("msgbox_info",`¿Eliminar el usuario "${username}"?`,'Eliminar', 'Cancelar');
         if (confirmDelete) {
             const result = deleteUser(username)
             if (result.success) {
@@ -418,14 +529,14 @@ async function settingsDeleteUser(username) {
                 if (userCard) {
                     userCard.remove();
                 }
-                showAlertBox('✅ Tarea completada','Usuario eliminado');
+                showAlertBox('msgbox_success_icon','Usuario eliminado');
             } else {
-                showAlertBox('❌ Error','Error al eliminar usuario: ' + result.message);
+                showAlertBox('msgbox_err_icon','Error al eliminar usuario: ' + result.message);
             }
         }
     } catch (error) {
         console.error('Failed to delete user: ', error);
-        showAlertBox('❌ Error', 'No se pudo borrar el usuario');
+        showAlertBox('msgbox_err_icon', 'No se pudo borrar el usuario');
     }
 }
 
@@ -433,24 +544,24 @@ async function settingsChangePassword(username) {
     try {
         const user = sysUsers[username];
 
-        const oldPass = await showPromptMsgBox('Cambiar contraseña ● ○ ○', `Contraseña actual de ${user.displayName}`, 'Siguiente', 'Cancelar');
+        const oldPass = await showPromptMsgBox('msgbox_password1', `Contraseña actual de ${user.displayName}`, 'Siguiente', 'Cancelar');
         if (!oldPass.confirmed) return;
 
-        const newPass = await showPromptMsgBox('Cambiar contraseña ○ ● ○', 'Contraseña nueva', 'Siguiente', 'Cancelar');
+        const newPass = await showPromptMsgBox('msgbox_password2', 'Contraseña nueva', 'Siguiente', 'Cancelar');
         if (!newPass.confirmed || !newPass.value) return;
 
-        const confirmPass = await showPromptMsgBox('Cambiar contraseña ○ ○ ●', 'Confirmar contraseña', 'Confirmar', 'Cancelar');
+        const confirmPass = await showPromptMsgBox('msgbox_password3', 'Confirmar contraseña', 'Confirmar', 'Cancelar');
         if (!confirmPass.confirmed || !confirmPass.value) return;
         if (confirmPass.value !== newPass.value) {
-            showAlertBox('❌ Error','Las contraseñas no coinciden');
+            showAlertBox('msgbox_err_icon','Las contraseñas no coinciden');
             return;
         }
 
         const result = changePassword(username, oldPass.value, newPass.value);
-        showAlertBox('✅ Tarea completada',`Contraseña cambiada.`);
+        showAlertBox('msgbox_success_icon',`Contraseña cambiada.`);
     } catch (error) {
         console.error('Failed to change password: ', error);
-        showAlertBox('❌ Error', 'No se pudo cambiar la contraseña');
+        showAlertBox('msgbox_err_icon', 'No se pudo cambiar la contraseña');
     }
 }
 
@@ -458,7 +569,7 @@ async function settingsChangeDisplayName(username, newName) {
     try {
         const user = sysUsers[username];
 
-        const newDSName = await showPromptMsgBox('Cambiar nombre', `Nuevo nombre para ${user.displayName}`, 'Confirmar', 'Cancelar');
+        const newDSName = await showPromptMsgBox('msgbox_modname', `Nuevo nombre para ${user.displayName}`, 'Confirmar', 'Cancelar');
         if (!newDSName.confirmed || !newDSName.value) return;
 
         const result = changeDisplayName(username, newDSName.value);
@@ -469,14 +580,14 @@ async function settingsChangeDisplayName(username, newName) {
                     const nameElement = userCard.querySelector('p');
                     nameElement.textContent = newDSName.value;
                 }
-                showAlertBox('✅ Tarea completada',`Nombre cambiado.`);
+                showAlertBox('msgbox_success_icon',`Nombre cambiado.`);
         } else {
-            showAlertBox('✅ Tarea completada',`Nombre cambiado.`);
+            showAlertBox('msgbox_success_icon',`Nombre cambiado.`);
         }
         refreshUserCards();
     } catch (error) {
         console.error('Failed to change name: ', error);
-        showAlertBox('❌ Error', 'No se pudo cambiar el nombre');
+        showAlertBox('msgbox_err_icon', 'No se pudo cambiar el nombre');
     }
 }
 

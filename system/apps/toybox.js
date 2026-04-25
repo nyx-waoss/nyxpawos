@@ -1,4 +1,11 @@
 console.log("Current: apps/toybox.js");
+window.AppMetadata = window.AppMetadata || {};
+window.AppMetadata.toybox = {
+    displayName: 'Toybox',
+    icon: '../../assets/apps/toybox.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
 
 const params3 = new URLSearchParams(window.location.search);
 const mode3 = params.get('mode');
@@ -29,6 +36,7 @@ function toyboxFXSet() {
         showAlertBox('❌ Error', 'Modo seguro activado');
     } else {
         toyboxBlurLevelSelect = document.getElementById('toyboxBlurLevelSelect').value;
+        toyboxBorderRadiusSelect = document.getElementById('toyboxBorderRadiusSelect').value;
         toyboxCursorTail = document.getElementById('toyboxCursorTail').checked;
         toyboxCursorTailIcon = document.getElementById('toyboxCursorTailIcon').value;
         toyboxCursorTailSize = document.getElementById('toyboxCursorTailSize').value;
@@ -51,6 +59,20 @@ function toyboxFXSet() {
         } else {
             showAlertBox('❌ Error','Error al establecer! Valor recibido: ' + toyboxBlurLevelSelect);
         }
+
+        if (toyboxBorderRadiusSelect === '0') {
+            document.documentElement.style.setProperty('--window-border-radius', '0px');
+        } else if (toyboxBorderRadiusSelect === '12') {
+            document.documentElement.style.setProperty('--window-border-radius', '12px');
+        } else if (toyboxBorderRadiusSelect === '24') {
+            document.documentElement.style.setProperty('--window-border-radius', '24px');
+        } else if (toyboxBorderRadiusSelect === '4') {
+            document.documentElement.style.setProperty('--window-border-radius', '4px');
+        } else {
+            showAlertBox('❌ Error','Error al establecer! Valor recibido: ' + toyboxBorderRadiusSelect);
+        }
+
+        
 
         if (cursorTailFX) {
             console.log('Removing previous cursor queue listener');
@@ -92,6 +114,7 @@ async function toyboxFXReset() {
             sysBlurSetto(1);
             document.removeEventListener('mousemove', cursorTailFX);
             toyboxCursorTail.checked = false;
+            document.documentElement.style.setProperty('--window-border-radius', '12px');
         }  
     } catch (error) {
         console.error('Failed to reset effects: ', error);

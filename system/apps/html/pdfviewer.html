@@ -1,0 +1,74 @@
+<!-- Template - _pdfviewer -->
+
+<div class="window hidden" id="win_pdfviewer">
+    <div class="grab">
+        <span class="grab-title" id="pdfviewer-title">📕  PDF Viewer</span>
+        <button class="grab-btn" id="btn_pdfviewer">X</button>
+    </div>
+
+    <div class="win_content content_pdfviewer">
+
+        <div class="program_topbar pdfviewer-topbar">
+            <button id="pdfviewer-btn-open"data-i18n="appbar_open">Abrir</button>
+            <button id="pdfviewer-btn-save"data-i18n="files_save">Guardar</button>
+            <div class="pdfviewer-separator"></div>
+
+            <button id="pdfviewer-btn-prev" title="Página anterior">◀</button>
+            <span class="pdfviewer-pageinfo">
+                <input type="number" id="pdfviewer-page-input" value="1" min="1" />
+                <span id="pdfviewer-page-total">/ 1</span>
+            </span>
+            <button id="pdfviewer-btn-next" title="Página siguiente">▶</button>
+
+            <div class="pdfviewer-separator"></div>
+
+            <button id="pdfviewer-btn-zoomout" title="Alejar">−</button>
+            <span id="pdfviewer-zoom-label">100%</span>
+            <button id="pdfviewer-btn-zoomin" title="Acercar">+</button>
+            <button id="pdfviewer-btn-zoomfit" title="Ajustar a ventana">⊡</button>
+
+            <div class="pdfviewer-separator"></div>
+
+            <button id="pdfviewer-btn-annotate" title="Añadir nota de texto">✏️</button>
+            <button id="pdfviewer-btn-paste-hint" title="Pegar imagen (Ctrl+V)">🖼️</button>
+
+            <div class="pdfviewer-separator"></div>
+            <button id="pdfviewer-btn-url" title="Cargar desde URL">🔗</button>
+        </div>
+
+        <div id="pdfviewer-main">
+
+            <div id="pdfviewer-empty">
+                <div id="pdfviewer-empty-icon">📕</div>
+                <p data-i18n="pdfviewer_unloaded">Sin PDF cargado</p>
+                <p class="pdfviewer-empty-sub" data-i18n="pdfviewer_unloaded_long">Abre un archivo o carga desde URL</p>
+            </div>
+
+            <div id="pdfviewer-canvas-wrap" class="hidden">
+                <canvas id="pdfviewer-canvas"></canvas>
+                <div id="pdfviewer-annotations"></div>
+            </div>
+
+        </div>
+
+        <div id="pdfviewer-statusbar">
+            <span id="pdfviewer-status-msg">Listo</span>
+            <span id="pdfviewer-status-size"></span>
+        </div>
+
+    </div>
+
+    <div id="pdfviewer-url-popup" class="hidden">
+        <div id="pdfviewer-url-popup-inner">
+            <span data-i18n="pdfviewer_loadfromurl">Cargar PDF desde URL</span>
+            <input type="text" id="pdfviewer-url-input" placeholder="https://..." />
+            <input type="text" id="pdfviewer-url-name" placeholder="nombre-archivo.pdf" />
+            <div class="pdfviewer-url-btns">
+                <button id="pdfviewer-url-confirm" data-i18n="pdfviewer_load">Cargar</button>
+                <button id="pdfviewer-url-cancel" data-i18n="pdfviewer_cancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="resize-handle"></div>
+</div>

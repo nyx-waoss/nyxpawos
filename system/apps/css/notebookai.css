@@ -1,0 +1,236 @@
+.content_notebookai {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #1a1a1e;
+}
+
+#noboai_sidebar {
+    height: 100%;
+    width: 180px;
+    background: #242428;
+    border-radius: 8px;
+    margin: 8px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0; 
+}
+
+#noboai_sidebar .divider {
+    height: 1px;
+    width: 98%;
+    background-color: #444449;
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+#noboai_sidebar button {
+    padding: 3px 8px;
+    font-size: 12px;
+    border-radius: 999em;
+    border: 1px solid #444;
+    background: #2e2e34;
+    color: #ddd;
+    width: 100%;
+    height: 30px;
+}
+
+#noboai_sidebar button:hover {
+    background: #3a3a42;
+}
+
+#noboai_sidebar button:active {
+    background: #505058;
+}
+
+/*Main*/
+.noboai_mainarea {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    flex: 1;
+    margin-left: 8px;
+    margin-right: 16px;
+}
+
+.noboai_mainarea .divider {
+    height: 1px;
+    width: 98%;
+    background-color: #444449;
+    margin-bottom: 8px;
+}
+
+#noboai_textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    background: transparent;
+    border: 1px solid #50505a;
+    border-radius: 8px;
+    color: white;
+}
+
+.noboai_mainarea .mainarea_header {
+    width: 100%;
+    height: auto;
+    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.noboai_mainarea .mainarea_header .modifyname {
+    display: none;
+
+    background-color: #242428;
+    border: none;
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
+}
+
+.noboai_mainarea .mainarea_header .modifyname:active {
+    background-color: #2e2e34;
+}
+
+.noboai_mainarea .mainarea_header:hover .modifyname {
+    display: block;
+}
+
+.noboai_mainarea .mainarea_header .deletenb {
+    display: none;
+
+    background-color: #242428;
+    border: none;
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
+}
+
+.noboai_mainarea .mainarea_header .deletenb:active {
+    background-color: #2e2e34;
+}
+
+.noboai_mainarea .mainarea_header:hover .deletenb {
+    display: block;
+}
+
+/*AI Chat*/
+.noboai_aichat {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background-color: #242428;
+    width: 300px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    margin: 8px 8px 8px 0;
+}
+
+.noboai_aichat .conversation {
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 12px;
+    gap: 8px;
+    flex: 1;
+    box-sizing: border-box;
+}
+
+.noboai_aichat .sendinput {
+    padding: 8px;
+    gap: 6px;
+    border-top: 1px solid #333;
+    flex-shrink: 0;
+    display: flex;
+}
+
+.noboai_aichat .sendinput input {
+    min-width: 0;
+    padding: 8px 14px;
+
+    border-radius: 999em;
+    border: none;
+    background-color: #1a1a1e;
+    color: white;
+
+    width: auto;
+    flex: 1;
+}
+
+.noboai_aichat .sendinput button {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: none;
+    background-color: #2a6dff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.noboai_aichat .sendinput button:hover {
+    background-color: #3e7bff;
+}
+
+.noboai_aichat .sendinput button:active {
+    background-color: #2469ff;
+}
+
+.noboai_aichat .conversation .msg-user {
+    align-self: flex-end;
+    max-width: 80%;
+
+    background-color: #2a6dff;
+    padding: 8px;
+    border-radius: 8px;
+    width: fit-content;
+
+    user-select: text !important;
+}
+
+.noboai_aichat .conversation .msg-user span {
+    user-select: text !important;
+    cursor: text;
+}
+
+.noboai_aichat .conversation .msg-ai {
+    align-self: flex-start;
+    max-width: 80%;
+
+    background-color: #444449;
+    padding: 8px;
+    border-radius: 8px;
+    width: fit-content;
+
+    user-select: text !important;
+}
+
+.noboai_aichat .conversation .msg-ai span {
+    user-select: text !important;
+    cursor: text;
+}
+
+#noboai_sendbtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#noboai_sendbtn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

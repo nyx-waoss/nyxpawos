@@ -12,70 +12,98 @@
         <div class="main_div">
             <div class="info_div" id="info_div">
                 <img src="assets/therianb.png">
-                <h1>Bienvenido a NyxPawOS</h1>
+                <h1 data-i18n="welcome">Bienvenido a NyxPawOS</h1>
                 <h2>By Nyx ✨</h2>
                 <div class="divider"></div>
-                <p>Bienvenido a NyxPawOS, el sistema operativo web mas astetik!</p>
+                <p data-i18n="welcomelong">Bienvenido a NyxPawOS, el sistema operativo web mas astetik!</p>
                 <div class="divider"></div>
-                <h2>Novedades</h2>
-                <h4>Ultima version (NyxPawOS 26.0)</h4>
+                <h2 data-i18n="news">Novedades</h2>
+                <h3 data-i18n="version">Ultima version (Cargando...)</h3>
+                <h4 style="margin-top: 40px;">📦 Suite de Productividad NyxPaw</h4>
+                <ul>    
+                    <li>Se incorporan Workspace, Docs, Slides y Sheets, diseñadas para gestionar trabajo y tareas directamente desde el sistema.</li>
+                    <li>Mejoras en el soporte para distintos formatos de documentos, permitiendo abrirlos y editarlos sin errores de lectura.</li>
+                    <li>Se añade un visor integrado que permite abrir y realizar ediciones básicas en documentos PDF de forma nativa.</li>
+                    <li>Nueva aplicación de Contactos para gestionar personas, información y accesos de forma centralizada.</li>
+                </ul>
+
+                <h4>🎨 Interfaz y Experiencia de Usuario (UX)</h4>
+                <ul>    
+                    <li>Actualización visual con bordes redondeados, nuevas animaciones y fondos de pantalla para un entorno más moderno.</li>
+                    <li>Se centralizan los ajustes del sistema en un solo panel para que configurar el equipo sea más rápido y sencillo.</li>
+                    <li>Nuevos iconos en aplicaciones y menús para mejorar la identificación visual de las funciones.</li>
+                    <li>Uso de Web Components y menús desplegables mejorados que ofrecen una respuesta más ágil al interactuar.</li>
+                    <li>Se añade un nuevo control en Toybox que permite adaptar el radio de los bordes de las ventanas según el dispositivo o estilo visual (Default, MacBook Neo, Custom, entre otros).</li>
+                </ul>
+
+                <h4>⚙️ Núcleo y Rendimiento del Sistema</h4>
+                <ul>    
+                    <li>Mejoras en el sistema para que consuma menos recursos (RAM/CPU) y se sienta más ligero al abrir aplicaciones.</li>
+                    <li>Actualización de los protocolos internos para proteger mejor el acceso a tus datos personales.</li>
+                    <li>Nuevo sistema de detección de crashes. Pantalla de crash y Menu de emergencia rediseñados: ahora puedes presionar Shift + F para obtener diagnósticos detallados.</li>
+                    <li>Implementación de un nuevo módulo de bloqueo de pantalla para proteger el acceso al sistema.</li>
+                    <li>Nuevo sistema de confianza de archivos que permite identificar, validar y restringir la ejecución de contenido potencialmente inseguro.</li>
+                </ul>
+
+                <h4>💻 Herramientas Avanzadas y Desarrollo</h4>
+                <ul>    
+                    <li>Mayor estabilidad al usar comandos y adición de nuevas funciones para usuarios que prefieren la terminal.</li>
+                    <li>Mejora en el modelo de IA residente, logrando respuestas más naturales y una mejor comprensión de las peticiones.</li>
+                    <li>Nueva aplicación para acceder a contenido de video (requiere configuración de API Key).</li>
+                    <li>Expansión del soporte para múltiples idiomas.</li>
+                    <li>Nuevo sistema de ejecución automática al iniciar sesión, permitiendo gestionar aplicaciones y scripts de arranque.</li>
+                    <li>Soporte para nuevos scripts JavaScript con extensión <code>.npfr</code>, integrados con el sistema para automatización y personalización avanzada.</li>
+                </ul>
+
+                <div class="divider"></div>
+                <h2 data-i18n="problems">Solucion de problemas</h2>
+                <h4 data-i18n="ifstartbtn">Si el boton de inicio no funciona:</h4>
                 <ul>
-                    <li>Actualizaciones automaticas agregadas</li>
-                    <li>Algunos bugs de la app de configuracion arreglados</li>
-                    <li>Idiomas expandidos</li>
-                    <li>Seccion de novedades agregada al launcher</li>
-                    <li>Apps agregadas</li>
-                    <li>Navegador de internet mejorado</li>
-                    <li>Animaciones corregidas</li>
+                    <li data-i18n="tryjs">Asegurate de activar Javascript: <a href="javascripthelp.html" target="_blank">Como activar Javascript</a></li>
+                    <li data-i18n="trypopups">Asegurate de permitir los PopUp en la configuracion del sitio</li>
+                </ul>
+                <h4 data-i18n="ifblackscr">Si aparece una pantalla en negro con un texto y no hay ninguna barra de progreso:</h4>
+                <ul>
+                    <li data-i18n="tryjs">Asegurate de activar Javascript: <a href="javascripthelp.html" target="_blank">Como activar Javascript</a></li>
+                    <li data-i18n="tryupdate">Verifica que tengas la ultima version del sistema</li>
+                    <li data-i18n="trysearch">Investiga si alguien mas tiene el mismo problema</li>
+                    <li data-i18n="tryreinstall">Reinstala el sistema operativo y no modifiques los archivos si no sabes lo que haces</li>
+                </ul>
+                <h4 data-i18n="iffsdont">Si el sistema de archivos no funciona:</h4>
+                <ul>
+                    <li data-i18n="tryjs">Asegurate de activar Javascript: <a href="javascripthelp.html" target="_blank">Como activar Javascript</a></li>
+                    <li data-i18n="trylocalstoragelock">Asegurate que nada este bloqueando el acceso a local storage o indexed DB</li>
                 </ul>
                 <div class="divider"></div>
-                <h2>Solucion de problemas</h2>
-                <h4>Si el boton de inicio no funciona:</h4>
-                <ul>
-                    <li>Asegurate de activar Javascript: <a href="javascripthelp.html" target="_blank">Como activar Javascript</a></li>
-                    <li>Asegurate de permitir los PopUp en la configuracion del sitio</li>
-                </ul>
-                <h4>Si aparece una pantalla en negro con un texto y no hay ninguna barra de progreso:</h4>
-                <ul>
-                    <li>Asegurate de activar Javascript: <a href="javascripthelp.html" target="_blank">Como activar Javascript</a></li>
-                    <li>Verifica que tengas la ultima version del sistema</li>
-                    <li>Investiga si alguien mas tiene el mismo problema</li>
-                    <li>Reinstala el sistema operativo y no modifiques los archivos si no sabes lo que haces</li>
-                </ul>
-                <h4>Si el sistema de archivos no funciona:</h4>
-                <ul>
-                    <li>Asegurate de activar Javascript: <a href="javascripthelp.html" target="_blank">Como activar Javascript</a></li>
-                    <li>Asegurate que nada este bloqueando el acceso a local storage</li>
-                </ul>
-                <div class="divider"></div>
-                <h2>Disfruta del OS!</h2>
-                <p>Este sistema operativo esta basado en html y Javascript! No es un OS real! - Creado por nyx_waoss</p>
-                <p>Idioma original: Español ✨</p>
+                <h2 data-i18n="enjoy">Disfruta del OS!</h2>
+                <p data-i18n="webbased">Este sistema operativo esta basado en html y Javascript! No es un OS real! - Creado por nyx_waoss</p>
+                <p data-i18n="language">Idioma original: Español ✨</p>
             </div>
             <div class="hidden" id="settings_div">
-                <button onclick="hidesettings()">Volver</button>
+                <button onclick="hidesettings()" data-i18n="back">Volver</button>
                 <div style="display: flex; flex-direction: row; gap: 10px;">
-                    <p>Consola de desarrollador</p>
+                    <p data-i18n="devconsole">Consola de desarrollador</p>
                     <input type="checkbox">
                 </div>
                 <div style="display: flex; flex-direction: row; gap: 10px;">
-                    <p>Modo de recuperacion</p>
+                    <p data-i18n="recovery">Modo de recuperacion</p>
                     <input type="checkbox" id="safemode">
                 </div>
-                <button onclick="deletealldata()">Eliminar datos</button>
+                <button onclick="deletealldata()" data-i18n="deldata">Eliminar datos</button>
                 <div class="divider"></div>
                 <p>NyxPawOS Launcher ✨ v1.1 2026</p>
                 
             </div>
         </div>
         <div class="version_manager">
-            <p style="font-size: 20px; margin-top: 0;">Administrador de versiones</p>
+            
+            <p style="font-size: 20px; margin-top: 0;" data-i18n="versionmanager">Administrador de versiones</p>
 
             <div class="version_div" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 20px; border: 2px solid rgb(0, 0, 0); border-radius: 8px;">
                 <img src="assets/therianb.png" style="width: 80px; height: 80px; margin: 0;">
                 <div style="display: flex; flex-direction: column; margin: 0;">
-                    <p style="color: black; font-size: 20px; margin-left: auto; margin-bottom: 0;">26.0 Public Alpha</p>
-                    <p style="color: rgb(62, 62, 62); font-size: 16px; margin-left: auto;">Seleccionada</p>
+                    <p style="color: black; font-size: 20px; margin-left: auto; margin-bottom: 0;">26.1 Public Alpha</p>
+                    <p style="color: rgb(62, 62, 62); font-size: 16px; margin-left: auto;" data-i18n="selected">Seleccionada</p>
                 </div>
             </div>
 
@@ -87,12 +115,14 @@
                 </div>
             </div>
 
-
         </div>
     </div>
     <div id="bottom_tools">
-        <button onclick="launchsys()" id="button">Iniciar!</button>
-        <button onclick="opensettings()" id="settingsbtn">Configuracion</button>
+        <button onclick="launchsys()" id="button"></button>
+        <button onclick="opensettings()" id="settingsbtn" data-i18n="settings">Configuracion</button>
+        <div class="lang_warn_div">
+            <span data-i18n="translations_warning">⚠️ Las traducciones pueden no ser 100% precisas. El sistema aún se está traduciendo gradualmente.</span>
+        </div>
     </div>
     
     <div id="stopWindow" class="hidden">
@@ -120,8 +150,8 @@
         if (!userNavigatorSupported) {
             document.body.innerHTML = `
                 <div style="text-align:center; padding:50px; font-family:sans-serif; background:white;">
-                    <h2>⚠️ Navegador no compatible.</h2>
-                    <p>Por favor actualiza tu navegador para continuar.</p>
+                    <h2 data-i18n="useothernav">⚠️ Navegador no compatible.</h2>
+                    <p data-i18n="updatenav">Por favor actualiza tu navegador para continuar.</p>
                 </div>
             `;
         }
@@ -140,10 +170,10 @@
 
         function deletealldata() {
             deletingDataPrompt = true;
-            windowboxTitle.textContent = 'Quieres borrar todos tus datos?';
-            windowboxText.textContent = 'Esto restablecera el sistema a la configuracion de fabrica, borrara tus datos, y tendras que configurar el sistema de nuevo.\nEsta funcion suele ser util en caso de que el sistema no responda o no inicie.\nDesea continuar?';
-            stopBtn.textContent = 'Continuar';
-            cancelBtn.textContent = 'Cancelar';
+            windowboxTitle.textContent = translateSingle("msgbox_deldata_title");
+            windowboxText.textContent = translateSingle("msgbox_deldata");
+            stopBtn.textContent = translateSingle("msgbox_continue");
+            cancelBtn.textContent = translateSingle("msgbox_cancel");
             winbox.classList.remove('hidden');
         }
 
@@ -170,18 +200,21 @@
         }
 
         function sureToStop() {
-            windowboxTitle.textContent = 'Quieres detener NyxPawOS?';
-            windowboxText.textContent = 'Usa esto solo como ultimo recurso, al continuar, forzaras el apagado del sistema y tus datos no se guardaran! Solo uses esta funcion en situaciones de emergencia!';
-            stopBtn.textContent = 'Detener';
-            cancelBtn.textContent = 'Cancelar';
+            windowboxTitle.textContent = translateSingle("msgbox_stopmsg_title");
+            windowboxText.textContent = translateSingle("msgbox_stopmsg");
+            stopBtn.textContent = translateSingle("msgbox_stop");
+            cancelBtn.textContent = translateSingle("msgbox_cancel");
             winbox.classList.remove('hidden');
         }
 
         let state = 'idle';
         const launchBtn = document.getElementById('button');
+        setTimeout(() => {
+            launchBtn.textContent = translateSingle("launch");
+        },100);
         function launchsys() {
             if (state === 'idle') {
-                launchBtn.textContent = 'Cargando...'
+                launchBtn.textContent = translateSingle("launch_load");
                 state = 'wait';
                 setTimeout(() => {
                     if (document.getElementById('safemode').checked) {
@@ -189,17 +222,17 @@
                     } else {
                         sysWindow = window.open("index.html", "nyxpaw_os", `width=${w},height=${h},left=0,top=0`);
                     }
-                    launchBtn.textContent = 'Detener';
+                    launchBtn.textContent = translateSingle("launch_stop");
                     state = 'running';
 
                     const checkWin = setInterval(() => {
                         if (sysWindow.closed) {
-                            launchBtn.textContent = 'Iniciar!';
+                            launchBtn.textContent = translateSingle("launch");
                             state = 'idle';
                             clearInterval(checkWin);
                         }
                     }, 3000);
-                }, 300);
+                }, 150);
             } else if (state === 'running') {
                 sureToStop();
             }
@@ -217,6 +250,280 @@
             infoDiv.classList.remove('hidden');
             settingsDiv.classList.add('hidden');
         }
+
+        const translations = {
+            es: {
+                welcome: "Bienvenido a NyxPawOS",
+                welcomelong: "Web-Based, experimental y minimalista ✨",
+                news: "Novedades",
+                version: "Ultima version (26.1)",
+                problems: "Solucion de problemas",
+                ifstartbtn: "Si el boton de inicio no funciona:",
+                tryjs: "Asegurate de activar Javascript: <a href='javascripthelp.html' target='_blank'>Como activar Javascript</a>",
+                trypopups: "Asegurate de permitir los PopUp en la configuracion del sitio",
+                ifblackscr: "Si aparece una pantalla en negro con un texto y no hay ninguna barra de progreso:",
+                tryupdate: "Verifica que tengas la ultima version del sistema",
+                trysearch: "Investiga si alguien mas tiene el mismo problema",
+                tryreinstall: "Reinstala el sistema operativo y no modifiques los archivos si no sabes lo que haces",
+                iffsdont: "Si el sistema de archivos no funciona:",
+                trylocalstoragelock: "Asegurate que nada este bloqueando el acceso a local storage o indexed DB",
+                enjoy: "Disfruta del OS!",
+                webbased: "Este sistema operativo esta basado en html y Javascript! No es un OS real! - Creado por nyx_waoss",
+                language: "Idioma original: Español ✨",
+                devconsole: "Consola de desarrollador",
+                recovery: "Modo de recuperacion",
+                deldata: "Eliminar datos",
+                useothernav: "⚠️ Navegador no compatible.",
+                updatenav: "Por favor actualiza tu navegador para continuar.",
+                msgbox_stopmsg_title: "Quieres detener NyxPawOS?",
+                msgbox_stopmsg: "Usa esto solo como ultimo recurso, al continuar, forzaras el apagado del sistema y tus datos no se guardaran! Solo uses esta funcion en situaciones de emergencia!",
+                msgbox_deldata_title: "Quieres borrar todos tus datos?",
+                msgbox_deldata: "Esto restablecera el sistema a la configuracion de fabrica, borrara tus datos, y tendras que configurar el sistema de nuevo.\nEsta funcion suele ser util en caso de que el sistema no responda o no inicie.\nDesea continuar?",
+                msgbox_continue: "Continuar",
+                msgbox_stop: "Detener",
+                msgbox_cancel: "Cancelar",
+                back: "Volver",
+                versionmanager: "Administrador de versiones",
+                selected: "Seleccionada",
+                settings: "Configuracion",
+                launch: "Iniciar!",
+                launch_load: "Cargando...",
+                launch_stop: "Detener",
+                translations_warning:"Las traducciones pueden no ser 100% precisas. El sistema aún se está traduciendo gradualmente."
+            },
+            en: {
+                welcome: "Welcome to NyxPawOS",
+                welcomelong: "Web-Based, experimental and minimalist ✨",
+                news: "News",
+                version: "Latest version (26.1)",
+                problems: "Troubleshooting",
+                ifstartbtn: "If the start button doesn't work:",
+                tryjs: "Make sure Javascript is enabled: <a href='javascripthelp.html' target='_blank'>How to enable Javascript</a>",
+                trypopups: "Make sure to allow PopUps in the site settings",
+                ifblackscr: "If a black screen with text appears and there is no progress bar:",
+                tryupdate: "Check that you have the latest system version",
+                trysearch: "See if someone else has the same problem",
+                tryreinstall: "Reinstall the OS and do not modify files if you don’t know what you’re doing",
+                iffsdont: "If the file system doesn't work:",
+                trylocalstoragelock: "Make sure nothing is blocking access to local storage or IndexedDB",
+                enjoy: "Enjoy the OS!",
+                webbased: "This operating system is based on HTML and Javascript! Not a real OS! - Created by nyx_waoss",
+                language: "Original language: Spanish ✨",
+                devconsole: "Developer console",
+                recovery: "Recovery mode",
+                deldata: "Delete data",
+                useothernav: "⚠️ Browser not supported.",
+                updatenav: "Please update your browser to continue.",
+                msgbox_stopmsg_title: "Do you want to stop NyxPawOS?",
+                msgbox_stopmsg: "Use this only as a last resort, continuing will force the system to shut down and your data will not be saved! Only use this in emergency situations!",
+                msgbox_deldata_title: "Do you want to delete all your data?",
+                msgbox_deldata: "This will reset the system to factory settings, erase your data, and you will have to set up the system again.\nThis function is usually useful if the system is unresponsive or won’t start.\nDo you want to continue?",
+                msgbox_continue: "Continue",
+                msgbox_stop: "Stop",
+                msgbox_cancel: "Cancel",
+                back: "Back",
+                versionmanager: "Version Manager",
+                selected: "Selected",
+                settings: "Settings",
+                launch: "Launch!",
+                launch_load: "Loading...",
+                launch_stop: "Stop",
+                translations_warning:"Translations may not be 100% accurate. The system is still being gradually translated."
+            },
+            pt: {
+                welcome: "Bem-vindo ao NyxPawOS",
+                welcomelong: "Baseado na web, experimental e minimalista ✨",
+                news: "Novidades",
+                version: "Última versão (26.1)",
+                problems: "Solução de problemas",
+                ifstartbtn: "Se o botão iniciar não funcionar:",
+                tryjs: "Certifique-se de ativar o Javascript: <a href='javascripthelp.html' target='_blank'>Como ativar o Javascript</a>",
+                trypopups: "Certifique-se de permitir PopUps nas configurações do site",
+                ifblackscr: "Se aparecer uma tela preta com texto e não houver barra de progresso:",
+                tryupdate: "Verifique se você tem a versão mais recente do sistema",
+                trysearch: "Veja se outra pessoa tem o mesmo problema",
+                tryreinstall: "Reinstale o sistema operacional e não modifique arquivos se não souber o que está fazendo",
+                iffsdont: "Se o sistema de arquivos não funcionar:",
+                trylocalstoragelock: "Certifique-se de que nada esteja bloqueando o acesso ao local storage ou IndexedDB",
+                enjoy: "Aproveite o OS!",
+                webbased: "Este sistema operacional é baseado em HTML e Javascript! Não é um OS real! - Criado por nyx_waoss",
+                language: "Idioma original: Espanhol ✨",
+                devconsole: "Console do desenvolvedor",
+                recovery: "Modo de recuperação",
+                deldata: "Excluir dados",
+                useothernav: "⚠️ Navegador não compatível.",
+                updatenav: "Atualize seu navegador para continuar.",
+                msgbox_stopmsg_title: "Quer parar o NyxPawOS?",
+                msgbox_stopmsg: "Use isso apenas como último recurso, continuar forçará o desligamento do sistema e seus dados não serão salvos! Use esta função apenas em emergências!",
+                msgbox_deldata_title: "Quer apagar todos os seus dados?",
+                msgbox_deldata: "Isso restaurará o sistema para as configurações de fábrica, apagará seus dados e você precisará configurar o sistema novamente.\nEssa função é útil se o sistema não responder ou não iniciar.\nDeseja continuar?",
+                msgbox_continue: "Continuar",
+                msgbox_stop: "Parar",
+                msgbox_cancel: "Cancelar",
+                back: "Voltar",
+                versionmanager: "Gerenciador de versões",
+                selected: "Selecionada",
+                settings: "Configuração",
+                launch: "Iniciar!",
+                launch_load: "Carregando...",
+                launch_stop: "Parar",
+                translations_warning:"As traduções podem não ser 100% precisas. O sistema ainda está sendo traduzido gradualmente."
+            },
+            fr: {
+                welcome: "Bienvenue sur NyxPawOS",
+                welcomelong: "Basé sur le web, expérimental et minimaliste ✨",
+                news: "Actualités",
+                version: "Dernière version (26.1)",
+                problems: "Dépannage",
+                ifstartbtn: "Si le bouton démarrer ne fonctionne pas :",
+                tryjs: "Assurez-vous que Javascript est activé : <a href='javascripthelp.html' target='_blank'>Comment activer Javascript</a>",
+                trypopups: "Assurez-vous d'autoriser les PopUps dans les paramètres du site",
+                ifblackscr: "Si un écran noir avec du texte apparaît et qu'il n'y a pas de barre de progression :",
+                tryupdate: "Vérifiez que vous avez la dernière version du système",
+                trysearch: "Voyez si quelqu'un d'autre a le même problème",
+                tryreinstall: "Réinstallez le système d'exploitation et ne modifiez pas les fichiers si vous ne savez pas ce que vous faites",
+                iffsdont: "Si le système de fichiers ne fonctionne pas :",
+                trylocalstoragelock: "Assurez-vous que rien ne bloque l'accès au local storage ou IndexedDB",
+                enjoy: "Profitez du OS !",
+                webbased: "Ce système d'exploitation est basé sur HTML et Javascript ! Ce n'est pas un vrai OS ! - Créé par nyx_waoss",
+                language: "Langue originale : Espagnol ✨",
+                devconsole: "Console développeur",
+                recovery: "Mode récupération",
+                deldata: "Supprimer les données",
+                useothernav: "⚠️ Navigateur non compatible.",
+                updatenav: "Veuillez mettre à jour votre navigateur pour continuer.",
+                msgbox_stopmsg_title: "Voulez-vous arrêter NyxPawOS ?",
+                msgbox_stopmsg: "Utilisez ceci uniquement en dernier recours, continuer forcera l'arrêt du système et vos données ne seront pas sauvegardées ! N'utilisez cette fonction qu'en cas d'urgence !",
+                msgbox_deldata_title: "Voulez-vous supprimer toutes vos données ?",
+                msgbox_deldata: "Cela réinitialisera le système aux paramètres d'usine, effacera vos données et vous devrez configurer le système à nouveau.\nCette fonction est généralement utile si le système ne répond pas ou ne démarre pas.\nVoulez-vous continuer ?",
+                msgbox_continue: "Continuer",
+                msgbox_stop: "Arrêter",
+                msgbox_cancel: "Annuler",
+                back: "Retour",
+                versionmanager: "Gestionnaire de versions",
+                selected: "Sélectionnée",
+                settings: "Paramètres",
+                launch: "Lancer!",
+                launch_load: "Chargement...",
+                launch_stop: "Arrêter",
+                translations_warning:"Les traductions peuvent ne pas être 100% précises. Le système est encore en cours de traduction progressive."
+            },
+            ja: {
+                welcome: "NyxPawOSへようこそ",
+                welcomelong: "ウェブベース、実験的でミニマル ✨",
+                news: "ニュース",
+                version: "最新バージョン (26.1)",
+                problems: "トラブルシューティング",
+                ifstartbtn: "スタートボタンが動作しない場合：",
+                tryjs: "Javascriptを有効にしていることを確認してください：<a href='javascripthelp.html' target='_blank'>Javascriptを有効にする方法</a>",
+                trypopups: "サイト設定でポップアップを許可してください",
+                ifblackscr: "黒い画面に文字だけが表示され、進行バーがない場合：",
+                tryupdate: "システムが最新バージョンであることを確認してください",
+                trysearch: "他の人も同じ問題があるか調べてください",
+                tryreinstall: "OSを再インストールし、分からない場合はファイルを変更しないでください",
+                iffsdont: "ファイルシステムが動作しない場合：",
+                trylocalstoragelock: "ローカルストレージやIndexedDBへのアクセスがブロックされていないか確認してください",
+                enjoy: "OSを楽しんでください！",
+                webbased: "このOSはHTMLとJavascriptベースです！本物のOSではありません！ - 作成者 nyx_waoss",
+                language: "元の言語：スペイン語 ✨",
+                devconsole: "開発者コンソール",
+                recovery: "リカバリーモード",
+                deldata: "データを削除",
+                useothernav: "⚠️ ブラウザが対応していません。",
+                updatenav: "続行するにはブラウザを更新してください。",
+                msgbox_stopmsg_title: "NyxPawOSを停止しますか？",
+                msgbox_stopmsg: "最後の手段としてのみ使用してください。続行するとシステムのシャットダウンが強制され、データは保存されません！緊急時のみ使用してください！",
+                msgbox_deldata_title: "すべてのデータを削除しますか？",
+                msgbox_deldata: "これによりシステムが工場出荷時の設定にリセットされ、データが削除され、再設定が必要です。\nシステムが応答しない場合や起動しない場合に便利です。\n続行しますか？",
+                msgbox_continue: "続行",
+                msgbox_stop: "停止",
+                msgbox_cancel: "キャンセル",
+                back: "戻る",
+                versionmanager: "バージョンマネージャー",
+                selected: "選択済み",
+                settings: "設定",
+                launch: "起動！",
+                launch_load: "読み込み中...",
+                launch_stop: "停止",
+                translations_warning:"翻訳は100%正確ではない場合があります。システムは現在も段階的に翻訳されています。"
+            },
+            de: {
+                welcome: "Willkommen bei NyxPawOS",
+                welcomelong: "Webbasiert, experimentell und minimalistisch ✨",
+                news: "Neuigkeiten",
+                version: "Letzte Version (26.1)",
+                problems: "Problemlösung",
+                ifstartbtn: "Wenn die Starttaste nicht funktioniert:",
+                tryjs: "Stellen Sie sicher, dass Javascript aktiviert ist: <a href='javascripthelp.html' target='_blank'>Wie Javascript aktivieren</a>",
+                trypopups: "Stellen Sie sicher, dass PopUps in den Site-Einstellungen erlaubt sind",
+                ifblackscr: "Wenn ein schwarzer Bildschirm mit Text erscheint und keine Fortschrittsleiste vorhanden ist:",
+                tryupdate: "Überprüfen Sie, ob Sie die neueste Systemversion haben",
+                trysearch: "Sehen Sie nach, ob jemand anderes dasselbe Problem hat",
+                tryreinstall: "Installieren Sie das Betriebssystem neu und ändern Sie keine Dateien, wenn Sie nicht wissen, was Sie tun",
+                iffsdont: "Wenn das Dateisystem nicht funktioniert:",
+                trylocalstoragelock: "Stellen Sie sicher, dass nichts den Zugriff auf local storage oder IndexedDB blockiert",
+                enjoy: "Viel Spaß mit dem OS!",
+                webbased: "Dieses Betriebssystem basiert auf HTML und Javascript! Kein echtes OS! - Erstellt von nyx_waoss",
+                language: "Originalsprache: Spanisch ✨",
+                devconsole: "Entwicklerkonsole",
+                recovery: "Wiederherstellungsmodus",
+                deldata: "Daten löschen",
+                useothernav: "⚠️ Browser nicht unterstützt.",
+                updatenav: "Bitte aktualisieren Sie Ihren Browser, um fortzufahren.",
+                msgbox_stopmsg_title: "Möchten Sie NyxPawOS stoppen?",
+                msgbox_stopmsg: "Nur als letzten Ausweg verwenden, das Fortfahren erzwingt das Herunterfahren des Systems und Ihre Daten werden nicht gespeichert! Nur in Notfällen verwenden!",
+                msgbox_deldata_title: "Möchten Sie alle Ihre Daten löschen?",
+                msgbox_deldata: "Dadurch wird das System auf die Werkseinstellungen zurückgesetzt, Ihre Daten werden gelöscht, und Sie müssen das System erneut einrichten.\nDiese Funktion ist nützlich, wenn das System nicht reagiert oder nicht startet.\nMöchten Sie fortfahren?",
+                msgbox_continue: "Fortfahren",
+                msgbox_stop: "Stopp",
+                msgbox_cancel: "Abbrechen",
+                back: "Zurück",
+                versionmanager: "Versionsmanager",
+                selected: "Ausgewählt",
+                settings: "Einstellungen",
+                launch: "Starten!",
+                launch_load: "Lädt...",
+                launch_stop: "Stopp",
+                translations_warning:"Die Übersetzungen sind möglicherweise nicht zu 100% genau. Das System wird noch schrittweise übersetzt."
+            }
+        };
+
+        function translateSingle(str) {
+            const lang = localStorage.getItem("launcher_lang") || "en";
+            return translations[lang]?.[str] ?? translations["en"]?.[str] ?? str;
+        }
+
+        function translate(lang) {
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                const key = el.getAttribute("data-i18n");
+                const value = translations[lang]?.[key];
+                if (value) {
+                    if (value.includes("<")) {
+                        el.innerHTML = value;
+                    } else {
+                        el.textContent = value;
+                    }
+                }
+            });
+        }
+
+        function detectLang() {
+            const saved = localStorage.getItem("launcher_lang");
+            if (saved) return saved;
+
+            const browserLang = navigator.language.split("-")[0];
+            const supported = ["es", "en", "pt", "fr", "ja", "de"];
+
+            return supported.includes(browserLang) ? browserLang : "en";
+        }
+
+        function setLang(lang) {
+            localStorage.setItem("launcher_lang", lang);
+            document.documentElement.setAttribute("launcher_lang", lang);
+            translate(lang);
+        }
+
+        setLang(detectLang());
     </script>
     
 </body>

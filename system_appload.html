@@ -13,11 +13,11 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background-color: rgb(201, 201, 201);
+            background-color: rgb(235, 235, 235);
         }
         #icon {
-            max-width: 80%;
-            max-height: 80vh;
+            max-width: 60%;
+            max-height: 60vh;
         }
         .hidden {
             display: none !important;
@@ -26,15 +26,44 @@
             font-family: sans-serif;
             font-size: 18px;
         }
+        #extrasp {
+            font-family: sans-serif;
+            font-size: 18px;
+        }
+        #main_button {
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+            width: 200px;
+            height: 30px;
+            transition: transform 0.2s ease;
+        }
+        #main_button:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        #main_button:active {
+            background-color: rgba(0, 0, 0, 0.1);
+            transform: scale(0.9);
+        }
     </style>
 </head>
 <body>
     <img id="icon" src="" alt="Loading...">
-    <p class="hidden" id="notaviliablep">App not avilable, please report this error to InstictOS Service.</p>
+    <p class="hidden" id="notaviliablep">App not avilable, please report this error to NyxPawOS Service.</p>
+    <p class="hidden" id="extrasp">App not avilable, please report this error to NyxPawOS Service.</p>
+    <button class="hidden" id="main_button">Button</button>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const imgURL = urlParams.get('img');
         const avilable = urlParams.get('avl');
+        const extras = urlParams.get('extras');
+        const textsize = urlParams.get('textsize');
+        const showBtn = urlParams.get('btn');
+        const btnAction = urlParams.get('btnAct');
+        const btnInfo = urlParams.get('btnInfo');
+
+        let windowToExec = '';
 
         if (imgURL) {
             document.getElementById('icon').src = imgURL;
@@ -46,6 +75,49 @@
             document.getElementById('notaviliablep').classList.remove('hidden');
         } else {
             document.getElementById('notaviliablep').classList.add('hidden');
+        }
+
+        if (extras) {
+            document.getElementById('extrasp').textContent = String(extras);
+            document.getElementById('extrasp').classList.remove('hidden');
+        } else {
+            document.getElementById('extrasp').classList.add('hidden');
+        }
+
+        if (textsize) {
+            document.getElementById('notaviliablep').style.fontSize = `${String(textsize)}px`;
+            document.getElementById('extrasp').style.fontSize = `${String(textsize)}px`;
+        } else {
+            document.getElementById('notaviliablep').style.fontSize = '18px';
+            document.getElementById('extrasp').style.fontSize = '18px';
+        }
+
+        if (showBtn) {
+            document.getElementById('main_button').textContent = showBtn;
+            document.getElementById('main_button').classList.remove('hidden');
+        } else {
+            document.getElementById('main_button').classList.add('hidden');
+        }
+
+        if (btnInfo) {
+            windowToExec = btnInfo;
+        } else {
+            //ignore
+        }
+
+        if (btnAction) {
+            if (btnAction == 'launch') {
+                document.getElementById('main_button').addEventListener('click', () => {
+                    console.log('sending post...');
+                    window.parent.postMessage({
+                        action: 'launch',
+                        windowId: windowToExec,
+                        enable: true
+                    }, '*');
+                });
+            }
+        } else {
+            //ignore
         }
     </script>
 </body>

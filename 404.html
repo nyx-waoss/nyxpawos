@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+
+            margin: 0;
+            height: 100%;
+            gap: 0;
+            justify-content: center;
+            background-image: url(assets/wallpaper.jpg);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            background-size: cover;
+            overflow-y: hidden;
+            font-family: sans-serif;
+        }
+
+        #main {
+            margin-top: 40px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 12px;
+        }
+        #main h1 {
+            margin-bottom: 30px;
+        }
+        #main button {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            color: white;
+
+        }
+        #main button:hover {
+            background-color: rgba(0, 0, 0, 0.75);
+        }
+        #main button:active {
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <h1>✨ Error 404 ✨</h1>
+        <h4>No se ha encontrado la pagina especificada, verifica la URL y vuelve a intentarlo :D</h4>
+        <button onclick="window.location.href = 'launcher.html'">&lt; Volver al launcher</button>
+    </div>
+</body>
+</html>

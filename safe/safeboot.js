@@ -20,7 +20,7 @@ const descriptions = {
     off: 'Turn off the computer'
 }
 
-document.documentElement.requestFullscreen();
+
 
 /*Sys */
 function makeDiag() {
@@ -145,21 +145,33 @@ function getCurrentItems() {
     }
 }
 
+function selectItem(idx) {
+    currentIdx = idx;
+    updateSel();
+}
+
+function activateItem(idx) {
+    currentIdx = idx;
+    updateSel();
+    
+    const items = getCurrentItems();
+    const value = items[idx].getAttribute('data-value');
+    handleAction(value);
+}
+
 function updateSel() {
     const items = getCurrentItems();
     const selectedItem = items[currentIdx];
     const value = selectedItem.getAttribute('data-value');
 
     items.forEach((item, idx) => {
-        if (idx === currentIdx) {
-            item.classList.add('selected');
-        } else {
-            item.classList.remove('selected');
-        }
+        item.classList.toggle('selected', idx === currentIdx);
+
+        item.onclick = () => activateItem(idx);
+        item.onmouseenter = () => selectItem(idx);
     });
 
-    const infotext = descriptions[value];
-    info.textContent = 'Description: ' + infotext;
+    info.textContent = 'Description: ' + descriptions[value];
 }
 
 function switchMenu(menuSw) {
@@ -178,21 +190,49 @@ function switchMenu(menuSw) {
     updateSel();
 }
 
+populateSysInfo();
 updateSel();
+
+function populateSysInfo() {
+    const sysinfo = document.getElementById('sysinfo');
+    const lsSize = JSON.stringify(localStorage).length;
+    const hasFS = localStorage.getItem('sessionAutoStart') ? 'intact' : 'missing';
+    const hasReg = localStorage.getItem('SysRegConfig') ? 'intact' : 'missing';
+
+    let dbStatus = 'checking...';
+    const req = indexedDB.open('NeptuneFS');
+    req.onsuccess = () => {
+        dbStatus = 'intact';
+        req.result.close();
+        renderSysInfo(hasFS, hasReg, dbStatus, lsSize);
+    };
+    req.onerror = () => {
+        dbStatus = 'error';
+        renderSysInfo(hasFS, hasReg, dbStatus, lsSize);
+    };
+
+    renderSysInfo(hasFS, hasReg, 'checking...', lsSize);
+}
+
+function renderSysInfo(hasFS, hasReg, dbStatus, lsSize) {
+    document.getElementById('sysinfo').textContent =
+        `sessionAutoStart: ${hasFS}       |       SysRegConfig: ${hasReg}       |       IndexedDB (NeptuneFS): ${dbStatus}       |       localStorage: ${lsSize}b`;
+}
 
 document.addEventListener('keydown', (e) => {
 
     if (e.key === 'Delete') {
         e.preventDefault();
-        document.documentElement.requestFullscreen();
+        
         if (askForDeleteData) {
             confirmDelete();
+            updateBottomBar('menu');
         }
     }
 
-    if (e.key === 'Backspace') {
+    if (e.key === 'Escape') {
         e.preventDefault();
-        document.documentElement.requestFullscreen();
+        
         if (askForDeleteData) {
             window.location.reload();
         }
@@ -202,52 +242,61 @@ document.addEventListener('keydown', (e) => {
 
     if (e.key === 'ArrowDown') {
         e.preventDefault();
-        document.documentElement.requestFullscreen();
+        
         currentIdx = (currentIdx + 1) % items.length;
         updateSel();
     }
 
     if (e.key === 'ArrowUp') {
         e.preventDefault();
-        document.documentElement.requestFullscreen();
+        
         currentIdx = (currentIdx - 1 + items.length) % items.length;
         updateSel();
     }
 
     if (e.key === 'Enter') {
-        document.documentElement.requestFullscreen();
         e.preventDefault();
-
-        const selectedItem = items[currentIdx];
-        const value = selectedItem.getAttribute('data-value');
-
-        if (value === 'advanced') {
-            switchMenu('advanced');
-        } else if (value === 'back') {
-            switchMenu('main');
-
-
-        } else if (value === 'boot') {
-            window.location.href = '../index.html';
-        } else if (value === 'safe') {
-            window.location.href = '../index.html?mode=safe';
-        } else if (value === 'format') {
-            mainMenu.classList.add('hidden');
-            formatSystem('all');
-        } else if (value === 'formatbutfiles') {
-            mainMenu.classList.add('hidden');
-            formatSystem('sys');
-        } else if (value === 'diag') {
-            advancedMenu.classList.add('hidden');
-            makeDiag();
-        } else if (value === 'off') {
-            window.close();
-        
-
-
-        } else {
-            document.getElementById('toptext').textContent = 'Recovery menu ran into a problem, please restart the computer.';
-            console.error('Value of unknown: ' + value);
-        }
+        const items = getCurrentItems();
+        const value = items[currentIdx].getAttribute('data-value');
+        handleAction(value);
     }
 });
+
+function handleAction(value) {
+    if (value === 'advanced') {
+        switchMenu('advanced');
+    } else if (value === 'back') {
+        switchMenu('main');
+        updateBottomBar('menu');
+    } else if (value === 'boot') {
+        window.location.href = '../index.html';
+    } else if (value === 'safe') {
+        window.location.href = '../index.html?mode=safe';
+    } else if (value === 'format') {
+        mainMenu.classList.add('hidden');
+        formatSystem('all');
+        updateBottomBar('confirm');
+    } else if (value === 'formatbutfiles') {
+        mainMenu.classList.add('hidden');
+        formatSystem('sys');
+        updateBottomBar('confirm');
+    } else if (value === 'diag') {
+        advancedMenu.classList.add('hidden');
+        makeDiag();
+    } else if (value === 'off') {
+        window.close();
+    } else {
+        document.getElementById('toptext').textContent = 'Recovery menu ran into a problem, please restart the computer.';
+        console.error('Value of unknown: ' + value);
+    }
+}
+
+function updateBottomBar(context = 'menu') {
+    const bar = document.getElementById('bottomBar');
+    const hints = {
+        menu:    'ENTER = Choose            ||            ↑ ↓ Move',
+        confirm: 'DEL = Confirm format      ||            ESC = Cancel',
+        diag:    'ESC = Restart computer',
+    };
+    bar.textContent = hints[context] ?? hints.menu;
+}

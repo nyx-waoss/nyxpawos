@@ -1,0 +1,46 @@
+<!-- Template - _appname deben ser iguales-->
+
+<div class="window hidden" id="win_contacts">
+    <div class="grab">
+        <button onclick="contacts_openNewDialog()" class="contacts_grabcustombtn">➕</button>
+        <span class="grab-title">📇  Contactos</span>
+        <button class="grab-btn" id="btn_contacts">X</button>
+    </div>
+    <div class="win_content content_contacts">
+        <div id="contacts_sidebar">
+            <span>Cargando...</span>
+        </div>
+
+        <div id="contacts_fullinfo">
+            <img src="assets/gf_icons/contact.png" alt="Contact Image" id="contacts_fullinfo_photo">
+            <h1 id="contacts_fullinfo_name">Selecciona un contacto</h1>
+            <div id="contacts_cntdata"></div>
+            <button id="contacts_deletecontc">Borrar Contacto</button>
+        </div>
+
+        <div id="contacts_newcontact">
+            <button onclick="contacts_cancelCreation()">Cancelar</button>
+            <img src="assets/gf_icons/contact.png" alt="Contact Image" id="contacts_fullinfo_photo">
+        
+            <div class="contacts_newcontact_item">
+                <span>Nombre</span>
+                <input type="text" placeholder="Nombre..." id="contacts_newcontact_name" autocomplete="off">
+            </div>
+            <div class="contacts_newcontact_item">
+                <span>Teléfono</span>
+                <input type="text" placeholder="Teléfono..." id="contacts_newcontact_phone" autocomplete="off">
+            </div>
+            <div class="contacts_newcontact_item">
+                <span>Correo</span>
+                <input type="text" placeholder="Correo..." id="contacts_newcontact_email" autocomplete="off">
+            </div>
+            <div class="contacts_newcontact_item">
+                <span>Notas</span>
+                <input type="text" placeholder="Notas..." id="contacts_newcontact_notes" autocomplete="off">
+            </div>
+
+            <button onclick="contacts_createFromDialog()">Crear</button>
+        </div>
+    </div>
+    <div class="resize-handle"></div>
+</div>

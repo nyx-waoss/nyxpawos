@@ -241,3 +241,17 @@ button:hover {
 .version_information {
     display: flex; flex-direction: column; margin: 0;
 }
+
+.lang_warn_div {
+    width: 280px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(237, 169, 12, 0.8);
+    border-radius: 8px;
+    color: white;
+    padding: 12px;
+}
+
+.lang_warn_div span {
+    font-size: 14px;
+}

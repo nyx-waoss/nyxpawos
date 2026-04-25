@@ -1,0 +1,22 @@
+<!-- Template - _appname deben ser iguales-->
+
+<div class="window hidden no-resize" id="win_sysshutdown">
+    <div class="grab">
+        <span class="grab-title">🔒  Sistema</span>
+        <button class="grab-btn" id="btn_sysshutdown">X</button>
+    </div>
+    <div class="win_content content_sysshutdown">
+        
+        <div id="sysshutdown_mainwrapper">
+            <img src="../../../assets/system/shutdown.png" alt="Shutdown" id="sysshutdown_icon">
+            <span id="sysshutdown_title">Apagar</span>
+        </div>
+        <span id="sysshutdown_shutdowntext">Quieres apagar el sistema? Asegurate de guardar tus datos.</span>
+        <div id="sysshutdown_btnswrapper">
+            <button onclick="AppManager.hideWindow('sysshutdown')">Cancelar</button>
+            <button class="sysshutdown_mainbtn" id="sysshutdown_mainbtn">Apagar</button>
+        </div>
+
+    </div>
+    <div class="resize-handle"></div>
+</div>

@@ -1,0 +1,37 @@
+.startupapps_grabcustombtn {
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    margin-right: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0;
+}
+
+.startupapps_grabcustombtn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.startupapps_grabcustombtn:active {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.content_startupapps {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.content_startupapps span {
+    cursor: text !important;
+    user-select: text !important;
+    -ms-user-select: text !important;
+    -webkit-user-select: text !important;
+
+    color: white;
+    background-color: rgb(20, 20, 20);
+    padding: 2px 12px;
+    width: 90%;
+    border-radius: 8px;
+}

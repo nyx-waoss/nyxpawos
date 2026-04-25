@@ -1,6 +1,6 @@
     <div class="window hidden" id="win_taskmanager">
         <div class="grab">
-            <span class="grab-title">📋  Administrador de tareas</span>
+            <span class="grab-title" data-i18n="wintitl_taskmgr">📋  Administrador de tareas</span>
             <button class="grab-btn" id="btn_taskmanager">X</button>
         </div>
 
@@ -8,7 +8,9 @@
             <div id="taskmanager_topbar">
                 <button onclick="sysShowRunDialog()">+</button>
                 <button>X</button>
-                <button onclick="refreshTaskList()">↻</button>
+                <button onclick="taskmgrRefreshList()">↻</button>
+                <button onclick="taskmgrGotoApps()">Apps</button>
+                <button onclick="taskmgrGotoServs()">Servicios</button>
             </div>
         </div>
         <div class="resize-handle"></div>

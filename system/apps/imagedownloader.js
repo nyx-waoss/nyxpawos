@@ -1,4 +1,12 @@
 console.log('Current: apps/imagedownloader.js');
+window.AppMetadata = window.AppMetadata || {};
+
+window.AppMetadata.imagedownloader = {
+    displayName: 'Image Downloader',
+    icon: '../../assets/apps/imagedownloader.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
 //Codigo aqui:
 
 let imgdownloaderBtn = null;
@@ -38,6 +46,7 @@ function init_imagedownloader() {
 
     _imgdown_onclick = () => {
         sysExecApp('files');
+        SysVar.pointerFilesSaveDialogFilename = 'mi-imagen.png';
         (async () => {
             await waitUntil(() => typeof filesOpenSaveDialog === 'function');
             filesOpenSaveDialog();

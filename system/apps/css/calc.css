@@ -29,7 +29,7 @@
 }
 
 .calcbutton {
-    background-color: rgba(75, 75, 75, 0.5);
+    background-color: rgba(70, 70, 70, 0.9);
     border-radius: 8px;
     border: none;
     color: white;
@@ -37,7 +37,7 @@
 }
 
 .calcbutton:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+    background-color: rgba(101, 101, 101, 0.9);
 }
 
 .calcbutton:active {

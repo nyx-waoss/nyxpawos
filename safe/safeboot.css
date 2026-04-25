@@ -8,17 +8,12 @@ label,
 span,
 p,
 a {
-    font-family: 'Consolas', monospace;
-}
-
-* {
-    cursor: none;
+    font-family: "Outfit", sans-serif;
 }
 
 body {
-    pointer-events: none;
-    background-color: black;
-    font-family: 'Consolas', monospace;
+    background-color: rgb(0, 60, 90);
+    font-family: "Outfit", sans-serif;
     color: white;
     
 }
@@ -28,7 +23,7 @@ body {
 }
 
 #toptext {
-    white-space: pre-line;
+    white-space: pre;
 }
 
 .menu {
@@ -40,12 +35,17 @@ body {
 .item {
     padding: 4px;
     margin: 5px 0;
-    background-color: black;
+    background-color: rgba(255, 255, 255, 0.2);
     color: white;
 }
 
 .item.selected {
     background-color: rgb(255, 255, 255);
+    color: black;
+}
+.item:active {
+    background-color: rgba(255, 255, 255, 0.2);
+    outline: 3px solid white;
     color: black;
 }
 
@@ -65,4 +65,29 @@ body {
     width: 100%;
     margin: 0;
     text-align: left;
+    white-space: pre;
+}
+
+#sysinfo {
+    position: fixed;
+    bottom: 28px;
+    left: 0;
+    right: 0;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+    background: rgba(0,0,0,0.5);
+    white-space: pre;
+}
+
+#linf {
+    position: fixed;
+    bottom: 56px;
+    left: 0;
+    right: 0;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    background: transparent;
+    white-space: pre;
 }

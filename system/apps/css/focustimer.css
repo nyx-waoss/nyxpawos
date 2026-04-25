@@ -1,0 +1,410 @@
+/* ============================
+   FOCUS TIMER — Retro Terminal
+   ============================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+/* ---------- variables ---------- */
+.content_focustimer {
+    --ft-bg: #0d0f0f;
+    --ft-surface: #111615;
+    --ft-border: #1e3a2f;
+    --ft-accent: #00ff88;
+    --ft-accent-dim: #00a855;
+    --ft-accent-glow: rgba(0, 255, 136, 0.18);
+    --ft-text: #c8ffe0;
+    --ft-text-dim: #4a7a60;
+    --ft-warn: #ff6b35;
+    --ft-warn-glow: rgba(255, 107, 53, 0.2);
+    --ft-font-mono: 'Share Tech Mono', monospace;
+    --ft-font-display: 'Orbitron', monospace;
+    --ft-radius: 4px;
+    --ft-transition: 0.15s ease;
+}
+
+/* ---------- container ---------- */
+.content_focustimer {
+    background: var(--ft-bg);
+    font-family: var(--ft-font-mono);
+    color: var(--ft-text);
+    padding: 0;
+    overflow: hidden;
+    min-width: 300px;
+    min-height: 480px;
+    /* scanlines overlay */
+    position: relative;
+}
+
+.content_focustimer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+}
+
+.ft-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 16px 14px;
+}
+
+/* ---------- tabs ---------- */
+.ft-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius);
+    padding: 3px;
+    width: 100%;
+}
+
+.ft-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--ft-text-dim);
+    font-family: var(--ft-font-mono);
+    font-size: 10px;
+    padding: 5px 4px;
+    cursor: pointer;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: all var(--ft-transition);
+}
+
+.ft-tab:hover {
+    color: var(--ft-text);
+    background: var(--ft-accent-glow);
+}
+
+.ft-tab.active {
+    background: var(--ft-accent);
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0 0 8px var(--ft-accent-glow);
+}
+
+/* ---------- clock ---------- */
+.ft-clock-wrap {
+    position: relative;
+    width: 190px;
+    height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ft-ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    filter: drop-shadow(0 0 6px var(--ft-accent-dim));
+}
+
+.ft-ring-bg {
+    fill: none;
+    stroke: var(--ft-border);
+    stroke-width: 6;
+}
+
+.ft-ring-progress {
+    fill: none;
+    stroke: var(--ft-accent);
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear, stroke 0.4s ease;
+    filter: drop-shadow(0 0 4px var(--ft-accent));
+}
+
+.ft-ring-progress.warn {
+    stroke: var(--ft-warn);
+    filter: drop-shadow(0 0 4px var(--ft-warn));
+}
+
+.ft-clock-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    z-index: 1;
+}
+
+.ft-time {
+    font-family: var(--ft-font-display);
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--ft-accent);
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 16px var(--ft-accent), 0 0 32px var(--ft-accent-glow);
+    transition: color 0.4s ease, text-shadow 0.4s ease;
+    line-height: 1;
+}
+
+.ft-time.warn {
+    color: var(--ft-warn);
+    text-shadow: 0 0 16px var(--ft-warn), 0 0 32px var(--ft-warn-glow);
+}
+
+.ft-time.pulse {
+    animation: ft-pulse 1s infinite;
+}
+
+@keyframes ft-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.ft-label {
+    font-size: 10px;
+    color: var(--ft-text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+/* ---------- controls ---------- */
+.ft-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ft-btn {
+    border: 1px solid var(--ft-border);
+    background: var(--ft-surface);
+    color: var(--ft-text);
+    font-family: var(--ft-font-mono);
+    cursor: pointer;
+    border-radius: var(--ft-radius);
+    transition: all var(--ft-transition);
+}
+
+.ft-btn:hover {
+    border-color: var(--ft-accent);
+    color: var(--ft-accent);
+    box-shadow: 0 0 8px var(--ft-accent-glow);
+}
+
+.ft-btn:active {
+    transform: scale(0.95);
+}
+
+.ft-btn-primary {
+    padding: 10px 32px;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.ft-btn-primary.running {
+    border-color: var(--ft-warn);
+    color: var(--ft-warn);
+    box-shadow: 0 0 8px var(--ft-warn-glow);
+}
+
+.ft-btn-primary.running:hover {
+    box-shadow: 0 0 14px var(--ft-warn-glow);
+}
+
+.ft-btn-secondary {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- task input ---------- */
+.ft-task-wrap {
+    width: 100%;
+}
+
+.ft-task-input {
+    width: 100%;
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius);
+    color: var(--ft-text);
+    font-family: var(--ft-font-mono);
+    font-size: 12px;
+    padding: 8px 10px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color var(--ft-transition);
+}
+
+.ft-task-input::placeholder {
+    color: var(--ft-text-dim);
+}
+
+.ft-task-input:focus {
+    border-color: var(--ft-accent-dim);
+    box-shadow: 0 0 0 2px var(--ft-accent-glow);
+}
+
+/* ---------- stats ---------- */
+.ft-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius);
+    padding: 10px 0;
+}
+
+.ft-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.ft-stat-val {
+    font-family: var(--ft-font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ft-accent);
+    text-shadow: 0 0 8px var(--ft-accent-glow);
+    line-height: 1;
+}
+
+.ft-stat-lbl {
+    font-size: 9px;
+    color: var(--ft-text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.ft-stat-divider {
+    width: 1px;
+    height: 30px;
+    background: var(--ft-border);
+}
+
+/* ---------- log ---------- */
+.ft-log-wrap {
+    width: 100%;
+}
+
+.ft-log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.ft-log-title {
+    font-size: 10px;
+    color: var(--ft-text-dim);
+    letter-spacing: 0.08em;
+}
+
+.ft-log-clear {
+    background: none;
+    border: none;
+    color: var(--ft-text-dim);
+    font-family: var(--ft-font-mono);
+    font-size: 10px;
+    cursor: pointer;
+    padding: 0;
+    transition: color var(--ft-transition);
+}
+
+.ft-log-clear:hover {
+    color: var(--ft-warn);
+}
+
+.ft-log {
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius);
+    max-height: 110px;
+    overflow-y: auto;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ft-border) transparent;
+}
+
+.ft-log-empty {
+    font-size: 11px;
+    color: var(--ft-text-dim);
+    text-align: center;
+    padding: 8px 0;
+    font-style: italic;
+}
+
+.ft-log-entry {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    font-size: 11px;
+    border-bottom: 1px solid rgba(30,58,47,0.5);
+    padding-bottom: 3px;
+    animation: ft-entry-in 0.25s ease;
+}
+
+@keyframes ft-entry-in {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.ft-log-entry:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.ft-log-time {
+    color: var(--ft-text-dim);
+    font-size: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ft-log-type {
+    color: var(--ft-accent);
+    font-size: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ft-log-type.break {
+    color: #66ccff;
+}
+
+.ft-log-task {
+    color: var(--ft-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ---------- notification flash ---------- */
+.ft-flash {
+    animation: ft-flash-anim 0.6s ease;
+}
+
+@keyframes ft-flash-anim {
+    0%   { background: var(--ft-accent-glow); }
+    100% { background: transparent; }
+}

@@ -4,6 +4,9 @@
     <link rel="stylesheet" href="safeboot.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../assets/logow.webp">
     <title>Safeboot</title>
 </head>
@@ -25,7 +28,9 @@
     </ul>
     <p id="description">Description: </p>
 
-    <p class="title bottom">ENTER = Choose || ↑ ↓ Move</p>
+    <p class="title bottom" id="bottomBar">ENTER = Choose            ||            ↑ ↓ Move</p>
+    <p id="linf">[Info] Important: As of the NeptuneFS integration, "SysRegConfig" may appear as "missing" by design. This is expected behavior and does not indicate an issue—the system is functioning as intended.</p>
+    <p id="sysinfo"></p>
     <script src="safeboot.js"></script>
 </body>
 </html>

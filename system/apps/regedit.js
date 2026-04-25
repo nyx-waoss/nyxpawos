@@ -1,4 +1,11 @@
 console.log('Current: apps/regedit.js');
+window.AppMetadata = window.AppMetadata || {};
+window.AppMetadata.regedit = {
+    displayName: 'RegEdit',
+    icon: '../../assets/apps/regedit.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
 
 //Codigo aqui:
 let currentSection = 'jsfiles';

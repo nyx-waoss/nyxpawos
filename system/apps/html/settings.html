@@ -1,10 +1,4 @@
-    <div class="window hidden" id="win_config">
-        <div class="grab">
-            <span class="grab-title">⚙️  Configuracion</span>
-            <button class="grab-btn" id="btn_config">X</button>
-        </div>
-
-        <div class="win_content content_settings">
+<nyx-window app="config" win-title="⚙️  Configuracion" title-i18n="wintitl_settings">
             <div class="settings-sidebar">
                 <button class="tab profile" data-tab="profile">
                     <i class="fi fi-ss-user"></i>
@@ -14,27 +8,81 @@
                     </div>
                 </button>
                 <div class="sidebar-divider"></div>
-                <button class="tab active" data-tab="wifi" data-i18n="settings_tab_wifi">Wi-Fi</button>
-                <button class="tab" data-tab="network" data-i18n="settings_tab_network">Red</button>
-                <button class="tab" data-tab="bt" data-i18n="settings_tab_bt">Bluetooth</button>
+                <button class="tab active" data-tab="wifi">
+                    <img src="../../../assets/gf_icons/wifi.svg">
+                    <span data-i18n="settings_tab_wifi">Wi-Fi</span>
+                </button>
+                <button class="tab" data-tab="network">
+                    <img src="../../../assets/gf_icons/network.svg">
+                    <span data-i18n="settings_tab_network">Red</span>
+                </button>
+                <button class="tab" data-tab="bt">
+                    <img src="../../../assets/gf_icons/bluetooth.png">
+                    <span data-i18n="settings_tab_bt">Bluetooth</span>
+                </button>
                 <div class="sidebar-divider"></div>
-                <button class="tab" data-tab="displays" data-i18n="settings_tab_scr">Pantallas</button>
-                <button class="tab" data-tab="style" data-i18n="settings_tab_style">Estilo</button>
-                <button class="tab" data-tab="audio" data-i18n="settings_tab_audio">Audio</button>
-                <button class="tab" data-tab="battery" data-i18n="settings_tab_battery">Bateria</button>
-                <button class="tab" data-tab="keyboard" data-i18n="settings_tab_keyboard">Teclado</button>
-                <button class="tab" data-tab="pointer" data-i18n="settings_tab_pointer">Puntero</button>
-                <button class="tab" data-tab="color" data-i18n="settings_tab_color">Color</button>
+                <button class="tab" data-tab="displays">
+                    <img src="../../../assets/gf_icons/display.svg">
+                    <span data-i18n="settings_tab_scr">Pantallas</span>
+                </button>
+                <button class="tab" data-tab="style">
+                    <img src="../../../assets/gf_icons/pencil.svg">
+                    <span data-i18n="settings_tab_style">Estilo</span>
+                </button>
+                <button class="tab" data-tab="audio">
+                    <img src="../../../assets/gf_icons/audio.svg">
+                    <span data-i18n="settings_tab_audio">Audio</span>
+                </button>
+                <button class="tab" data-tab="battery">
+                    <img src="../../../assets/gf_icons/battery.svg">
+                    <span data-i18n="settings_tab_battery">Bateria</span>
+                </button>
+                <button class="tab" data-tab="keyboard">
+                    <img src="../../../assets/gf_icons/keyboard.svg">
+                    <span data-i18n="settings_tab_keyboard">Teclado</span>
+                </button>
+                <button class="tab" data-tab="pointer">
+                    <img src="../../../assets/gf_icons/cursor.svg">
+                    <span data-i18n="settings_tab_pointer">Puntero</span>
+                </button>
+                <button class="tab" data-tab="color">
+                    <img src="../../../assets/gf_icons/palette.svg">
+                    <span data-i18n="settings_tab_color">Color</span>
+                </button>
                 <div class="sidebar-divider"></div>
-                <button class="tab" data-tab="datetime" data-i18n="settings_tab_date">Fecha y Hora</button>
-                <button class="tab" data-tab="country" data-i18n="settings_tab_country">Idioma y Region</button>
-                <button class="tab" data-tab="privacy" data-i18n="settings_tab_privacy">Privacidad</button>
-                <button class="tab" data-tab="users" data-i18n="settings_tab_users">Usuarios</button>
+                <button class="tab" data-tab="datetime">
+                    <img src="../../../assets/gf_icons/calendar-clock.svg">
+                    <span data-i18n="settings_tab_date">Fecha y Hora</span>
+                </button>
+                <button class="tab" data-tab="country">
+                    <img src="../../../assets/gf_icons/world.svg">
+                    <span data-i18n="settings_tab_country">Idioma y Region</span>
+                </button>
+                <button class="tab" data-tab="privacy">
+                    <img src="../../../assets/gf_icons/privacy.svg">
+                    <span data-i18n="settings_tab_privacy">Privacidad</span>
+                </button>
+                <button class="tab" data-tab="users">
+                    <img src="../../../assets/gf_icons/user.svg">
+                    <span data-i18n="settings_tab_users">Usuarios</span>
+                </button>
                 <div class="sidebar-divider"></div>
-                <button class="tab" data-tab="apps" data-i18n="settings_tab_apps">Aplicaciones</button>
-                <button class="tab" data-tab="general" data-i18n="settings_tab_general">General</button>
-                <button class="tab" data-tab="updates" data-i18n="settings_tab_updates">Actualizaciones</button>
-                <button class="tab" data-tab="system" data-i18n="settings_tab_system">Sistema</button>
+                <button class="tab" data-tab="apps">
+                    <img src="../../../assets/gf_icons/apps.svg">
+                    <span data-i18n="settings_tab_apps">Aplicaciones</span>
+                </button>
+                <button class="tab" data-tab="general">
+                    <img src="../../../assets/gf_icons/general.svg">
+                    <span data-i18n="settings_tab_general">General</span>
+                </button>
+                <button class="tab" data-tab="updates">
+                    <img src="../../../assets/gf_icons/update.svg">
+                    <span data-i18n="settings_tab_updates">Actualizaciones</span>
+                </button>
+                <button class="tab" data-tab="system">
+                    <img src="../../../assets/gf_icons/system.svg">
+                    <span data-i18n="settings_tab_system">Sistema</span>
+                </button>
             </div>
 
             <div class="settings-content">
@@ -84,7 +132,7 @@
                     </div>
                     <h4>Redes Disponibles</h4>
                     <div class="uisetting">
-                        <p>🛜 Karen Melendez 5G</p>
+                        <p id="settings_connectednetwork">🛜 Desconocido</p>
                         <p style="color: rgb(153, 153, 153); font-size: small;">Conectado</p>
                     </div>
                 </div>
@@ -104,7 +152,7 @@
                     </div>
                     <div class="uisetting">
                         <label>IP Address</label>
-                        <input class="text-input" type="text" placeholder="192.168.1.1">
+                        <input class="text-input" type="text" value="192.168.1.1" id="settings_ipaddress">
                     </div>
                     <div class="uisetting">
                         <label>DNS</label>
@@ -187,6 +235,32 @@
 
                 <div class="tab-content" id="style">
                     <h3>Estilos</h3>
+                    <h4>Fondo de pantalla</h4>
+                    <span id="settings_loadingwallpapertext" class="hidden">Descargando...</span>
+                    <div class="uisetting_container">
+                        <button onclick="syssetwallpaperto('default')">
+                            <img alt="Wallpaper Image" src="assets/wallpaper.jpg">
+                        </button>
+                        <button onclick="syssetwallpaperto('1498263382026-c65d01dad017')">
+                            <img alt="Wallpaper Image" src="assets/wallpapers_previews/1.jpg">
+                        </button>
+                        <button onclick="syssetwallpaperto('1538941214074-9b578e573632')">
+                            <img alt="Wallpaper Image" src="assets/wallpapers_previews/2.jpg">
+                        </button>
+                        <button onclick="syssetwallpaperto('1743167150074-4fe3fd1cd2b6')">
+                            <img alt="Wallpaper Image" src="assets/wallpapers_previews/3.jpg">
+                        </button>
+                        <button onclick="syssetwallpaperto('1448375240586-882707db888b')">
+                            <img alt="Wallpaper Image" src="assets/wallpapers_previews/4.jpg">
+                        </button>
+                        <button onclick="syssetwallpaperto('1464822759023-fed622ff2c3b')">
+                            <img alt="Wallpaper Image" src="assets/wallpapers_previews/5.jpg">
+                        </button>
+                        <button onclick="promptcustomwallpaper()">
+                            <span>+</span>
+                        </button>
+                    </div>
+                    <h4>Tema</h4>
                     <div class="uisetting">
                         <label>Tema</label>
                         <select class="select">
@@ -201,12 +275,6 @@
                             <option>Rojo</option>
                             <option>Verde</option>
                             <option>Azul</option>
-                        </select>
-                    </div>
-                    <div class="uisetting">
-                        <label>Fondo de pantalla</label>
-                        <select class="select">
-                            <option>Predeterminado</option>
                         </select>
                     </div>
                     <div class="uisetting">
@@ -460,72 +528,10 @@
                 </div>
                 <div class="tab-content" id="apps">
                     <h3>Aplicaciones y paquetes</h3>
+                    <div class="uisetting">
+                        <button class="btn primary" onclick="sysExecApp('safefilesmanager')">Administrar aplicaciones confiables</button>
+                    </div>
                     <div class="uisetting" style="display: flex; flex-direction: column; gap: 5px;">
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/settings/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Configuracion</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/notes/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Notas</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/calc/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Calculadora</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/browser/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">PawNet</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/files/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Archivos</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/calendar/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Calendario</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/Terminal/4.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Terminal</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/toybox2.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Toybox</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/videoplayer.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Nyx Video Player</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/imageview.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Nyx Image Viewer</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/nyxpawstore.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">NyxPaw Store</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/ytclient.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">NyxPaw Youtube Client</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
-                        <div style="display: flex; flex-direction: row; gap: 6px;">
-                            <img src="assets/apps/taskmanager.png" alt="Application" style="width: 47px; height: 47px;">
-                            <p style="font-size: 16px;">Administrador de tareas</p>
-                        </div>
-                        <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
                         <h4>Aplicaciones del sistema:</h4>
                         <div style="width: 100%; height: 1px; background-color: rgb(65, 65, 65);"></div>
                         <div style="display: flex; flex-direction: row; gap: 6px;">
@@ -662,6 +668,9 @@
                             <option value="fr">Français</option>
                             <option value="ja">日本語</option>
                             <option value="de">Deutsch</option>
+                            <option value="zh">汉语</option>
+                            <option value="ru">русский</option>
+                            <option value="meow">Meow (??? 🐾)</option>
                         </select>
                     </div>
                     <div class="uisetting">
@@ -678,7 +687,7 @@
                             <option>Argentina</option>
                             <option>Costa Rica</option>
                             <option>China</option>
-                            <option>Otro...</option>
+                            <option>Other...</option>
                         </select>
                     </div>
                 </div>
@@ -695,8 +704,4 @@
 
 
             </div>
-
-        </div>
-
-        <div class="resize-handle"></div>
-    </div>
+</nyx-window>

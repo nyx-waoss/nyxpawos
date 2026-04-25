@@ -1,12 +1,11 @@
 console.log('Current: apps/appname.js');
-//METADATA (opcional)
-/*window.AppMetadata = window.AppMetadata || {};
+window.AppMetadata = window.AppMetadata || {};
 window.AppMetadata.appname = {
     displayName: 'App Name',
     icon: 'assets/apps/custom-icon.png',
     version: '1.0.0',
     author: 'Author'
-};*/
+};
 
 //Codigo aqui:
 
@@ -36,7 +35,7 @@ window.scriptReady('appname');
 function solicitarFullscreen() {
     isFullscreen = !isFullscreen;
     window.parent.postMessage({
-        action: 'fullscreen', <-- puede cambairse
+        action: 'fullscreen', //<-- puede cambairse
         windowId: WINDOW_ID,
         enable: isFullscreen
     }, '*');
@@ -49,3 +48,9 @@ function solicitarFullscreen() {
 // logout
 // kill
 // addtoappbar
+
+//Cambiar todas las referencias de appname por el nombre de la app
+
+/*
+CLEANUP OBLIGATORIO: todo lo que se crea, se destruye :D
+*/

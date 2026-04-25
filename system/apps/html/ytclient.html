@@ -1,16 +1,34 @@
     <div class="window hidden" id="win_nytclient">
         <div class="grab">
-            <span class="grab-title">📺  NyxPaw Youtube Client</span>
+            <span class="grab-title" data-i18n="wintitl_ytclient">📺  NyxPaw Youtube Client</span>
             <button class="grab-btn" id="btn_nytclient">X</button>
         </div>
-
         <div class="win_content content_nytclient">
-            <div id="nytclientnavbar">
-                <button onclick="nytclient_reload()">↻</button>
-                <input type="text" placeholder="dQw4w9WgXcQ" id="nytclienturlin">
-                <button onclick="nytclient_goto()">▶</button>
+
+            <div id="nytclient_page_askapikey">
+                <h3>Ingresa tu API Key de youtube</h3>
+                <input type="text" placeholder="API KEY..." id="nytclient_apikeyinput">
+                <button onclick="NYTSaveUserKey()">Acceder</button>
             </div>
-            <iframe id="nytclientiframe" src="nytclient.html"></iframe>
+            <div id="nytclient_page_home">
+                <h3>Cargando...</h3>
+                <h3 id="nytclient_loadstate">Conectando...</h3>
+            </div>
+            <div id="nytclient_page_player" class="hidden">
+                <button onclick="NYTReturnToHomescreen()" id="nytclient_returnbtn">Volver</button>
+                <iframe id="nytclient_iframeplayer" src="system_appload.html?img=assets/apps/nytclient.png&extras=Cargando video...&textsize=30" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin">
+                </iframe>
+                <div id="nytclient_playerbar">
+                    <button onclick="NYTReloadVideo()">⟳</button>
+                    <button onclick="NYTMakeFullScreen()">⛶</button>
+                </div>
+                <div id="nytclient_currvideoinfodiv">
+                    <p id="nytclient_currvideotitle">Cargando...</p>
+                    <p id="nytclient_currvideootherinfo">[👤 Cargando...] [👁️ Cargando...] [📅 Cargando...]<br>Cargando...</p>
+                    <button onclick="NYTOpenInYoutube()" id="watchonyt">Ver en youtube</button>
+                </div>
+            </div>
+            
         </div>
         <div class="resize-handle"></div>
     </div>

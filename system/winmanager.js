@@ -1,5 +1,10 @@
 console.log("Current: winmanager.js");
 
+/*
+winmanager es un archivo necesario del sistema para manejar las funciones de las ventanas, como maximizar, minimizar, arrastrar, resize, etc...
+sin este archivo, las ventanas aparecen, pero no se podria interactuar con ellas.
+*/
+
 //ventanas
 //Codigo general pa todo xd:
 let topZ = 9992;
@@ -7,20 +12,26 @@ let topZ = 9992;
 window.SysVar = window.SysVar || {};
 
 document.querySelectorAll(".window").forEach(win => {
-    initWindowBehavior(win);
-    win.dataset.winInitialized = 'true';
+    win.dataset.winInitialized = 'true'; // marcar como inicializadas sin agregar listeners
 });
 
 
 
 const customSizes = {
-    settings: { width: '800px', height: '600px' },
+    settings: { width: '970px', height: '750px' },
     calc: { width: '310px', height: '480px' },
     calendar: { width: '470px', height: '610px'},
     toybox: { width: '800px', height: '480px'},
     weather: { width: '490px', height: '280px'},
     arcade: { width: '980px', height: '630px'},
-    nkbrief: { width: '940px', height: '600px'}
+    nkbrief: { width: '940px', height: '600px'},
+    nyxpawdocs: { width: '940px', height: '600px'},
+    nytclient: { width: '1015px', height: '650px'},
+    nyxpawworkspace: { width: '800px', height: '530px'},
+    nyxpawslides: { width: '940px', height: '600px'},
+    sysshutdown: { width: '360px', height: '540px'},
+    safefilesmanager: { width: '435px', height: '390px'},
+    startupapps: { width: '435px', height: '390px'}
 };
 
 // Estas son las excepciones para apps que no siguen el patron (mas o menos xD)
@@ -178,6 +189,34 @@ function initWindowBehavior(win) {
     let savedLeft = null;
     let savedTop = null;
 
+    const onMouseMove = (e) => {
+        if (SysVar.windowManager0 || !SysVar.sysRunningServices.some(item => item.id === 'windowmanager.srv')) {
+            if (dragging) {
+                win.style.left = `${e.clientX - offsetX}px`;
+                win.style.top = `${e.clientY - offsetY}px`;
+            }
+            if (resizing) {
+                win.style.width = Math.max(startWidth + (e.clientX - startX), 200) + "px";
+                win.style.height = Math.max(startHeight + (e.clientY - startY), 120) + "px";
+            }
+        }
+    };
+
+    const onMouseUp = () => {
+        if (SysVar.windowManager0 || !SysVar.sysRunningServices.some(item => item.id === 'windowmanager.srv')) {
+            dragging = false;
+            resizing = false;
+        }
+    };
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+
+    win._cleanup = () => {
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
+    };
+
     const closeBtn = grab.querySelector('.grab-btn');
     if (!win.classList.contains('no-noresize')) {
         const buttonsContainer = document.createElement('div');
@@ -196,7 +235,7 @@ function initWindowBehavior(win) {
         minimizeBtn.textContent = '_';
 
         maximizeBtn.addEventListener('click', () => {
-            if (SysVar.windowManager0) {
+            if (SysVar.windowManager0 || !SysVar.sysRunningServices.some(item => item.id === 'windowmanager.srv')) {
                 win.classList.add('win-animating');
                 if (win.classList.contains('win-max')) {
                     win.classList.remove('win-max');
@@ -248,7 +287,7 @@ function initWindowBehavior(win) {
     } 
 
     grab.addEventListener("mousedown", (e) => {
-        if (SysVar.windowManager0) {
+        if (SysVar.windowManager0 || !SysVar.sysRunningServices.some(item => item.id === 'windowmanager.srv')) {
             if (e.target.closest("button")) return;
             if (win.classList.contains('win-max')) return;
 
@@ -263,11 +302,12 @@ function initWindowBehavior(win) {
         win.style.zIndex = ++topZ;
         document.querySelectorAll('.window').forEach(w => w.classList.remove('win-focused'));
         win.classList.add('win-focused');
+        updateTopBarProgram(win);
     });
 
     if (resizeHandle && !win.classList.contains('no-resize')) {
         resizeHandle.addEventListener("mousedown", (e) => {
-            if (SysVar.windowManager0) {
+            if (SysVar.windowManager0 || !SysVar.sysRunningServices.some(item => item.id === 'windowmanager.srv')) {
                 win.classList.remove('win-animating');
                 resizing = true;
                 startX = e.clientX;
@@ -279,29 +319,6 @@ function initWindowBehavior(win) {
             }
         });
     }
-
-    document.addEventListener("mousemove", (e) => {
-        if (SysVar.windowManager0) {
-            if (dragging) {
-                win.style.left = `${e.clientX - offsetX}px`;
-                win.style.top = `${e.clientY - offsetY}px`;
-            }
-
-            if (resizing) {
-                win.style.width =
-                    Math.max(startWidth + (e.clientX - startX), 200) + "px";
-                win.style.height =
-                    Math.max(startHeight + (e.clientY - startY), 120) + "px";
-            }
-        }
-    });
-
-    document.addEventListener("mouseup", () => {
-        if (SysVar.windowManager0) {
-            dragging = false;
-            resizing = false;
-        }
-    });
 }
 
 window.minimizeWindow = minimizeWindow;

@@ -1,0 +1,29 @@
+<!-- Template - _appname deben ser iguales-->
+
+<div class="window hidden" id="win_nyxpawdocs">
+    <div class="grab">
+        <span class="grab-title">📝  NyxPaw Docs</span>
+        <button class="grab-btn" id="btn_nyxpawdocs">X</button>
+    </div>
+    <div class="win_content content_nyxpawdocs">
+        
+        <div id="nyxpawdocs_toolbar">
+            <button onclick="nyxpawdocs_savedoc()" data-i18n="files_save">Guardar</button>
+            <button onclick="sysExecApp('files')" data-i18n="appbar_open">Abrir</button>
+            <button onclick="nyxpawdocs_newdoc()" data-i18n="nyxpawdocs_new">Nuevo</button>
+        </div>
+        <div id="nyxpawdocs-editor"></div>
+        <div id="nyxpawdocs_aitooltip">
+            <span>😸</span>
+            <button onclick="nyxpawdocs_resume()">Resumir</button>
+            <button onclick="nyxpawdocs_rewrite()">Reescribir</button>
+            <button onclick="nyxpawdocs_expand()">Expandir</button>
+        </div>
+        <div id="nyxpawdocs_airecivedinfo">
+            <button onclick="document.getElementById('nyxpawdocs_airecivedinfo').style.display = 'none'">X</button>
+            <span id="nyxpawdocs_aianswer">Pensando...</span>
+        </div>
+
+    </div>
+    <div class="resize-handle"></div>
+</div>

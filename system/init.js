@@ -1,5 +1,12 @@
+SysVar.bootFinished = false;
 console.log("System startup initiated!");
 console.log("Current: init.js");
+
+/*
+init.js es un archivo "limbo" entre sys.js y sysloader.js, no carga el sistema, pero tampoco lo administra por completo.
+Este archivo verifica la integridad del sistema y llama a las funciones necesarias durante el boot. Sin este archivo el sistema ni siquiera mostraria la pantalla de login.
+
+*/
 
 const params2 = new URLSearchParams(window.location.search);
 const mode2 = params2.get('mode');
@@ -66,27 +73,45 @@ function startLoading() {
                     }
                     setTimeout(() => {
                         loginScr.classList.remove('hidden');
-                        document.documentElement.requestFullscreen();
+                        try {
+                            document.documentElement.requestFullscreen();
+                        } catch(e) {
+                            console.log('Fullscreen not available:', e);
+                        }
                         localStorage.setItem('sys_status', 'working');
+                        SysVar.bootFinished = true;
                     }, 500);
                 }, 200);
             } else {
                 if (lastState === 'shutdown' || lastState === 'working') {
-                    document.getElementById('syssetup_specialtext').textContent = 'Recuperando sistema...';
-                    localStorage.setItem('sysStartupConfig', 'ShowSTAlert');
+                    if (SysVar.bootFinished) {
+                        return;
+                    }
+                    document.getElementById('syssetup_specialtext').textContent = 'Recovering, please wait...';
+                    if (localStorage.getItem('sysStartupConfig') !== 'ShowBSODAlert'){
+                        localStorage.setItem('sysStartupConfig', 'ShowSTAlert');
+                    }
                     document.getElementById('startupscrimg').classList.add('hidden');
                     document.getElementById('startupscr_syssetup').classList.remove('hidden');
-                    document.documentElement.requestFullscreen();
+                    try {
+                        document.documentElement.requestFullscreen();
+                    } catch(e) {
+                        console.log('Fullscreen not available:', e);
+                    }
                     setTimeout(() => {
                         localStorage.setItem('sys_status', 'off');
                         window.location.reload();
                     }, 3000);
                 } else {
-                    document.getElementById('syssetup_specialtext').textContent = 'Preparando sistema...';
+                    document.getElementById('syssetup_specialtext').textContent = 'Welcome to NyxPawOS...';
                     saveDataReg();
                     document.getElementById('startupscrimg').classList.add('hidden');
                     document.getElementById('startupscr_syssetup').classList.remove('hidden');
-                    document.documentElement.requestFullscreen();
+                    try {
+                        document.documentElement.requestFullscreen();
+                    } catch(e) {
+                        console.log('Fullscreen not available:', e);
+                    }
                     setTimeout(() => {
                         const startupScr = document.getElementById('startupscr');
                         sysExecApp('syssetup');
@@ -204,6 +229,11 @@ async function bootSystem() {
     setupCloseButtons();
     await waitUntil(() => typeof window.fs !== 'undefined');
     if (usedBefore && mode2 !== 'safe') {
+        const setupLang = localStorage.getItem('sysSetupLang');
+        if (setupLang) {
+            SysVar.currentlang = setupLang;
+            localStorage.removeItem('sysSetupLang');
+        }
         loadDataReg();
     }
     renderAppBar();
@@ -215,7 +245,11 @@ async function bootSystem() {
     updateTime();
 
     window.scriptReady('init');
+    localStorage.removeItem('sys_boot_heartbeat');
     console.log("SYSTEM READY");
+    clearInterval(window._bootHeartbeatWatcher);
+    _sysFunctionWatchdog.init();
+    console.log('[SysGuard] System function protection active');
 }
 
 startLoading();

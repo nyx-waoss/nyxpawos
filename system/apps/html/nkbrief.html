@@ -1,63 +1,57 @@
-    <div class="window hidden" id="win_nkbrief">
-        <div class="grab">
-            <span class="grab-title">✨  Nekiri Brief</span>
-            <button class="grab-btn" id="btn_nkbrief">X</button>
-        </div>
-
-        <div class="win_content content_nkbrief">
-            <div id="nkbrief_sidebar">
-                <button class="nkbrief_sidebar_btn" onclick="goToPage('home')" data-i18n="nkbrief_tab_home">🏠 Inicio</button>
-                <button class="nkbrief_sidebar_btn" onclick="goToPage('usage')" data-i18n="nkbrief_tab_usage">📊 Uso</button>
-                <button class="nkbrief_sidebar_btn" onclick="goToPage('weather')" data-i18n="nkbrief_tab_weather">⛅ Clima</button>
-                <button class="nkbrief_sidebar_btn" onclick="goToPage('recom')" data-i18n="nkbrief_tab_recom">💡 Recomendaciones</button>
-                <button class="nkbrief_sidebar_btn" onclick="goToPage('news')" data-i18n="nkbrief_tab_news">📰 Noticias</button>
-            </div>
-
-            <div id="nkbrief_content">
-                <div id="nkbrief_page_home" class="nkbrief_page">
-                    <p data-i18n="nkbrief_welcome">Bienvenido!</p>
-                    <div id="nkbrief_page_home_grid">
-                        <div class="nkbrief_page_home_card" id="nkbrief_home_card_wheater">
-                            <img id="nkbrief_page_home_card_weather_icon" src="assets/weather/cloud.png">
-                            <p id="nkbrief_page_home_card_weather_temp">--°</p>
-                        </div>
-                        <div class="nkbrief_page_home_card" id="nkbrief_home_card_wheater">
-                            <p>App mas usada</p>
-                            <img id="nkbrief_page_home_card_usage_icon" src="assets/nekiri.png">
-                            <p id="nkbrief_page_home_card_usage_text">Cargando...<br>--h --m</p>
-                        </div>
-                        <div class="nkbrief_page_home_card" id="nkbrief_home_card_news">
-                            <p id="nkbrief_page_home_card_news_title">Noticia</p>
-                            <p id="nkbrief_page_home_card_news_info">Funcion no implementada.</p>
-                            <button class="nkbrief_card_btn" onclick="goToPage('news')" data-i18n="nkbrief_gotonews">Ir a noticias</button>
-                        </div>
-                        <div class="nkbrief_page_home_card" id="nkbrief_home_card_motivation">
-                            <p id="nkbrief_page_home_card_motivation_text">Cargando...</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="nkbrief_page_usage" class="nkbrief_page">
-                    <p>Cargando...</p>
-                </div>
-
-                <div id="nkbrief_page_weather" class="nkbrief_page">
-                    <p id="nkbrief_page_weather_place">📍 Ubicacion</p>
-                    <div id="nkbrief_page_weather_tempdiv">
-                        <img id="nkbrief_page_weather_tempicon" src="assets/weather/cloud.png">
-                        <p id="nkbrief_page_weather_temptext">--°</p>
-                    </div>
-                    <p id="nkbrief_page_weather_description">Cargando...</p>
-                    <p id="nkbrief_page_weather_maxmin">↑ -- / ↓ --</p>
-                    <p id="nkbrief_page_weather_feelslike">Sensacion termica de...</p>
-                </div>
-
-                <div id="nkbrief_page_recom" class="nkbrief_page"></div>
-                
-                <div id="nkbrief_page_news" class="nkbrief_page">
-                    <p>Cargando...</p>
-                </div>
-            </div>
-        </div>
-        <div class="resize-handle"></div>
+<nyx-window app="nkbrief" win-title="✨  Nekiri Brief" title-i18n="wintitl_nkbrief">
+    <div id="nkbrief_sidebar">
+        <button class="nkbrief_sidebar_btn" onclick="goToPage('home')" data-i18n="nkbrief_tab_home">🏠 Inicio</button>
+        <button class="nkbrief_sidebar_btn" onclick="goToPage('usage')" data-i18n="nkbrief_tab_usage">📊 Uso</button>
+        <button class="nkbrief_sidebar_btn" onclick="goToPage('weather')" data-i18n="nkbrief_tab_weather">⛅ Clima</button>
+        <button class="nkbrief_sidebar_btn" onclick="goToPage('recom')" data-i18n="nkbrief_tab_recom">💡 Recomendaciones</button>
+        <button class="nkbrief_sidebar_btn" onclick="goToPage('news')" data-i18n="nkbrief_tab_news">📰 Noticias</button>
     </div>
+
+    <div id="nkbrief_content">
+        <div id="nkbrief_page_home" class="nkbrief_page">
+            <p data-i18n="nkbrief_welcome">Bienvenido!</p>
+            <div id="nkbrief_page_home_grid">
+                <div class="nkbrief_page_home_card" id="nkbrief_home_card_wheater">
+                    <img id="nkbrief_page_home_card_weather_icon" src="assets/weather/cloud.png">
+                    <p id="nkbrief_page_home_card_weather_temp">--°</p>
+                </div>
+                <div class="nkbrief_page_home_card" id="nkbrief_home_card_wheater">
+                    <p>App mas usada</p>
+                    <img id="nkbrief_page_home_card_usage_icon" src="assets/nekiri.png">
+                    <p id="nkbrief_page_home_card_usage_text">Cargando...<br>--h --m</p>
+                </div>
+                <div class="nkbrief_page_home_card" id="nkbrief_home_card_news">
+                    <p id="nkbrief_page_home_card_news_title">Noticia</p>
+                    <p id="nkbrief_page_home_card_news_info">Cargando...</p>
+                    <button class="nkbrief_card_btn" onclick="goToPage('news')" data-i18n="nkbrief_gotonews">Ir a noticias</button>
+                </div>
+                <div class="nkbrief_page_home_card" id="nkbrief_home_card_motivation">
+                    <p id="nkbrief_page_home_card_motivation_text">Cargando...</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="nkbrief_page_usage" class="nkbrief_page">
+            <p>Cargando...</p>
+        </div>
+
+        <div id="nkbrief_page_weather" class="nkbrief_page">
+            <p id="nkbrief_page_weather_place">📍 Ubicacion</p>
+            <div id="nkbrief_page_weather_tempdiv">
+                <img id="nkbrief_page_weather_tempicon" src="assets/weather/cloud.png">
+                <p id="nkbrief_page_weather_temptext">--°</p>
+            </div>
+            <p id="nkbrief_page_weather_description">Cargando...</p>
+            <p id="nkbrief_page_weather_maxmin">↑ -- / ↓ --</p>
+            <p id="nkbrief_page_weather_feelslike">Sensacion termica de...</p>
+        </div>
+
+        <div id="nkbrief_page_recom" class="nkbrief_page">
+            <p>No hay recomendaciones.</p>
+        </div>
+
+        <div id="nkbrief_page_news" class="nkbrief_page">
+            <p>Cargando...</p>
+        </div>
+    </div>
+</nyx-window>

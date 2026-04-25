@@ -1,55 +1,285 @@
-/*nyxclient*/
 .content_nytclient {
+    overflow: hidden;
+    height: 100%;
     display: flex;
+    flex-direction: column;
+}
+
+#nytclient_page_home {
     width: 100%;
     height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    padding: 10px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    align-content: start;
 }
 
-#nytclientiframe {
-    flex: 1;
-    border: none;
-    border-radius: 8px;
-    
-}
+#nytclient_page_player {
+    width: 100%;
+    height: 100%;
 
-#nytclientnavbar {
     display: flex;
-    height: 29px;
+    flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: 6px;
+    gap: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+#nytclient_page_askapikey {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    overflow: hidden;
 }
 
-#nytclientnavbar input {
-    flex: 1;
-    min-width: 0;
-    border-radius: 6px;
+/*Pagina para api key*/
+#nytclient_page_askapikey input::placeholder {
+    color: rgb(209, 209, 209);
+}
+
+#nytclient_page_askapikey input {
+    margin: 0;
+    width: 450px;
+    height: 35px;
+    border-radius: 8px;
     border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+
+    background-color: rgba(255, 255, 255, 0.3);
     color: white;
+}
+
+#nytclient_page_askapikey input:active {
+    background-color: rgba(255, 255, 255, 0.45);
+}
+
+#nytclient_page_askapikey button {
+    margin-top: 10px;
+    width: 80px;
     height: 30px;
-}
-
-#nytclientnavbar input:hover {
-    background-color: rgba(101, 101, 101, 0.66);
-}
-
-#nytclientnavbar input:active {
-    border: 2px solid white;
-}
-
-#nytclientnavbar button {
-    border-radius: 6px;
+    border-radius: 8px;
     border: none;
-    background-color: rgba(75, 75, 75, 0.5);
+
+    background-color: rgba(255, 255, 255, 0.3);
     color: white;
+}
+
+#nytclient_page_askapikey button:hover {
+    background-color: rgba(255, 255, 255, 0.45);
+}
+
+#nytclient_page_askapikey button:active {
+    background-color: transparent;
+}
+
+
+/*Pagina Home*/
+.nyxclient_hvideodiv {
+    width: 100%;
+    height: 280px;
+
+    border-radius: 8px;
+    background-color: rgb(42, 42, 42);
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.nyxclient_hvideodiv .video_thumb {
+    width: 95%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+.nyxclient_hvideodiv .video_info {
+    width: 100%;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+
+    text-align: left;
+    margin-left: 24px;
+}
+
+.nyxclient_hvideodiv .video_info .video_title {
+    color: white;
+    font-size: 16px;
+    margin: 0;
+}
+
+.nyxclient_hvideodiv .video_info .video_specs {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    width: 90%;
+}
+
+.nyxclient_hvideodiv .video_info .video_specs .video_authorimg {
+    width: 25px;
+    height: 25px;
+    object-fit: cover;
+}
+
+.nyxclient_hvideodiv .video_info .video_specs .video_viewsicon {
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+    margin-left: 0px;
+}
+
+.nyxclient_hvideodiv .video_info .video_specs .video_views {
+    color: white;
+    font-size: 14px;
+}
+
+.nyxclient_hvideodiv .video_info .video_specs .video_author {
+    color: white;
+    font-size: 14px;
+}
+
+.nyxclient_hvideodiv .video_info .video_specs .video_btn {
+    color: white;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    background-color: rgb(58, 58, 58);
+    height: 24px;
+    width: 80px;
+    margin-left: auto;
+    text-align: center;
+    justify-content: center;
+}
+
+.nyxclient_hvideodiv .video_info .video_specs .video_btn:hover {
+    background-color: rgb(50, 50, 50);
+}
+
+.nyxclient_hvideodiv .video_info .video_specs .video_btn:active {
+    background-color: transparent;
+}
+
+/*Pagina Video*/
+#nytclient_iframeplayer {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+}
+
+#nytclient_playerbar {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    padding: 10px;
+
+    background-color: rgb(23, 23, 23);
+}
+
+#nytclient_playerbar button {
+    margin: 0;
+    width: 30px;
     height: 30px;
+    border-radius: 8px;
+    border: none;
+
+    background-color: rgb(58, 58, 58);
+    color: white;
 }
 
-#nytclientnavbar button:hover {
-    background-color: rgba(101, 101, 101, 0.66);
+#nytclient_playerbar button:hover {
+    background-color: rgb(50, 50, 50);
 }
 
-#nytclientnavbar button:active {
-    background-color: rgba(45, 45, 45, 0.5);
+#nytclient_playerbar button:active {
+    background-color: transparent;
+}
+
+#nytclient_currvideoinfodiv {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    text-align: left;
+    padding: 10px;
+
+    background-color: rgb(23, 23, 23);
+}
+
+#nytclient_currvideotitle {
+    font-size: 20px;
+}
+
+#nytclient_currvideootherinfo {
+    font-size: 14px;
+    white-space: pre-line;
+}
+
+#nytclient_returnbtn {
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 80px;
+    height: auto;
+    border-radius: 8px;
+    border: none;
+
+    background-color: rgb(58, 58, 58);
+    color: white;
+}
+
+#nytclient_returnbtn:hover {
+    background-color: rgb(50, 50, 50);
+}
+
+#nytclient_returnbtn:active {
+    background-color: transparent;
+}
+
+#nytclient_currvideoinfodiv .watchonyt {
+    margin: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: none;
+
+    background-color: rgb(58, 58, 58);
+    color: white;
+}
+
+#nytclient_currvideoinfodiv .watchonyt:hover {
+    background-color: rgb(50, 50, 50);
+}
+
+#nytclient_currvideoinfodiv .watchonyt:active {
+    background-color: transparent;
 }

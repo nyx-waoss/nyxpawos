@@ -8,52 +8,61 @@
             <div class="syssetup_screen active" id="syssetup_welcome">
                 <div class="syssetup_container">
                     <img class="syssetup_img" src="assets/therianb.png" alt="Therian OS Logo">
-                    <h1>Bienvenido a NyxPaw OS</h1>
+                    <h1 data-i18n="syssetup_welcome">Bienvenido a NyxPaw OS</h1>
                     <!--<h2>Therian Edition ✨</h2>-->
                     <div class="syssetup_divider"></div>
-                    <p>Bienvenido! Pepararemos tu sistema, solo tomara un momento.</p>
-                    <button class="syssetup_btn" onclick="showSyssetupScr('language')">Comenzar  →</button>
+                    <p data-i18n="syssetup_willprepare">Bienvenido! Pepararemos tu sistema, solo tomara un momento.</p>
+                    <button class="syssetup_btn" onclick="showSyssetupScr('language')" data-i18n="syssetup_start">Comenzar  →</button>
                 </div>
             </div>
 
             <div class="syssetup_screen" id="syssetup_language">
                 <div class="syssetup_container">
                     <img class="syssetup_img" src="system/systemApps/assets/region.png" alt="Region">
-                    <h1>Idioma y región</h1>
+                    <h1 data-i18n="syssetup_langandreg">Idioma y región</h1>
                     <div class="syssetup_divider"></div>
-                    <p>Idioma:</p>
-                    <select>
-                        <option>Español (Original)</option>
-                        <option>English</option>
-                        <option>Install later...</option>
+                    <p data-i18n="syssetup_lang">Idioma:</p>
+                    <select id="syssetup_languageSelectionSel">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                        <option value="pt">Português</option>
+                        <option value="fr">Français</option>
+                        <option value="ja">日本語</option>
+                        <option value="de">Deutsch</option>
+                        <option value="zh">汉语</option>
+                        <option value="ru">русский</option>
                     </select>
-                    <p>Region:</p>
+                    <p data-i18n="syssetup_reg">Region:</p>
                     <select>
-                        <option>America Latina</option>
                         <option>Estados Unidos</option>
-                        <option>Europa</option>
-                        <option>Japón</option>
-                        <option>España</option>
+                        <option>Chile</option>
+                        <option>Canada</option>
+                        <option>Puerto Rico</option>
+                        <option>Francia</option>
+                        <option>Japon</option>
+                        <option>Nicaragua</option>
+                        <option>Panama</option>
+                        <option>Argentina</option>
                         <option>Costa Rica</option>
-                        <option>Reino Unido</option>
-                        <option>Otro...</option>
+                        <option>China</option>
+                        <option>Other...</option>
                     </select>
-                    <button class="syssetup_btn" onclick="showSyssetupScr('styles')">Continuar</button>
+                    <button class="syssetup_btn" onclick="showSyssetupScr('styles')" data-i18n="syssetup_next">Continuar</button>
                 </div>
             </div>
 
             <div class="syssetup_screen" id="syssetup_styles">
                 <div class="syssetup_container">
                     <img class="syssetup_img" src="system/systemApps/assets/colors.png" alt="Estilos">
-                    <h1>Personalizacion</h1>
+                    <h1 data-i18n="syssetup_customize">Personalizacion</h1>
                     <div class="syssetup_divider"></div>
-                    <p>Tema:</p>
+                    <p data-i18n="syssetup_theme">Tema:</p>
                     <select>
                         <option>Oscuro</option>
                         <option>Claro</option>
                         <option>Automatico</option>
                     </select>
-                    <p>Color de acento:</p>
+                    <p data-i18n="syssetup_accent">Color de acento:</p>
                     <select>
                         <option>Rojo</option>
                         <option>Verde</option>
@@ -63,65 +72,69 @@
                         <option>Amarillo</option>
                         <option>Morado</option>
                     </select>
-                    <button class="syssetup_btn" onclick="showSyssetupScr('privacy')">Continuar</button>
+                    <button class="syssetup_btn" onclick="showSyssetupScr('privacy')" data-i18n="syssetup_next">Continuar</button>
                 </div>
             </div>
 
             <div class="syssetup_screen" id="syssetup_privacy">
                 <div class="syssetup_container">
                     <img class="syssetup_img" src="system/systemApps/assets/privacy.png" alt="Privacidad">
-                    <h1>Privacidad y seguridad</h1>
+                    <h1 data-i18n="syssetup_privacy">Privacidad y seguridad</h1>
                     <div class="syssetup_divider"></div>
                     <div style="display: flex; flex-direction: row; gap: 5px;">
-                        <label>Permitir que Nekiri acceda a tus datos basicos</label>
+                        <label data-i18n="syssetup_nekiriaccess">Permitir que Nekiri acceda a tus datos basicos</label>
+                        <input type="checkbox" checked>
+                    </div>
+                    <div style="display: flex; flex-direction: row; gap: 5px;">
+                        <label data-i18n="syssetup_experimental">Activar funciones experimentales (BETA)</label>
                         <input type="checkbox">
                     </div>
                     <div style="display: flex; flex-direction: row; gap: 5px;">
-                        <label>Activar funciones experimentales (BETA)</label>
-                        <input type="checkbox">
+                        <label data-i18n="syssetup_location">Acceder a ubicacion aproximada para mejorar compatibilidad</label>
+                        <input type="checkbox" checked>
                     </div>
                     <div style="display: flex; flex-direction: row; gap: 5px;">
-                        <label>Acceder a ubicacion aproximada para mejorar compatibilidad</label>
-                        <input type="checkbox">
+                        <label data-i18n="syssetup_patterns">Permitir que Nekiri recuerde patrones sobre el uso del sistema</label>
+                        <input type="checkbox" checked>
                     </div>
                     <div style="display: flex; flex-direction: row; gap: 5px;">
-                        <label>Permitir que Nekiri recuerde patrones sobre el uso del sistema</label>
-                        <input type="checkbox">
+                        <label data-i18n="syssetup_ipaccess">Permitir acceso a la IP del usuario</label>
+                        <input type="checkbox" checked id="syssetup_ipaccess_checkbox">
                     </div>
-                    <h3>Tranquilo! No hay nada de anuncios en este sistema!</h3>
-                    <button class="syssetup_btn" onclick="showSyssetupScr('user')">Continuar</button>
+                    <h3 data-i18n="syssetup_withoutads">Tranquilo! No hay nada de anuncios en este sistema!</h3>
+                    <button class="syssetup_btn" onclick="showSyssetupScr('user')/*; if(document.getElementById('syssetup_ipaccess_checkbox').checked)syssetupUserPrivacyPreferences.push('ipaccess')*/" data-i18n="syssetup_next">Continuar</button>
                 </div>
             </div>
 
             <div class="syssetup_screen" id="syssetup_user">
                 <div class="syssetup_container">
                     <img class="syssetup_img" src="system/systemApps/assets/user.png" alt="Usuario">
-                    <h1>Usuario y personalidad (1/2)</h1>
+                    <h1 data-i18n="syssetup_user1of2">Usuario y personalidad (1/2)</h1>
                     <div class="syssetup_divider"></div>
-                    <p>Nombre de usuario:</p>
+                    <p data-i18n="syssetup_username">Nombre de usuario:</p>
                     <input type="text" placeholder="User" id="syssetup_input_dname">
-                    <p>Contraseña</p>
+                    <p data-i18n="syssetup_pass">Contraseña</p>
                     <input type="password" placeholder="1234" autocomplete="new-password" id="syssetup_input_pass">
-                    <p id="syssetup_text_reinpass">Confirmar contraseña</p>
+                    <p id="syssetup_text_reinpass" data-i18n="syssetup_confirmpass">Confirmar contraseña</p>
                     <input type="password" placeholder="1234" autocomplete="new-password" id="syssetup_input_reinpass">
-                    <button class="syssetup_btn" onclick="verifyEnteredUserData()">Continuar</button>
+                    <button class="syssetup_btn" onclick="verifyEnteredUserData()" data-i18n="syssetup_next">Continuar</button>
                 </div>
             </div>
 
             <div class="syssetup_screen" id="syssetup_personality">
                 <div class="syssetup_container">
                     <img class="syssetup_img" src="system/systemApps/assets/user.png" alt="Usuario">
-                    <h1>Usuario y personalidad (2/2)</h1>
-                    <h2>Te haremos unas preguntas para mejorar tu experiencia</h2>
+                    <h1 data-i18n="syssetup_user2of2">Usuario y personalidad (2/2)</h1>
+                    <h2 data-i18n="syssetup_customexp">Te haremos unas preguntas para mejorar tu experiencia</h2>
                     <div class="syssetup_divider"></div>
-                    <p>Porque estas usando este sistema operativo?</p>
+                    <p data-i18n="syssetup_whyusing">Porque estas usando este sistema operativo?</p>
                     <select>
                         <option>Porque quiero probarlo solamente</option>
                         <option>Porque me parecio curioso</option>
                         <option>Porque pienso utilizarlo seguido</option>
                         <option>Otro...</option>
                     </select>
-                    <p>Piensas usar este sistema seguido?</p>
+                    <p data-i18n="syssetup_useconstantly">Piensas usar este sistema seguido?</p>
                     <select>
                         <option>Si!</option>
                         <option>Lo probare y si me gusta lo usare</option>
@@ -130,19 +143,19 @@
                         <option>No!!</option>
                         <option>Otro...</option>
                     </select>
-                    <button class="syssetup_btn" onclick="showSyssetupScr('prepare')">Continuar</button>
+                    <button class="syssetup_btn" onclick="showSyssetupScr('prepare')" data-i18n="syssetup_next">Continuar</button>
                 </div>
             </div>
 
             <div class="syssetup_screen" id="syssetup_prepare">
                 <div class="syssetup_container">
                     <img class="syssetup_img" src="assets/therianb.png" alt="Preparando">
-                    <h1>Ya casi terminamos!</h1>
-                    <h2>Estamos configurando tu sistema...</h2>
+                    <h1 data-i18n="syssetup_almostthere">Ya casi terminamos!</h1>
+                    <h2 data-i18n="syssetup_weareconfigurating">Estamos configurando tu sistema...</h2>
                     <div class="syssetup_divider"></div>
                     <div style="display: flex; flex-direction: row; gap: 5px;">
                         <img src="assets/loading.gif" alt="Cargando..." class="syssetup_smallimg">
-                        <p id="syssetup_preptext">Configurando...</p>
+                        <p id="syssetup_preptext" data-i18n="syssetup_configurating">Configurando...</p>
                     </div>
                 </div>
             </div>
@@ -150,14 +163,28 @@
             <div class="syssetup_screen" id="syssetup_restart">
                 <div class="syssetup_container">
                     <img class="syssetup_img" src="system/systemApps/assets/ok.png" alt="Listo">
-                    <h1>Todo listo!</h1>
-                    <h2>El sistema esta listo para usarse!</h2>
+                    <h1 data-i18n="syssetup_allready">Todo listo!</h1>
+                    <h2 data-i18n="syssetup_systemisok">El sistema esta listo para usarse!</h2>
                     <div class="syssetup_divider"></div>
                     <div style="display: flex; flex-direction: row; gap: 5px;">
                         <img src="system/systemApps/assets/reset.png" alt="Listo" class="syssetup_smallimg">
-                        <p id="syssetup_preptext">El sistema se debe reiniciar</p>
+                        <p id="syssetup_preptext" data-i18n="syssetup_systemneedreset">El sistema se debe reiniciar</p>
                     </div>
-                    <button class="syssetup_btn" onclick="window.location.href = 'index.html'">Reiniciar</button>
+                    <button class="syssetup_btn" onclick="window.location.href = 'index.html'" data-i18n="syssetup_restart">Reiniciar</button>
+                </div>
+            </div>
+
+            <div class="syssetup_screen" id="syssetup_error">
+                <div class="syssetup_container">
+                    <img class="syssetup_img" src="../../assets/warn.webp" alt="Error" id="syssetup_erroricon">
+                    <h1 data-i18n="syssetup_errorocurred">Error</h1>
+                    <h2 data-i18n="syssetup_errorocurredlong">Ha ocurrido un error y debe iniciar el proceso de nuevo, lo sentimos mucho.</h2>
+                    <div class="syssetup_divider"></div>
+                    <div style="display: flex; flex-direction: row; gap: 5px;">
+                        <img src="system/systemApps/assets/reset.png" alt="Listo" class="syssetup_smallimg">
+                        <p id="syssetup_preptext" data-i18n="syssetup_systemneedreset">El sistema se debe reiniciar</p>
+                    </div>
+                    <button class="syssetup_btn" onclick="window.location.href = 'index.html'" data-i18n="syssetup_restart">Reiniciar</button>
                 </div>
             </div>
         </div>

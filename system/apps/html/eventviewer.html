@@ -1,25 +1,18 @@
-    <div class="window hidden" id="win_eventviewer">
-        <div class="grab">
-            <span class="grab-title">🚩  Event Viewer</span>
-            <button class="grab-btn" id="btn_eventviewer">X</button>
-        </div>
-
-        <div class="win_content content_eventviewer">
-            <div id="eventviewer_leftsidebar">
-                <button class="eventviewer_btn" onclick="updateEventList()">Actualizar</button>
-                <div class="syssetup_divider"></div>
-                <button class="eventviewer_btn">System Events (Seleccionado)</button>
-            </div>
-            <div id="eventviewer_centerdiv">
-                <!--<div class="eventviewer_event">
-                    <label>ℹ️</label>
-                    <p>Title</p>
-                </div>-->
-            </div>
-            <div id="eventviewer_rightsidebar">
-                <h4 class="textShowEvents eventviewer_text" id="sidebarR_EName">Evento</h4>
-                <p class="textShowEvents eventviewer_text" id="sidebarR_EInfo">Selecciona un evento</p>
-            </div>
-        </div>
-        <div class="resize-handle"></div>
+<nyx-window app="eventviewer" win-title="🚩  Event Viewer" title-i18n="wintitl_eventv">
+    <div id="eventviewer_leftsidebar">
+        <button class="eventviewer_btn" onclick="clearEvents()">🗑️ Limpiar Eventos</button>
+        <button class="eventviewer_btn" onclick="updateEventList()" data-i18n="eventviewer_update">Actualizar</button>
+        <div class="syssetup_divider"></div>
+        <button class="eventviewer_btn">System Events 🔘</button>
     </div>
+    <div id="eventviewer_centerdiv">
+        <!--<div class="eventviewer_event">
+            <label>ℹ️</label>
+            <p>Title</p>
+        </div>-->
+    </div>
+    <div id="eventviewer_rightsidebar">
+        <h4 class="textShowEvents eventviewer_text" id="sidebarR_EName">Evento</h4>
+        <p class="textShowEvents eventviewer_text" id="sidebarR_EInfo">Selecciona un evento</p>
+    </div>
+</nyx-window>

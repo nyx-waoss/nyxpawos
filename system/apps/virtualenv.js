@@ -1,4 +1,12 @@
 console.log('Current: apps/virtualenv.js');
+window.AppMetadata = window.AppMetadata || {};
+window.AppMetadata.virtualenv = {
+    displayName: 'Virtual Environments',
+    icon: '../../assets/apps/virtualenv.png',
+    version: '1.0.0',
+    author: 'Nyx_Waoss'
+};
+
 //Codigo aqui:
 
 const iframe = document.getElementById('virtualenviframe');

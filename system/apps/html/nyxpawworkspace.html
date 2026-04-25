@@ -1,0 +1,109 @@
+<!-- Template - _appname deben ser iguales-->
+
+<div class="window hidden" id="win_nyxpawworkspace">
+    <div class="grab">
+        <span class="grab-title">🧑‍💻  NyxPaw Workspace</span>
+        <button class="grab-btn" id="btn_nyxpawworkspace">X</button>
+    </div>
+    <div class="win_content content_nyxpawworkspace">
+        <div id="npwosp_sidebar">
+            <p id="npwosp_welcomep" data-i18n="npwosp_welcome">Bienvenido!</p>
+            <button onclick="NPWGotoPage('appsgrid')" data-i18n="npwosp_sidebar_home">🏠 Inicio</button>
+            <button onclick="NPWGotoPage('recoms')" data-i18n="npwosp_sidebar_recom">⭐ Recomendaciones</button>
+            <button onclick="NPWGotoPage('aboutprogram')" data-i18n="npwosp_sidebar_about">ℹ️ Sobre Workspace</button>
+        </div>
+        <div id="npwosp_appsgrid" class="npwosp_page hidden">
+            <div class="npwosp_appdiv">
+                <img alt="Icono" src="assets/apps/nyxpawdocs/4.png" class="appdiv_icon">
+                <div class="appdiv_info">
+                    <p class="appname">Docs</p>
+                    <p class="appdescription" data-i18n="npwosp_aboutdoc">Crea y edita documentos de forma simple</p>
+                    <button class="adbtn" onclick="sysExecApp('nyxpawdocs')" data-i18n="npwosp_open">Abrir -></button>
+                </div>
+            </div>
+            <div class="npwosp_appdiv">
+                <img alt="Icono" src="assets/apps/nyxpawslides.png" class="appdiv_icon">
+                <div class="appdiv_info">
+                    <p class="appname">Slides</p>
+                    <p class="appdescription" data-i18n="npwosp_aboutsl">Diseña presentaciones claras, rápidas y atractivas</p>
+                    <button class="adbtn" onclick="sysExecApp('nyxpawslides')" data-i18n="npwosp_open">Abrir -></button>
+                </div>
+            </div>
+            <div class="npwosp_appdiv">
+                <img alt="Icono" src="assets/apps/nyxpawsheets.png" class="appdiv_icon">
+                <div class="appdiv_info">
+                    <p class="appname">Sheets</p>
+                    <p class="appdescription" data-i18n="npwosp_aboutsh">Organiza, calcula y visualiza datos fácilmente</p>
+                    <button class="adbtn" onclick="sysExecApp('nyxpawsheets')" data-i18n="npwosp_open">Abrir -></button>
+                </div>
+            </div>
+            <div class="npwosp_appdiv">
+                <img alt="Icono" src="assets/apps/nyxpawnotebook.png" class="appdiv_icon">
+                <div class="appdiv_info">
+                    <p class="appname">Notebook AI</p>
+                    <p class="appdescription" data-i18n="npwosp_aboutnai">Piensa, aprende y explora ideas con IA</p>
+                    <button class="adbtn" onclick="sysExecApp('notebookai')" data-i18n="npwosp_open">Abrir -></button>
+                </div>
+            </div>
+            <div class="npwosp_appdiv">
+                <img alt="Icono" src="assets/apps/pdfviewer.png" class="appdiv_icon">
+                <div class="appdiv_info">
+                    <p class="appname">PDF Viewer</p>
+                    <p class="appdescription" data-i18n="npwosp_aboutpdf">Visualiza y navega archivos PDF fácilmente</p>
+                    <button class="adbtn" onclick="sysExecApp('pdfviewer')" data-i18n="npwosp_open">Abrir -></button>
+                </div>
+            </div>
+            <div class="npwosp_appdiv">
+                <img alt="Icono" src="assets/apps/nyxpawdb.png" class="appdiv_icon">
+                <div class="appdiv_info">
+                    <p class="appname">DataBase</p>
+                    <p class="appdescription" data-i18n="npwosp_aboutdb">Gestiona y estructura datos de forma flexible</p>
+                    <button class="adbtn" onclick="/*sysExecApp('nyxpawdatabase')*/ showAlertBox('Pronto...', 'Esta aplicacion no esta disponible todavia...', {as_win:true,icon:'✨'})" data-i18n="npwosp_open">Abrir -></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="npwosp_recoms" class="npwosp_page hidden">
+            <div class="npwosp_recoms_wrapper">
+                <button class="npwosp_recoms_btn" onclick="sysExecApp('nyxpawdocs')">
+                    <span class="npwosp_recoms_btn_icon">📄</span>
+                    <span class="npwosp_recoms_btn_text" data-i18n="npwosp_newdc">Nuevo Documento</span>
+                </button>
+                <button class="npwosp_recoms_btn" onclick="sysExecApp('nyxpawslides')">
+                    <span class="npwosp_recoms_btn_icon">📈</span>
+                    <span class="npwosp_recoms_btn_text" data-i18n="npwosp_newsl">Nueva Presentacion</span>
+                </button>
+                <button class="npwosp_recoms_btn" onclick="sysExecApp('nyxpawsheets')">
+                    <span class="npwosp_recoms_btn_icon">📊</span>
+                    <span class="npwosp_recoms_btn_text" data-i18n="npwosp_newsh">Nueva Hoja de cálculo</span>
+                </button>
+                <button class="npwosp_recoms_btn" onclick="sysExecApp('files')">
+                    <span class="npwosp_recoms_btn_icon">📂</span>
+                    <span class="npwosp_recoms_btn_text" data-i18n="npwosp_openfile">Abrir Archivo</span>
+                </button>
+            </div>
+            <div class="npwosp_horizontaldivisor"></div>
+            <div class="npwosp_recoms_wrapper">
+                <button class="npwosp_recoms_btn" onclick="sysExecApp('notebookai')">
+                    <span class="npwosp_recoms_btn_icon">😸</span>
+                    <span class="npwosp_recoms_btn_text" data-i18n="npwosp_qai">Utilizar IA</span>
+                </button>
+                <button class="npwosp_recoms_btn" onclick="sysExecApp('notes')">
+                    <span class="npwosp_recoms_btn_icon">✏️</span>
+                    <span class="npwosp_recoms_btn_text" data-i18n="npwosp_qnote">Borrador Rapido</span>
+                </button>
+                <button class="npwosp_recoms_btn" onclick="sysExecApp('calc')">
+                    <span class="npwosp_recoms_btn_icon">🧮</span>
+                    <span class="npwosp_recoms_btn_text" data-i18n="npwosp_qcalc">Cálculo rapido</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="npwosp_aboutprogram" class="npwosp_page hidden">
+            <h3 data-i18n="npwosp_npname">NyxPaw Workspace</h3>
+            <p data-i18n="npwosp_npabout">Workspace reúne todo lo que necesitas para crear y trabajar en un solo lugar.<br>Simple, rápido y diseñado para enfocarte en lo importante ✨</p>
+        </div>
+
+    </div>
+    <div class="resize-handle"></div>
+</div>

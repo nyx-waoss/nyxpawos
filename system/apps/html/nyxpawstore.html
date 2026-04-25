@@ -1,6 +1,6 @@
     <div class="window hidden" id="win_nyxpawstore">
         <div class="grab">
-            <span class="grab-title">📦  NyxPaw Store</span>
+            <span class="grab-title" data-i18n="wintitl_nyxpawstore">📦  NyxPaw Store</span>
             <button class="grab-btn" id="btn_nyxpawstore">X</button>
         </div>
 
@@ -12,7 +12,7 @@
                         <p>Clima</p>
                     </div>
                     <div class="horizontal_divider"></div>
-                    <button onclick="nyxPawStoreOpenTab('Clima', 'assets/apps/weather.png')">Ver mas...</button>
+                    <button onclick="nyxPawStoreOpenTab('Clima', 'assets/apps/weather.png')" data-i18n="nyxpawstore_moreinfo">Ver mas...</button>
                 </div>
                 <div class="nyxpawstore_app">
                     <div class="nyxpawstore_imgtextrow">
@@ -20,7 +20,7 @@
                         <p>Arcade</p>
                     </div>
                     <div class="horizontal_divider"></div>
-                    <button onclick="nyxPawStoreOpenTab('Arcade', 'assets/apps/arcade.png')">Ver mas...</button>
+                    <button onclick="nyxPawStoreOpenTab('Arcade', 'assets/apps/arcade.png')" data-i18n="nyxpawstore_moreinfo">Ver mas...</button>
                 </div>
                 <div class="nyxpawstore_app">
                     <div class="nyxpawstore_imgtextrow">
@@ -28,7 +28,7 @@
                         <p>Venge</p>
                     </div>
                     <div class="horizontal_divider"></div>
-                    <button onclick="nyxPawStoreOpenTab('Venge', 'assets/apps/venge.png')">Ver mas...</button>
+                    <button onclick="nyxPawStoreOpenTab('Venge', 'assets/apps/venge.png')" data-i18n="nyxpawstore_moreinfo">Ver mas...</button>
                 </div>
                 <div class="nyxpawstore_app">
                     <div class="nyxpawstore_imgtextrow">
@@ -36,7 +36,7 @@
                         <p>Virtual Environments</p>
                     </div>
                     <div class="horizontal_divider"></div>
-                    <button onclick="nyxPawStoreOpenTab('VirtualEnvs', 'assets/apps/virtualenv.png')">Ver mas...</button>
+                    <button onclick="nyxPawStoreOpenTab('VirtualEnvs', 'assets/apps/virtualenv.png')" data-i18n="nyxpawstore_moreinfo">Ver mas...</button>
                 </div>
                 <!--<div class="nyxpawstore_app">
                     <div class="nyxpawstore_imgtextrow">
@@ -49,7 +49,7 @@
             </div>
 
             <div id="nyxpawstore_apptab" class="hidden">
-                <button id="nyxpawstore_backbutton" onclick="nyxPawStoreBackToMenu()">Volver</button>
+                <button id="nyxpawstore_backbutton" onclick="nyxPawStoreBackToMenu()" data-i18n="nyxpawstore_goback">Volver</button>
                 <div id="nyxpawstore_apptabappntitle">
                     <img src="assets/loading.gif" id="nyxpawstore_appicon">
                     <div id="nyxpawstore_apptabtitlenbtn">

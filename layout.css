@@ -1,0 +1,2432 @@
+:root {
+    --blur-multiplier: 1;
+
+    --btn-primary-base: rgb(0, 145, 255);
+    --btn-primary-hover: rgb(54, 168, 255);
+    --btn-primary-active: rgb(0, 126, 222);
+
+    
+    --sysbar-base: rgba(0, 0, 0, 0.288);
+    --sysbar-second: #0000007b;
+    --sysbar-third: #181818ea;
+
+    --btn-secondary-base: rgba(75, 75, 75, 0.5);
+    --btn-secondary-hover: rgba(101, 101, 101, 0.66);
+    --btn-secondary-active: rgba(45, 45, 45, 0.5);
+
+    --win-grab-bg: rgba(0, 0, 0, 0.288);
+    --win-grab-title: rgb(255, 255, 255);
+
+    --win-grab-btn-icon: rgb(255, 255, 255);
+    --win-grab-btn: rgba(0, 0, 0, 0.372);
+    --win-grab-btn-hover: rgba(107, 107, 107, 0.425);
+
+    --win-bg: rgba(0, 0, 0, 0.656);
+    --win-second: rgba(0, 0, 0, 0.438);
+    --win-text: rgb(255, 255, 255);
+    
+    --uisetting-base: rgb(46, 46, 46);
+    --uisetting-hover: rgb(62, 62, 62);
+    --settings-divider: rgba(255, 255, 255, 0.212);
+
+    --uisetting-second: #555;
+    --uisetting-third: #292929;
+
+    --file-recombtn-base: rgba(255, 255, 255, 0.130);
+    --file-recombtn-hover: rgba(255, 255, 255, 0.205);
+    --file-recombtn-active: rgba(255, 255, 255, 0.08);
+
+    --file-btn-base: rgba(255, 255, 255, 0.15);
+    --file-btn-hover: rgba(255, 255, 255, 0.28);
+    --file-btn-active: rgba(255, 255, 255, 0.08);
+    --file-btn-selected: rgba(0, 78, 138, 0.419);
+    --file-btn-border: rgba(0, 0, 0, 0.5);
+    
+
+    /*
+    --sysbar-base: rgba(255, 255, 255, 0.288);
+    --sysbar-second: #ffffff7b;
+    --sysbar-third: #ffffffea;
+
+    --btn-secondary-base: rgba(255, 255, 255, 0.5);
+    --btn-secondary-hover: rgba(255, 255, 255, 0.66);
+    --btn-secondary-active: rgba(255, 255, 255, 0.5);
+
+    --win-grab-bg: rgba(255, 255, 255, 0.288);
+    --win-grab-title: rgb(0, 0, 0);
+
+    --win-grab-btn-icon: rgb(0, 0, 0);
+    --win-grab-btn: rgba(255, 255, 255, 0.372);
+    --win-grab-btn-hover: rgba(0, 0, 0, 0.425);
+
+    --win-bg: rgba(255, 255, 255, 0.656);
+    --win-second: rgba(255, 255, 255, 0.438);
+    --win-text: rgb(0, 0, 0);
+    
+    --uisetting-base: rgb(226, 226, 226);
+    --uisetting-hover: rgb(203, 203, 203);
+    --settings-divider: rgba(50, 50, 50, 0.212);
+
+    --uisetting-second: #b4b4b4;
+    --uisetting-third: #9c9c9c;
+
+    --file-btn-base: rgba(0, 0, 0, 0.2);
+    --file-btn-hover: rgba(0, 0, 0, 0.35);
+    --file-btn-active: rgba(0, 0, 0, 0.5);
+    --file-btn-selected: rgba(0, 78, 138, 0.419);
+    --file-btn-border: rgba(0, 0, 0, 0.5);*/
+}
+
+
+body {
+    padding-top: 48px;
+    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+    background/*-image*/: rgb(9, 88, 206);
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+
+.hidden {
+    display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6, span, label, p, a, img, i {
+    cursor: default;
+    user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+
+.textShowEvents,
+.textShowEvents p,
+.textShowEvents h1,
+.textShowEvents h2,
+.textShowEvents h3,
+.textShowEvents h4,
+.textShowEvents h5,
+.textShowEvents h6,
+.textShowEvents label,
+.textShowEvents i,
+.textShowEvents a,
+.textShowEvents span,
+.textShowEvents img {
+    cursor: text !important;
+    user-select: text !important;
+    -ms-user-select: text !important;
+    -webkit-user-select: text !important;
+}
+
+#crashDetailsDiv {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9010;
+    background-color: rgb(0, 0, 0);
+    align-items: left;
+    justify-content: left;
+    padding: 0;
+    cursor: none !important;
+    text-align: left;
+}
+#crashDetailsDiv span {
+    color: white;
+    font-family: monospace;
+    white-space: pre;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#bsod {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9010;
+    background-color: rgb(0, 0, 0);
+    align-items: center;
+    justify-content: center;
+    padding-left: 40px;
+    cursor: none !important;
+    text-align: center;
+}
+
+#bsod p, #bsod h3{
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    cursor: none !important;
+    text-align: center;
+}
+
+#bsod h3, #body h1{
+    margin: 0;
+    cursor: none !important;
+}
+
+#bsod h1{
+    font-size: 60px !important;
+    margin: 0;
+    margin-bottom: 10px;
+    cursor: none !important;
+}
+
+#sysdivider {
+    height: 1px;
+    width: 25%;
+    background-color: white;
+    cursor: none !important;
+}
+
+#startupscr {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9000;
+    background-color: rgb(5, 46, 107);
+    align-items: center;
+    justify-content: center;
+    cursor: none !important;
+}
+
+.startupscr_loadingcontainer {
+    width: 420px;
+    height: 10px;
+    background-color: #000000;
+    border: 1px solid white;
+    overflow: hidden;
+    margin-bottom: 10px;
+    cursor: none !important;
+}
+
+.startupscr_loadingbar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ffffff, #f0f0f0);
+    animation: width 0.1s ease;
+    cursor: none !important;
+}
+
+.startupscr_loadingtext {
+    text-align: center;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    color: #b2b2b2;
+    cursor: none !important;
+}
+
+/*SEM - System Emergency Menu*/
+#sys-emg-menu {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    height: 100%;
+    z-index: 9009;
+    top: 0;
+    left: 0;
+    background-color: black;
+}
+
+#sys-emg-menu p {
+    color: white;
+    margin-bottom: 20px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+}
+
+#sys-emg-menu div {
+    width: 35%;
+    height: 1px;
+    background-color: white;
+}
+
+#sys-emg-menu button {
+    border: none;
+    background-color: rgb(255, 255, 255,);
+    color: rgb(0, 0, 0);
+    height: 30px;
+    width: 30%;
+}
+
+#sys-emg-menu button:hover {
+    background-color: rgb(184, 184, 184);
+}
+
+#sys-emg-menu button:active {
+    background-color: transparent;
+}
+
+/* notis */
+#NotificationList {
+    position: fixed;
+    top: 40px;
+    right: 10px;
+
+    padding: 12px;
+    overflow: hidden;
+
+    z-index: 8036;
+
+    width: 364px;
+    min-height: 50px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+#NotificationList::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    will-change: transform;
+
+    mask-image: 
+        linear-gradient(to right, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%);
+    -webkit-mask-image: 
+        linear-gradient(to right, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%);
+
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+
+    pointer-events: none;
+}
+
+#NotificationList > * {
+    position: relative;
+    z-index: 1;
+}
+
+.sysNotification {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+    position: relative;
+
+    align-items: center;
+
+    width: 340px;
+    height: 100px;
+
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.1) 0%, 
+            rgba(255, 255, 255, 0.08) 100%),
+        rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.018);
+
+}
+
+.sysNotification:hover .sysNotificationDel {
+    display: flex !important;
+}
+
+.sysNotificationDel {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    
+    width: 24px;
+    height: 24px;
+    
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(0, 0, 0);
+    
+    
+    color: rgba(0, 0, 0, 1);
+    font-size: 12px;
+    line-height: 1;
+    
+    transition: all 0.2s ease;
+    
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.sysNotificationIconAndCont img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.sysNotificationIconAndCont {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    height: 100%;
+    width: 100%;
+    flex: 1;
+}
+
+.sysNotificationBtnsDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    gap: 8px;
+}
+
+.sysNotificationBtn {
+    background-color: transparent;
+    width: 100%;
+    height: 30px;
+    color: white;
+
+    border: none;
+}
+
+.sysNotificationBtn:hover {
+    background-color: rgba(255, 255, 255, 0.66);
+}
+.sysNotificationBtn:active {
+    background-color: rgba(119, 119, 119, 0.5);
+}
+
+.notiItem_title {
+    font-size: 18px !important;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes slideOut {
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+@keyframes slideUp {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-98px);
+    }
+}
+
+.sysNotificationMain {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+    justify-content: center;
+}
+
+.sysNotificationMain p {
+    margin: 0;
+    color: white;
+    font-size: 14px;
+    font-family: 'Outfit', sans-serif;
+
+    text-shadow: 
+        0 0 8px rgba(0, 0, 0, 0.2),
+        0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/*msgbox*/
+#msg-box-bgoverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.445);
+    will-change: transform;
+    z-index: 9002;
+}
+
+#msg-box {
+    background-color: #000000;
+    font-family: 'Outfit', sans-serif;
+    /*border: 1px solid #ccc;*/
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    height: fit-content;
+    padding: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 9004;
+    position: fixed;
+    color: white;
+}
+
+#msg-box-text {
+    white-space: pre-line;
+}
+
+#msg-box-input {
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background: #ffffff3b;
+    color: rgb(255, 255, 255);
+}
+
+#msg-box-input:hover {
+    background: #ffffff6b;
+}
+
+#msg-box-okbtn {
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background: #ffffff22;
+    color: rgb(255, 255, 255);
+}
+
+#msg-box-okbtn:hover {
+    background: #275bb5;
+    color: rgb(255, 255, 255);
+}
+
+#msg-box-cancelbtn {
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background: #ffffff22;
+    color: rgb(255, 255, 255);
+    
+}
+
+#msg-box-cancelbtn:hover {
+    background: #ffffff51;
+    color: rgb(255, 255, 255);
+}
+
+/*msg box como ventana*/
+#msg-box-win {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgb(0, 0, 0);
+    will-change: transform;
+    font-family: 'Outfit', sans-serif;
+    /*border: 1px solid #ccc;*/
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.4);
+    min-width: 350px;
+    width: auto;
+    height: fit-content;
+    padding: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: left;
+    z-index: 9004;
+    position: fixed;
+    color: white;
+}
+
+#msg-box-win-iconncont {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    text-align: left;
+    color: var(--win-text, white)
+}
+
+#msg-box-win-icon {
+    font-size: 62px;
+}
+
+#msg-box-win-titlentext {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    color: var(--win-text, white)
+}
+
+#msg-box-win-title {
+    margin-bottom: 0;
+    font-size: 28px;
+    text-align: left;
+    color: var(--win-text, white);
+    white-space: pre-line;
+}
+
+#msg-box-win-text {
+    text-align: left;
+    color: var(--win-text, white);
+    white-space: pre-line;
+}
+/*
+
+#askForImageFile-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#askForImageFile-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#askForImageFile-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#askForImageFile-btn_save {
+    background-color: rgb(0, 145, 255);
+}
+#askForImageFile-btn_save:hover {
+    background-color: rgb(54, 168, 255);
+}
+#askForImageFile-btn_save:active {
+    background-color: rgb(0, 126, 222);
+}
+
+*/
+
+#msg-box-win-input {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background: #ffffff3b;
+    color: rgb(255, 255, 255);
+    
+    margin-bottom: 5px;
+    margin-top: 14px;
+}
+
+#msg-box-win-input:hover {
+    background: #ffffff6b;
+}
+
+#msg-box-win-btnsdiv {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+#msg-box-win-okbtn {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background-color: rgb(0, 145, 255);
+    color: rgb(255, 255, 255);
+    
+}
+
+#msg-box-win-okbtn:hover {
+    background-color: rgb(54, 168, 255);
+    color: rgb(255, 255, 255);
+}
+
+#msg-box-win-okbtn:active {
+    background-color: rgb(0, 126, 222);
+    color: rgb(255, 255, 255);
+}
+
+#msg-box-win-cancelbtn {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: rgb(255, 255, 255);
+    
+}
+
+#msg-box-win-cancelbtn:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+    color: rgb(255, 255, 255);
+}
+
+#msg-box-win-cancelbtn:active {
+    background-color: rgba(45, 45, 45, 0.5);
+    color: rgb(255, 255, 255);
+}
+
+
+/*quickview*/
+#quickview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgb(0, 0, 0);
+    font-family: 'Outfit', sans-serif;
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.4);
+    
+    width: 350px;
+    width: auto;
+    height: fit-content;
+    padding: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: left;
+    z-index: 9004;
+    position: fixed;
+    color: white;
+}
+
+#quickview_img {
+    max-width: 500px;
+    max-height: 500px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    
+}
+
+#quickview video {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+}
+
+#quickview p {
+    color: white;
+}
+
+#quickview_div_closebtn {
+    width: 100%;
+    height: auto;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    justify-content: flex-start;
+}
+
+#quickview_closebtn {
+    width: 18px;
+    height: 18px;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-size: 10px;
+    border: none;
+}
+
+/*login scr*/
+#loginscr {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9003;
+}
+
+#loginscr_time {
+    color: transparent;
+    font-size: 90px;
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(to bottom, rgb(255, 255, 255), rgb(255, 255, 255));
+    background-clip: text;
+    -webkit-background-clip: text;
+    margin-bottom: 190px;
+}
+
+#loginscr_userlist {
+    height: auto;
+    width: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+}
+
+.loginscr_account {
+    padding: 10px;
+    margin-bottom: 8px;
+    
+    background-color: rgb(255, 255, 255);
+    height: 50px;
+    width: 220px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    color: rgb(0, 0, 0);
+    font-family: 'Outfit', sans-serif;
+}
+
+.loginscr_account:hover {
+    background-color: rgb(217, 217, 217);
+}
+
+.loginscr_texts {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.loginscr_account i {
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+}
+
+.loginscr_texts p:not(.loginscr_logintext) {
+    font-size: 18px;
+    margin: 0;
+}
+
+.loginscr_logintext {
+    font-size: 14px;
+    color: #b1b1b1;
+    margin: 0;
+}
+
+#loginscr-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#loginscr-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#loginscr-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#loginscr-btn_login {
+    background-color: rgb(0, 145, 255);
+}
+#loginscr-btn_login:hover {
+    background-color: rgb(54, 168, 255);
+}
+#loginscr-btn_login:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#loginscr-btnsdiv {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+#loginscr_passwordinput {
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+
+.content_askforuserspassword {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.loginscr_options img {
+    width: 22px;
+    height: 22px;
+    object-fit: cover;
+}
+
+.loginscr_options {
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    border: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.loginscr_options:active {
+    background: rgb(255, 255, 255);
+}
+
+#loginscr_options_dp {
+    position: fixed;
+
+    bottom: 120px;
+    right: 90px;
+
+    transform: translate(50%, 50%);
+
+    width: 120px;
+    height: auto;
+
+    background: rgb(0, 0, 0);
+    
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding: 10px;
+    z-index: 8037;
+}
+
+#loginscr_options_dp button {
+    background-color: transparent;
+    border: none;
+    
+    color: white;
+    padding: 6px;
+    margin: 0;
+    width: 100%;
+}
+
+
+#loginscr_options_dp button:active {
+    background-color: rgb(255, 255, 255);
+}
+
+/*Sistema de usuarios*rgb(255, 255, 255)
+
+.content_sysaskfornewuserdata {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+#sysaskfornewuserdata-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#sysaskfornewuserdata-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#sysaskfornewuserdata-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#sysaskfornewuserdata-btn_login {
+    background-color: rgb(0, 145, 255);
+}
+#sysaskfornewuserdata-btn_login:hover {
+    background-color: rgb(54, 168, 255);
+}
+#sysaskfornewuserdata-btn_login:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#sysaskfornewuserdata-btnsdiv {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+#settings_newuser_usernameinput {
+    
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#settings_newuser_usernameinput:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#settings_newuser_displaynameinput {
+    
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#settings_newuser_displaynameinput:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#settings_newuser_passwordinput {
+    
+    border: none;
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+#settings_newuser_passwordinput:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+
+
+
+
+/*topbar y todo lo demas*/
+
+#top_bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    background: linear-gradient(to top, rgb(0, 0, 0), rgb(0, 0, 0));
+    z-index: 8000;
+    /*transision*/
+    transition: transform 0.5s ease;
+
+    box-sizing: border-box;
+}
+
+#top_bar .center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+}
+
+#top_bar .left {
+    margin-right: auto;
+}
+
+#top_bar .right {
+    margin-left: auto;
+}
+
+#timetext {
+    color: white;
+    font-family: 'Outfit', sans-serif;
+}
+
+#topbar_button {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 23px;
+    height: 23px;
+}
+
+#topbar_program {
+    background: none;
+    border: none;
+    padding: 0 8px;
+    width: auto;
+    height: 23px;
+    font-size: 15px;
+    color: white;
+    font-family: 'Outfit', sans-serif;
+}
+
+#topbar_nekiri {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 23px;
+    height: 23px;
+}
+
+#topbar_brief {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+}
+
+
+#topbar_control {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+}
+
+#topbar_right_el {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    width: auto ;
+    margin: 0;
+}
+
+#topbar_battery {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+#topbar_loadingsys {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+#topbar_network {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.battery-empty {
+    filter: invert(27%) sepia(98%) saturate(7498%) hue-rotate(356deg) brightness(95%) contrast(118%);
+}
+
+.battery-charging {
+    filter: brightness(0) invert(1);
+}
+
+#topbar_button img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#topbar_control img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+#topbar_nekiri img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#topbar_brief img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+.dropdown-menu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    background: #000000;
+    color: white;
+    padding: 10px;
+    
+    z-index: 8035;
+    will-change: transform;
+    align-items: center;
+    width: auto;
+    min-width: 180px;
+}
+
+.dropdown-menu button {
+    background-color: transparent;
+    border: none;
+    
+    color: white;
+    padding: 4px;
+    margin: 0;
+    width: 100%;
+    height: 25px;
+    text-align: center;
+}
+
+.dropdown-menu button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+
+#control-dropdown {
+    
+    overflow: hidden;
+
+    width: 360px;
+    min-height: 250px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
+    background: transparent;
+    backdrop-filter: none;
+}
+#control-dropdown::before {
+    
+    content: "";
+    position: absolute;
+    inset: -2px;
+
+    will-change: transform;
+
+    background: radial-gradient(
+        ellipse 90% 80% at center,
+        rgba(0, 0, 0, 0.2) 40%,
+        transparent 65%
+    );
+
+    mask-image: 
+        linear-gradient(to right, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%);
+    -webkit-mask-image: 
+        linear-gradient(to right, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 18px, black calc(100% - 18px), transparent 100%);
+
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+
+    pointer-events: none;
+}
+#control-dropdown > * {
+    position: relative;
+    z-index: 1;
+}
+.controlpanel_smallsetting,
+.controlpanel_setting,
+.controlpanel_twowrapper {
+    position: relative;
+    z-index: 1;
+}
+.controlpanel_twowrapper {
+    width: 100%;
+    height: 60px;
+    background: transparent;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.controlpanel_smallsetting {
+    width: 50%;
+    height: 60px;
+    
+    background-color: rgb(0, 0, 0);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    padding: 6px;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+}
+.controlpanel_smallsetting:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+.controlpanel_smallsetting label {
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+.controlpanel_smallsetting img {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    margin-left: 18px;
+    filter: brightness(0) invert(1);
+}
+.controlpanel_setting {
+    width: 100%;
+    height: 60px;
+    
+    background-color: rgb(0, 0, 0);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    padding: 6px;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+}
+.controlpanel_setting:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+.controlpanel_setting .ctrlpanel_stng_label {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    text-align: center;
+}
+.controlpanel_setting .ctrlpanel_stng_label img {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    margin-left: 18px;
+    filter: brightness(0) invert(1);
+}
+.controlpanel_setting .ctrlpanel_stng_label label {
+    color: rgb(255, 255, 255);
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+.controlpanel_setting input {
+    margin: 0;
+    width: 94% !important;
+    flex-shrink: 0;
+    height: 10px;
+}
+
+#nekiri-dropdown {
+    width: 350px;
+    background: rgb(0, 0, 0);
+}
+
+#nekiri_div_topbtns {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin: 5px;
+    height: auto;
+    width: 100%;
+    height: 35px;
+}
+
+#nekiri_input {
+    border: 2px solid rgba(49, 49, 49, 0.849);
+    background-color: rgb(21, 21, 21);
+    
+    color: white;
+    width: 100%;
+}
+
+#nekiri_send {
+    border: 2px solid rgba(49, 49, 49, 0.849);
+    background-color: rgb(21, 21, 21);
+    
+    color: white;
+    width: 30px;
+    height: auto;
+}
+
+#nekiri_send:hover {
+    background: rgba(49, 49, 49, 0.7);
+}
+
+
+#nekiri_search {
+    border: 2px solid rgba(49, 49, 49, 0.849);
+    background-color: rgb(21, 21, 21);
+    
+    color: white;
+    width: 180px;
+    height: 50px;
+}
+#nekiri_search:hover {
+    background-color: rgba(49, 49, 49, 0.849);
+}
+
+#nekiri_netimg {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+
+#nekiri_response {
+    color: white;
+    font-family: 'Outfit', sans-serif;
+}
+
+#nekiri_smartcard {
+    border: 2px solid rgba(49, 49, 49, 0.849);
+    background-color: rgb(21, 21, 21);
+    
+    color: white;
+    width: 100%;
+    height: 150px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+#brief-dropdown {
+    width: 450px;
+    height: 230px;
+    background: var(--sysbar-third, #181818ea);
+
+    background-image: url('assets/morning.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+#brief-dropdown::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.32);
+    z-index: 0;
+}
+
+#brief-dropdown > * {
+    position: relative;
+    z-index: 1;
+}
+
+#brief_dp_content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+}
+
+#brief_dp_content_verticaldiv {
+    height: 100%;
+    width: 1px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    
+    background-color: rgb(215, 215, 215);
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+#brief_dp_content_weather {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+
+#brief_dp_content_weather_text_maxmin,
+#brief_dp_content_weather_text_feelslike,
+#brief_dp_content_weather_text_description {
+    font-size: 14px;
+    font-family: 'Outfit', sans-serif;
+    margin: 1px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+}
+#brief_dp_content_weather_text_place {
+    font-size: 16px;
+    font-family: 'Outfit', sans-serif;
+    margin: 1px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+}
+#brief_dp_content_weather_text_temp {
+    font-size: 22px;
+    font-family: 'Outfit', sans-serif;
+    margin: 1px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+#brief_dp_content_weather_icon {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+#brief_dp_content_weather_tempicon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+#brief_dp_openbtn {
+    width: 100%;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.5);
+    
+    flex-shrink: 0;
+}
+
+#brief_dp_openbtn:active {
+    background-color: rgba(201, 201, 201, 0.5);
+}
+
+#brief_dp_content_usage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+
+.brief_dp_content_usage_card {
+    width: 100%;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.5);
+    
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.brief_dp_content_usage_card:active {
+    background-color: rgba(201, 201, 201, 0.5);
+}
+
+.brief_dp_content_usage_card_img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.brief_dp_content_usage_card_content {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    justify-content: center;
+}
+
+.brief_dp_content_usage_card_content_appname {
+    font-size: 14px;
+    font-family: 'Outfit', sans-serif;
+    margin: 1px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.brief_dp_content_usage_card_content_apptimeuse {
+    font-size: 12px;
+    font-family: 'Outfit', sans-serif;
+    margin: 1px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#appbar {
+    position: fixed;
+
+    top: calc(30px + 10px);
+    bottom: 10px;
+
+    left: 10px;
+
+    width: 65px;
+
+    padding: 15px;
+    box-sizing: border-box;
+
+    
+    background-color: rgb(61, 61, 61);
+    z-index: 8002;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 8px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    transition: transform 0.5s ease;
+}
+
+.appbar-app {
+    position: relative;
+    border: none;
+    background: none;
+    transition: transform 0.2s ease/*, filter 0.1s ease*/;
+    transform-origin: center;
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.appbar-app:hover {
+    transform: scale(1.35);
+}
+
+.appbar-app:active {
+    transform: scale(1.35);
+    filter: brightness(0.60);
+    transition: filter 0.05s ease;
+}
+
+.appbar-app.appbar-neighbor-1 {
+    transform: scale(1.15);
+}
+
+.appbar-app.appbar-neighbor-2 {
+    transform: scale(1.07);
+}
+
+.app-img {
+    height: 50px;
+    width: 50px;
+}
+
+#app-labels {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    color: white;
+    background-color: rgba(0, 0, 0, 0.434);
+    width: auto;
+    padding: 2px 12px;
+    height: 30px;
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+    justify-content: center;
+
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 8003;
+}
+
+#appbar-ctxmenu {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    color: white;
+    background-color: var(--sysbar-second, #0000007b);
+    width: auto;
+    height: auto;
+    padding: 10px;
+    
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+    z-index: 8004;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.appbar-ctxmenu-btn {
+    background-color: transparent;
+    border: none;
+    
+    color: white;
+    padding: 6px;
+    margin: 0;
+    width: 100%;
+}
+
+.appbar-ctxmenu-btn:hover {
+    background-color: #0000007b;
+}
+
+.appbar-ctxmenu-btn:active {
+    background-color: rgba(255, 255, 255, 0.445);
+}
+
+.appbar-separator {
+    width: 30px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.4);
+    margin: 0 4px;
+    align-self: center;
+}
+
+.appbar-dot {
+    width: 4px;
+    height: 4px;
+    
+    background: rgba(255, 255, 255, 0.76);
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.appbar-dot-active {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/*Ventanas*/
+.window_anim_open {
+    transform: scale(1) !important;
+    opacity: 1 !important;
+}
+
+/*.window.win-max {
+    left: 85px !important;
+    top: 4px !important;
+    right: 4px !important;
+    bottom: 4px !important;
+    width: auto;
+    height: auto;
+}*/
+
+.window.win-max .resize-handle {
+    display: none;   /* no tiene sentido redimensionar si está maximizada jajajaja */
+}
+
+.win-focused {
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.4) !important;
+}
+
+.window {
+    position: fixed;
+    top: 100px;
+    left: 100px;
+
+    width: 300px;
+    height: 200px;
+
+    background-color: rgb(0, 0, 0);
+    will-change: transform;
+    color: white;
+    
+
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.27);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    z-index: 8020;
+    overflow: hidden;
+
+    font-family: 'Outfit', sans-serif;
+
+    display: flex;
+    flex-direction: column;
+
+    transform: scale(0.9);
+    transition: transform 0.1s ease, opacity 0.1s ease;
+    opacity: 0;
+    contain: layout style;
+}
+
+.window.win-animating {
+    transition: transform 0.1s ease, opacity 0.1s ease,
+                width 0.35s ease, height 0.35s ease,
+                left 0.35s ease, top 0.35s ease;
+}
+
+
+.grab {
+    height: 38px;
+    background: rgb(43, 43, 43);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    padding: 0 10px;
+    position: relative;
+
+    user-select: none;
+}
+
+/*.grab:hover .grab-btn {
+    filter: brightness(10);
+}*/
+
+.grab-title {
+    pointer-events: none;
+    color: var(--win-text, white);
+
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    font-size: 14px;
+    opacity: 0.92;
+    white-space: nowrap;
+}
+
+.grab-btn {
+    background: var(--win-grab-btn, rgba(0, 0, 0, 0.372));
+    border: none;
+    color: var(--win-text, white);
+    font-size: 10px;
+    padding: 3px;
+    
+    width: 20px;
+    height: 20px;
+}
+
+
+.win_content {
+    padding: 10px;
+    height: calc(100% - 38px);
+    /*overflow: auto;*/
+    overflow: hidden;
+    /*test*/
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    color: var(--win-text, white)
+}
+
+.resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    width: 16px;
+    height: 16px;
+
+    cursor: nwse-resize;
+    background: transparent;
+}
+
+.window.no-resize .resize-handle {
+    display: none;
+}
+
+/*System UI*/
+
+#files-btnsdiv {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+.files-btnstyled {
+    width: 100%;
+    height: 25px;
+    border: none;
+    
+    color: white;
+}
+
+#files-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+}
+#files-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+#files-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+
+
+#files-btn_newfile {
+    background-color: rgb(0, 145, 255);
+}
+#files-btn_newfile:hover {
+    background-color: rgb(54, 168, 255);
+}
+#files-btn_newfile:active {
+    background-color: rgb(0, 126, 222);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.sidebar-divider {
+    height: 1px;
+    margin: 8px 6px;
+    background: var(--settings-divider, rgba(255, 255, 255, 0.212));
+}
+
+.uisetting {
+    padding: 10px;
+    margin-bottom: 8px;
+    background-color: rgb(210, 210, 210);
+    color: black;
+}
+
+.uisetting_container {
+    padding: 10px;
+    margin-bottom: 8px;
+    
+    background-color: rgb(255, 255, 255);
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    grid-auto-rows: auto;
+    justify-content: center;
+    align-content: center;
+    gap: 10px;    
+}
+
+/*.uisetting:hover {
+    background-color: var(--uisetting-hover, rgb(62, 62, 62));
+}*/
+
+.checkbox {
+    display: flex;
+    gap: 8px;
+}
+
+.checkbox input {
+    accent-color: #545454;
+}
+
+.switch-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.switch {
+    position: relative;
+    width: 40px;
+    height: 20px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #555;
+    transition: 0.2s;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 2px;
+    top: 2px;
+    background: white;
+    transition: 0.2s;
+}
+
+.switch input:checked + .slider {
+    background: #0008ff;
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(20px);
+}
+
+input[type="range"] {
+    width: 100%;
+}
+
+.text-input {
+    width: 100%;
+    padding: 6px;
+    margin-top: 4px;
+    border: none;
+    background: #555;
+    color: rgb(255, 255, 255);
+    box-sizing: border-box;
+}
+
+.select {
+    width: 100%;
+    padding: 6px;
+    background: #555;
+    color: white;
+    border: none;
+}
+
+.btn {
+    padding: 6px 10px;
+    border: none;
+    background: #a7a7a7;
+    color: rgb(0, 0, 0);
+    border: 1px solid #7b7b7b;
+}
+
+
+.btn:active {
+    opacity: 0.8;
+}
+
+.btn.primary {
+    background: #a7a7a7 !important;
+    border: 1px solid #7b7b7b;
+    color: rgb(0, 0, 0);
+}
+
+#screendiv {
+    padding: 4px;
+    
+    color: rgb(0, 0, 0);
+    width: 160px;
+    height: 110px;
+    text-align: center;
+    align-items: center;
+    background-color: white;
+    font-size: 24px;
+}
+
+.settings_usercard {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings_usercard i {
+    font-size: 28px;
+}
+
+.userinfogrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.userinfodiv {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 2px solid rgb(0, 0, 0);
+    padding: 18px;
+}
+
+.userinfotitle {
+    margin: 0;
+    font-size: 18px;
+    color: rgb(0, 0, 0);
+}
+
+.userinfosubtitle {
+    margin: 0;
+    font-size: 16px;
+    color: rgb(63, 63, 63);
+}
+
+/*
+COLORS
+Idle: rgba(75, 75, 75, 0.5);
+Hover: rgba(101, 101, 101, 0.66);
+Active: rgba(45, 45, 45, 0.5);
+
+Otros:*/
+#appcenter_ctxm {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: #ffffff;
+    padding: 10px;
+    z-index: 8022;
+    min-width: 150px;
+}
+
+.appcenter_ctxm_btn {
+    width: 100%;
+    background: transparent;
+    color: rgb(0, 0, 0);
+    text-align: left;
+    border: none;
+    padding: 4px 10px;
+}
+
+.appcenter_ctxm_btn:active {
+    background: rgba(45, 45, 45, 0.5);
+}
+
+#win_appcenter {
+    position: fixed;
+    z-index: 8028;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+ 
+    background: rgb(65, 65, 65);
+    color: white;
+ 
+    width: 700px !important;
+    height: 500px !important;
+ 
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    opacity: 1;
+    filter: blur(0px);
+    transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                opacity 0.15s ease,
+                backdrop-filter 0.15s ease,
+                filter 0.15s ease;
+}
+
+ 
+#win_appcenter.appcenter-hidden {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0;
+    filter: blur(8px);
+    pointer-events: none;
+}
+
+.appcenter-searchhidden {
+    display: none !important;
+}
+
+#appcenter_nekiriHint {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    height: 38px;
+    width: 200px;
+    margin: 0;
+    justify-content: center;
+    text-align: center;
+}
+#appcenter_nekiriHint p {
+    margin: 0;
+}
+
+#appcentertopbtns {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    width: 90%;
+}
+
+#appcentertopbtns input {
+    border: none;
+    height: 40px;
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding: 0 16px;
+
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-size: 14px;
+}
+
+#appcenterclose {
+    border: none;
+    height: 40px;
+    width: 40px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding: 0 16px;
+
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-size: 14px;
+}
+
+#appcenterclose:hover {
+    background-color: rgb(130, 130, 130);
+}
+
+#appcenterapps {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    width: 90%;
+    overflow-y: scroll;
+    will-change: scroll-position;
+}
+
+.appcenter_appdiv {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+
+    background-color: transparent;
+    
+
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+}
+
+
+.appcenter-appbtn {
+    border: none;
+    background: transparent;
+}
+
+/*.appcenter-appbtn:hover {
+    cursor: pointer;
+}*/
+
+.appcenter-img {
+    height: 60px;
+    width: 60px;
+}
+
+
+/*SISTEMA:*/
+.window.win-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    
+    z-index: 8040 !important;
+}
+
+.window.win-fullscreen .grab {
+    display: none !important;
+}
+
+.window.win-fullscreen .resize-handle {
+    display: none !important;
+}
+
+/*Setup*/
+.content_syssetup {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background-image: url(system/systemApps/assets/background.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: scroll;
+    background-size: cover;
+    color: #000000;
+}
+
+.syssetup_screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    transition: transform 0.4s ease-in-out;
+    transform: translateX(100%);
+}
+
+.syssetup_screen.active {
+    transform: translateX(0);
+}
+
+.syssetup_screen.exit-left {
+    transform: translateX(-100%);
+}
+
+.syssetup_container {
+    background: rgba(255, 255, 255, 0.747);
+    border: none;
+    
+    box-shadow: 0px 0px 5px rgb(84, 84, 84);
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    text-align: center;
+}
+
+.syssetup_container div:not(.syssetup_divider) {
+    margin-top: 20px;
+}
+
+.syssetup_btn {
+    
+    border: none;
+    background-color: rgb(0, 145, 255);
+    color: white;
+    height: 30px;
+    width: auto;
+    margin-top: 15px;
+}
+
+.syssetup_btn:hover {
+    background-color: rgb(54, 168, 255);
+}
+
+.syssetup_btn:active {
+    background-color: rgb(0, 126, 222);
+}
+
+.syssetup_img {
+    width: 170px;
+    height: 170px;
+}
+
+.syssetup_smallimg {
+    width: 45px;
+    height: 45px;
+}
+
+.syssetup_divider {
+    width: 95%;
+    height: 2px;
+    background-color: rgb(194, 194, 194);
+}
+
+.accs-high-contrast {
+    background: black !important;
+    color: white !important;
+}
+
+.accs-high-contrast button {
+    background: yellow !important;
+    color: black !important;
+}
+
+/* Nyx Image Viewer */
+#win_askForImageFile {
+    width: 320px;
+    height: auto;
+    min-height: 220px;
+}
+
+.content_askForImageFile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#askForImageFile-btn_fromfs {
+    background-color: rgb(0, 145, 255);
+    color: white;
+    border: none;
+    
+}
+
+#askForImageFile-btn_fromfs:hover {
+    background-color: rgb(54, 168, 255);
+}
+
+#askForImageFile-btn_fromfs:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#askForImageFile-btn_save {
+    background-color: rgb(0, 145, 255);
+    color: white;
+}
+
+#askForImageFile-btn_save:hover {
+    background-color: rgb(54, 168, 255);
+}
+
+#askForImageFile-btn_save:active {
+    background-color: rgb(0, 126, 222);
+}
+
+#askForImageFile-btn_cancel {
+    background-color: rgba(75, 75, 75, 0.5);
+    color: white;
+}
+
+#askForImageFile-btn_cancel:hover {
+    background-color: rgba(101, 101, 101, 0.66);
+}
+
+#askForImageFile-btn_cancel:active {
+    background-color: rgba(45, 45, 45, 0.5);
+}
+
+/*
+
+#askForImageFile-btn_save {
+    background-color: rgb(0, 145, 255);
+}
+#askForImageFile-btn_save:hover {
+    background-color: rgb(54, 168, 255);
+}
+#a-btn_save:active {
+    background-color: rgb(0, 126, 222);
+}
+    
+*/
